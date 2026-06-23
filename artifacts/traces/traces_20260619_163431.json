@@ -1,0 +1,57 @@
+{
+  "eval_cases": [
+    {
+      "prompt": {
+        "parts": [
+          {
+            "text": "{\"employee_name\": \"Alice Smith\", \"amount\": 45.50, \"description\": \"Team lunch\"}"
+          }
+        ],
+        "role": "user"
+      },
+      "responses": [
+        {
+          "response": {
+            "parts": [
+              {
+                "text": "Expense of $45.50 for 'Team lunch' has been automatically approved as it is under $100."
+              }
+            ],
+            "role": "model"
+          }
+        }
+      ],
+      "eval_case_id": "auto_approve_lunch",
+      "agent_data": {
+        "agents": {
+          "ambient_expense_agent": {
+            "agent_id": "ambient_expense_agent",
+            "agent_type": "Workflow",
+            "description": "",
+            "tools": [],
+            "sub_agents": []
+          }
+        },
+        "turns": [
+          {
+            "turn_index": 0,
+            "turn_id": "turn_0",
+            "events": [
+              {
+                "author": "ambient_expense_agent",
+                "content": {
+                  "parts": [
+                    {
+                      "text": "Expense of $45.50 for 'Team lunch' has been automatically approved as it is under $100."
+                    }
+                  ],
+                  "role": "model"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

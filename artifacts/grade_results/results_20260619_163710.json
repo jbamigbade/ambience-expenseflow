@@ -1,0 +1,430 @@
+{
+  "eval_case_results": [
+    {
+      "eval_case_index": 0,
+      "response_candidate_results": [
+        {
+          "response_index": 0,
+          "metric_results": {
+            "custom_response_quality": {
+              "metric_name": "custom_response_quality",
+              "score": 4.0,
+              "explanation": "The response accurately and clearly states that the expense of $45.50 for 'Team lunch' has been automatically approved because it is under $100. This directly addresses the key details of the user's prompt (amount and description) and provides a plausible outcome with a clear reason within the context of an expense approval system. The response is well-structured and easy to understand. The only minor room for improvement is that it does not explicitly mention the `employee_name` (Alice Smith) from the original prompt. While not critical for understanding the expense's status, including it could provide more complete context, depending on the intended recipient or purpose of this specific message.",
+              "rubric_verdicts": null,
+              "raw_output": null,
+              "error_message": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "eval_case_index": 1,
+      "response_candidate_results": [
+        {
+          "response_index": 0,
+          "metric_results": {
+            "custom_response_quality": {
+              "metric_name": "custom_response_quality",
+              "score": 5.0,
+              "explanation": "The response is excellent. It accurately extracts the relevant information (amount and description) from the user prompt. It then clearly states the outcome (automatically approved) and provides a plausible and concise reason for the approval ('under $100'). The response is highly relevant, accurate, and perfectly structured for conveying this information. While it doesn't include the employee name 'Alice Smith', this is a minor detail and often omitted in such automated confirmation messages where the expense item itself and its status are the primary focus. The response fulfills the implied intent of processing the expense request effectively.",
+              "rubric_verdicts": null,
+              "raw_output": null,
+              "error_message": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "eval_case_index": 2,
+      "response_candidate_results": [
+        {
+          "response_index": 0,
+          "metric_results": {
+            "custom_response_quality": {
+              "metric_name": "custom_response_quality",
+              "score": 4.0,
+              "explanation": "The response is accurate, concise, and directly addresses the core aspects of the expense processing. It correctly identifies the amount and description, and provides a plausible reason for automatic approval based on the amount being under $100. This indicates successful processing of the expense information. The primary area for minor improvement is the omission of the `employee_name` ('Alice Smith') from the final confirmation message. While the agent likely used this information for internal processing, including the employee's name in the final output would make the confirmation more comprehensive and clear, especially in an enterprise context where multiple employees' expenses might be managed.",
+              "rubric_verdicts": null,
+              "raw_output": null,
+              "error_message": null
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "summary_metrics": [
+    {
+      "metric_name": "custom_response_quality",
+      "num_cases_total": 3,
+      "num_cases_valid": 3,
+      "num_cases_error": 0,
+      "mean_score": 4.333333333333333,
+      "stdev_score": 0.5773502691896257,
+      "pass_rate": null
+    }
+  ],
+  "win_rates": null,
+  "evaluation_dataset": [
+    {
+      "bigquery_source": null,
+      "gcs_source": null,
+      "eval_cases": [
+        {
+          "prompt": {
+            "parts": [
+              {
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "{\"employee_name\": \"Alice Smith\", \"amount\": 45.50, \"description\": \"Team lunch\"}",
+                "thought": null,
+                "thought_signature": null,
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null
+              }
+            ],
+            "role": "user"
+          },
+          "responses": [
+            {
+              "response": {
+                "parts": [
+                  {
+                    "media_resolution": null,
+                    "code_execution_result": null,
+                    "executable_code": null,
+                    "file_data": null,
+                    "function_call": null,
+                    "function_response": null,
+                    "inline_data": null,
+                    "text": "Expense of $45.50 for 'Team lunch' has been automatically approved as it is under $100.",
+                    "thought": null,
+                    "thought_signature": null,
+                    "video_metadata": null,
+                    "tool_call": null,
+                    "tool_response": null,
+                    "part_metadata": null
+                  }
+                ],
+                "role": "model"
+              }
+            }
+          ],
+          "reference": null,
+          "system_instruction": null,
+          "conversation_history": null,
+          "rubric_groups": null,
+          "eval_case_id": "auto_approve_lunch",
+          "intermediate_events": null,
+          "agent_info": null,
+          "agent_data": {
+            "agents": {
+              "ambient_expense_agent": {
+                "agent_id": "ambient_expense_agent",
+                "agent_type": "Workflow",
+                "description": "",
+                "instruction": null,
+                "tools": [],
+                "sub_agents": []
+              }
+            },
+            "turns": [
+              {
+                "turn_index": 0,
+                "turn_id": "turn_0",
+                "events": [
+                  {
+                    "author": "ambient_expense_agent",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": "Expense of $45.50 for 'Team lunch' has been automatically approved as it is under $100.",
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": null,
+                    "state_delta": null,
+                    "active_tools": null
+                  }
+                ]
+              }
+            ]
+          },
+          "user_scenario": null
+        },
+        {
+          "prompt": {
+            "parts": [
+              {
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "{\"employee_name\": \"Alice Smith\", \"amount\": 45.50, \"description\": \"Team lunch\"}",
+                "thought": null,
+                "thought_signature": null,
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null
+              }
+            ],
+            "role": "user"
+          },
+          "responses": [
+            {
+              "response": {
+                "parts": [
+                  {
+                    "media_resolution": null,
+                    "code_execution_result": null,
+                    "executable_code": null,
+                    "file_data": null,
+                    "function_call": null,
+                    "function_response": null,
+                    "inline_data": null,
+                    "text": "Expense of $45.50 for 'Team lunch' has been automatically approved as it is under $100.",
+                    "thought": null,
+                    "thought_signature": null,
+                    "video_metadata": null,
+                    "tool_call": null,
+                    "tool_response": null,
+                    "part_metadata": null
+                  }
+                ],
+                "role": "model"
+              }
+            }
+          ],
+          "reference": null,
+          "system_instruction": null,
+          "conversation_history": null,
+          "rubric_groups": null,
+          "eval_case_id": "auto_approve_lunch",
+          "intermediate_events": null,
+          "agent_info": null,
+          "agent_data": {
+            "agents": {
+              "ambient_expense_agent": {
+                "agent_id": "ambient_expense_agent",
+                "agent_type": "Workflow",
+                "description": "",
+                "instruction": null,
+                "tools": [],
+                "sub_agents": []
+              }
+            },
+            "turns": [
+              {
+                "turn_index": 0,
+                "turn_id": "turn_0",
+                "events": [
+                  {
+                    "author": "ambient_expense_agent",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": "Expense of $45.50 for 'Team lunch' has been automatically approved as it is under $100.",
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": null,
+                    "state_delta": null,
+                    "active_tools": null
+                  }
+                ]
+              }
+            ]
+          },
+          "user_scenario": null
+        },
+        {
+          "prompt": {
+            "parts": [
+              {
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "{\"employee_name\": \"Alice Smith\", \"amount\": 45.50, \"description\": \"Team lunch\"}",
+                "thought": null,
+                "thought_signature": null,
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null
+              }
+            ],
+            "role": "user"
+          },
+          "responses": [
+            {
+              "response": {
+                "parts": [
+                  {
+                    "media_resolution": null,
+                    "code_execution_result": null,
+                    "executable_code": null,
+                    "file_data": null,
+                    "function_call": null,
+                    "function_response": null,
+                    "inline_data": null,
+                    "text": "Expense of $45.50 for 'Team lunch' has been automatically approved as it is under $100.",
+                    "thought": null,
+                    "thought_signature": null,
+                    "video_metadata": null,
+                    "tool_call": null,
+                    "tool_response": null,
+                    "part_metadata": null
+                  }
+                ],
+                "role": "model"
+              }
+            }
+          ],
+          "reference": null,
+          "system_instruction": null,
+          "conversation_history": null,
+          "rubric_groups": null,
+          "eval_case_id": "auto_approve_lunch",
+          "intermediate_events": null,
+          "agent_info": null,
+          "agent_data": {
+            "agents": {
+              "ambient_expense_agent": {
+                "agent_id": "ambient_expense_agent",
+                "agent_type": "Workflow",
+                "description": "",
+                "instruction": null,
+                "tools": [],
+                "sub_agents": []
+              }
+            },
+            "turns": [
+              {
+                "turn_index": 0,
+                "turn_id": "turn_0",
+                "events": [
+                  {
+                    "author": "ambient_expense_agent",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": "Expense of $45.50 for 'Team lunch' has been automatically approved as it is under $100.",
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": null,
+                    "state_delta": null,
+                    "active_tools": null
+                  }
+                ]
+              }
+            ]
+          },
+          "user_scenario": null
+        }
+      ],
+      "eval_dataset_df": null,
+      "candidate_name": null
+    }
+  ],
+  "metadata": {
+    "candidate_names": [
+      "candidate_1"
+    ],
+    "dataset_name": null,
+    "dataset_id": null,
+    "creation_timestamp": "2026-06-19T20:37:10.806379Z",
+    "dataset": [
+      {
+        "prompt_display_text": "{\"employee_name\": \"Alice Smith\", \"amount\": 45.50, \"description\": \"Team lunch\"}",
+        "prompt_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"{\\\"employee_name\\\": \\\"Alice Smith\\\", \\\"amount\\\": 45.50, \\\"description\\\": \\\"Team lunch\\\"}\"\n    }\n  ],\n  \"role\": \"user\"\n}",
+        "reference": "",
+        "reference_raw_json": "",
+        "response_display_text": "Expense of $45.50 for 'Team lunch' has been automatically approved as it is under $100.",
+        "response_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"Expense of $45.50 for 'Team lunch' has been automatically approved as it is under $100.\"\n    }\n  ],\n  \"role\": \"model\"\n}",
+        "intermediate_events": null,
+        "agent_data": "{\"agents\": {\"ambient_expense_agent\": {\"agent_id\": \"ambient_expense_agent\", \"agent_type\": \"Workflow\", \"description\": \"\", \"tools\": [], \"sub_agents\": []}}, \"turns\": [{\"turn_index\": 0, \"turn_id\": \"turn_0\", \"events\": [{\"author\": \"ambient_expense_agent\", \"content\": {\"parts\": [{\"text\": \"Expense of $45.50 for 'Team lunch' has been automatically approved as it is under $100.\"}], \"role\": \"model\"}}]}]}"
+      },
+      {
+        "prompt_display_text": "{\"employee_name\": \"Alice Smith\", \"amount\": 45.50, \"description\": \"Team lunch\"}",
+        "prompt_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"{\\\"employee_name\\\": \\\"Alice Smith\\\", \\\"amount\\\": 45.50, \\\"description\\\": \\\"Team lunch\\\"}\"\n    }\n  ],\n  \"role\": \"user\"\n}",
+        "reference": "",
+        "reference_raw_json": "",
+        "response_display_text": "Expense of $45.50 for 'Team lunch' has been automatically approved as it is under $100.",
+        "response_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"Expense of $45.50 for 'Team lunch' has been automatically approved as it is under $100.\"\n    }\n  ],\n  \"role\": \"model\"\n}",
+        "intermediate_events": null,
+        "agent_data": "{\"agents\": {\"ambient_expense_agent\": {\"agent_id\": \"ambient_expense_agent\", \"agent_type\": \"Workflow\", \"description\": \"\", \"tools\": [], \"sub_agents\": []}}, \"turns\": [{\"turn_index\": 0, \"turn_id\": \"turn_0\", \"events\": [{\"author\": \"ambient_expense_agent\", \"content\": {\"parts\": [{\"text\": \"Expense of $45.50 for 'Team lunch' has been automatically approved as it is under $100.\"}], \"role\": \"model\"}}]}]}"
+      },
+      {
+        "prompt_display_text": "{\"employee_name\": \"Alice Smith\", \"amount\": 45.50, \"description\": \"Team lunch\"}",
+        "prompt_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"{\\\"employee_name\\\": \\\"Alice Smith\\\", \\\"amount\\\": 45.50, \\\"description\\\": \\\"Team lunch\\\"}\"\n    }\n  ],\n  \"role\": \"user\"\n}",
+        "reference": "",
+        "reference_raw_json": "",
+        "response_display_text": "Expense of $45.50 for 'Team lunch' has been automatically approved as it is under $100.",
+        "response_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"Expense of $45.50 for 'Team lunch' has been automatically approved as it is under $100.\"\n    }\n  ],\n  \"role\": \"model\"\n}",
+        "intermediate_events": null,
+        "agent_data": "{\"agents\": {\"ambient_expense_agent\": {\"agent_id\": \"ambient_expense_agent\", \"agent_type\": \"Workflow\", \"description\": \"\", \"tools\": [], \"sub_agents\": []}}, \"turns\": [{\"turn_index\": 0, \"turn_id\": \"turn_0\", \"events\": [{\"author\": \"ambient_expense_agent\", \"content\": {\"parts\": [{\"text\": \"Expense of $45.50 for 'Team lunch' has been automatically approved as it is under $100.\"}], \"role\": \"model\"}}]}]}"
+      }
+    ]
+  },
+  "agent_info": null
+}

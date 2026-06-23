@@ -1,0 +1,11 @@
+{
+  "eval_cases": [
+    {
+      "eval_case_id": "auto_approve_lunch",
+      "prompt": {
+        "role": "user",
+        "parts": [{"text": "{\"employee_name\": \"Alice Smith\", \"amount\": 45.50, \"description\": \"Team lunch\"}"}]
+      }
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+Line 4464: return "$" + num.toFixed(2);
+Line 5822: <div class="amount-tag">$${claim.amount.toFixed(2)}</div>
+Line 5847: ${policy.costPerNight ? `<div><strong>Nightly Cost:</strong> $${policy.costPerNight.toFixed(2)}</div>` : ''}
+Line 5882: <div><strong>Amount:</strong> $${claim.amount.toFixed(2)}</div>
+Line 5932: <td style="padding: 0.4rem 0; text-align: right;">$${(claim.per_diem_review.meal_rate_per_day || 0).toFixed(2)}/day</td>
+Line 5933: <td style="padding: 0.4rem 0; text-align: right; color: #a5b4fc;">$${(claim.per_diem_review.allowed_meal_total || 0).toFixed(2)}</td>
+Line 5934: <td style="padding: 0.4rem 0; text-align: right; font-weight: 500;">$${(claim.per_diem_review.claimed_meals || 0).toFixed(2)}</td>
+Line 5938: <td style="padding: 0.4rem 0; text-align: right;">$${(claim.per_diem_review.lodging_rate_per_night || 0).toFixed(2)}/night</td>
+Line 5939: <td style="padding: 0.4rem 0; text-align: right; color: #a5b4fc;">$${(claim.per_diem_review.allowed_lodging_total || 0).toFixed(2)}</td>
+Line 5940: <td style="padding: 0.4rem 0; text-align: right; font-weight: 500;">$${(claim.per_diem_review.claimed_lodging || 0).toFixed(2)}</td>
+Line 5944: <td style="padding: 0.4rem 0; text-align: right;">$${(claim.per_diem_review.incidental_rate_per_day || 0).toFixed(2)}/day</td>
+Line 5945: <td style="padding: 0.4rem 0; text-align: right; color: #a5b4fc;">$${(claim.per_diem_review.allowed_incidental_total || 0).toFixed(2)}</td>
+Line 5946: <td style="padding: 0.4rem 0; text-align: right; font-weight: 500;">$${(claim.per_diem_review.claimed_incidentals || 0).toFixed(2)}</td>
+Line 5955: <span style="color: white; font-weight: 600;">$${claim.per_diem_review.claimed_amount.toFixed(2)}</span>
+Line 5959: <span style="color: #818cf8; font-weight: 600;">$${(claim.per_diem_review.allowed_meal_total + claim.per_diem_review.allowed_lodging_total + claim.per_diem_review.allowed_incidental_total).toFixed(2)}</span>
+Line 5964: ${claim.per_diem_review.overage_total > 0 ? `+$${claim.per_diem_review.overage_total.toFixed(2)} (Exceeds)` : 'Within budget'}
+Line 6125: amountEl.textContent = `$${claim.amount.toFixed(2)}`;

@@ -5,12 +5,13 @@ import urllib.request
 import urllib.parse
 import uuid
 import sys
+import shutil
 
 # Project configuration
 PROJECT = "project-5d38f91a-29a3-45bd-8d4"
 TOPIC = "expense-reports"
 BASE_URL = "https://expense-manager-dashboard-654812449031.us-west1.run.app"
-GCLOUD = r"C:\Users\johnb\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin\gcloud.cmd"
+GCLOUD = shutil.which("gcloud") or shutil.which("gcloud.cmd") or r"C:\Users\johnb\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin\gcloud.cmd"
 
 # Dummy attachment content
 DUMMY_PDF_CONTENT = b"%PDF-1.4\n1 0 obj\n<<\n/Type /Catalog\n>>\nendobj\ntrailer\n<<\n/Root 1 0 R\n>>\n%%EOF"

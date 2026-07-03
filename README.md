@@ -50,6 +50,7 @@ uv pip install -e .
 uv run pytest tests/
 ```
 
+
 ### 4. Launch Local Development Server
 ```bash
 # Start FastAPI dashboard locally
@@ -143,3 +144,13 @@ For the Kaggle Capstone submission cover image, we recommend utilizing a sleek, 
 
 ---
 *Created and verified by John Bamigbade, Capstone Candidate.*
+
+
+
+## 🎥 Project Demonstration
+
+Watch the complete walkthrough on YouTube:
+
+https://youtu.be/hBpXJ_BND-k
+
+Built-in telemetry exports to Cloud Trace, BigQuery, and Cloud Logging.

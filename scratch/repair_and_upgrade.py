@@ -1,272 +1,126 @@
 import os
 
-# 1. Load variables from apply_frontend_upgrade.py and reports_upgrade.js
-with open("scratch/apply_frontend_upgrade.py", "r", encoding="utf-8") as f:
-    code = f.read()
+original_main_path = r"D:\02_AI_and_Data\Kaggle-AI-Agents\Capstone\scratch\original_main.py"
+api_routes_path = r"D:\02_AI_and_Data\Kaggle-AI-Agents\Capstone\submission_frontend\routes\api_routes.py"
 
-mock_main_content = """
-</style>
-</head>
-<body>
-    <div class="glow-spot-1"
-<button class="tab-btn" id="tab-submit" onclick="switchTab('submit')"
-<!-- 1. Pending Approvals Section -->
-</body>
-</html>
-window.addEventListener("DOMContentLoaded", () => {
-            // Apply role-based visibility rules
-            if (USER_ROLE === "employee") {
-                document.getElementById("tab-pending").style.display = "none";
-                document.getElementById("tab-audit").style.display = "none";
-                switchTab('submit');
-            } else if (USER_ROLE === "manager") {
-                document.getElementById("tab-submit").style.display = "none";
-                document.getElementById("tab-audit").style.display = "none";
-                fetchPendingApprovals();
-            } else {
-                fetchPendingApprovals();
-            }
-"""
-
-class MockFile:
-    def __init__(self, *args, **kwargs):
-        pass
-    def read(self):
-        return mock_main_content
-    def write(self, content):
-        pass
-    def __enter__(self):
-        return self
-    def __exit__(self, *args):
-        pass
-
-def mock_open(file, mode="r", *args, **kwargs):
-    if file == "scratch/reports_upgrade.js":
-        return open(file, mode, *args, **kwargs)
-    return MockFile()
-
-namespace = {
-    "open": mock_open,
-    "__file__": "scratch/apply_frontend_upgrade.py",
-    "__name__": "__main__"
-}
-
-try:
-    exec(code, namespace)
-except Exception as e:
-    print(f"Extraction execution error: {e}")
-
-css_code = namespace.get("css_code")
-tab_reports_btn = namespace.get("tab_reports_btn")
-html_reports_section = namespace.get("html_reports_section")
-html_modals = namespace.get("html_modals")
-js_code = namespace.get("js_code")
-
-print(f"css_code: {len(css_code)} chars")
-print(f"tab_reports_btn: {repr(tab_reports_btn)}")
-print(f"html_reports_section: {len(html_reports_section)} chars")
-print(f"html_modals: {len(html_modals)} chars")
-print(f"js_code: {len(js_code)} chars")
-
-# 2. Read the corrupted main.py
-with open("submission_frontend/main.py", "r", encoding="utf-8") as f:
-    main_content = f.read()
-
-# We want to find the line that ends html_content
-# html_content ends with:
-# \n</body>
-# </html>
-# """
-# We can find this closing triple quote. But wait, since html_modals, etc. were appended, they were inside html_content.
-# Let's search for the end of get_dashboard, which is "def get_dashboard"
-# Inside main.py, let's find the closing string literal of html_content:
-# In the original file, it was followed by:
-# "    # Dynamic String Replacements to inject user status, roles, and UI configuration"
-marker = "    # Dynamic String Replacements to inject user status, roles, and UI configuration"
-marker_idx = main_content.find(marker)
-if marker_idx == -1:
-    print("CRITICAL: marker not found in main.py!")
+if not os.path.exists(original_main_path):
+    print(f"Error: {original_main_path} does not exist.")
     exit(1)
 
-print(f"Marker found at index {marker_idx}")
+print("Reading original_main.py...")
+with open(original_main_path, "r", encoding="utf-16") as f:
+    lines = f.readlines()
 
-# part1 is everything before the marker, which includes html_content = """ ... """
-# but wait! We want part1 to end exactly with the closing of the string literal: """\n
-part1 = main_content[:marker_idx]
+print(f"Total lines read: {len(lines)}")
 
-# Clean up part1 from any previous mess in a loop
-print("Cleaning up previous duplicate injections from HTML content...")
+# Line 1485 to 4508 inclusive correspond to index 1484 to 4507 inclusive.
+start_idx = 1484
+end_idx = 4507
 
-# Remove css_code
-count = 0
-while css_code in part1:
-    part1 = part1.replace(css_code, "")
-    count += 1
-print(f"Removed {count} occurrences of css_code")
+api_lines = lines[start_idx:end_idx + 1]
+api_code = "".join(api_lines)
 
-# Remove tab_reports_btn
-count = 0
-while tab_reports_btn in part1:
-    part1 = part1.replace(tab_reports_btn, "")
-    count += 1
-print(f"Removed {count} occurrences of tab_reports_btn")
+# Replace decorators
+api_code = api_code.replace("@app.get(", "@router.get(")
+api_code = api_code.replace("@app.post(", "@router.post(")
+api_code = api_code.replace("@app.put(", "@router.put(")
+api_code = api_code.replace("@app.delete(", "@router.delete(")
+api_code = api_code.replace("@app.patch(", "@router.patch(")
 
-# Remove html_reports_section
-count = 0
-while html_reports_section in part1:
-    part1 = part1.replace(html_reports_section, "")
-    count += 1
-print(f"Removed {count} occurrences of html_reports_section")
+header = """import os
+import re
+import json
+import uuid
+import asyncio
+from datetime import datetime
+from typing import Optional, List
+from google.cloud import firestore
+from fastapi import APIRouter, HTTPException, status, UploadFile, File, Request, BackgroundTasks
+from fastapi.responses import HTMLResponse, StreamingResponse, RedirectResponse
+from pydantic import BaseModel
+from google.adk.sessions import VertexAiSessionService
 
-# Remove html_modals
-count = 0
-while html_modals in part1:
-    part1 = part1.replace(html_modals, "")
-    count += 1
-print(f"Removed {count} occurrences of html_modals")
+# Dynamic Global Delegation class to allow unit tests to patch globals on main
+class DynamicGlobal:
+    def __init__(self, name):
+        self.name = name
+    def __getattr__(self, item):
+        import submission_frontend.main as main
+        actual = getattr(main, self.name)
+        return getattr(actual, item)
+    def __bool__(self):
+        import submission_frontend.main as main
+        actual = getattr(main, self.name)
+        return bool(actual)
+    def __call__(self, *args, **kwargs):
+        import submission_frontend.main as main
+        actual = getattr(main, self.name)
+        return actual(*args, **kwargs)
 
-# Remove js_code
-count = 0
-while js_code in part1:
-    part1 = part1.replace(js_code, "")
-    count += 1
-print(f"Removed {count} occurrences of js_code")
+# Instantiated Dynamic Globals mapped to main's attributes
+db = DynamicGlobal("db")
+logger = DynamicGlobal("logger")
+get_current_user_and_role = DynamicGlobal("get_current_user_and_role")
+get_gcs_bucket = DynamicGlobal("get_gcs_bucket")
+is_auth_enabled = DynamicGlobal("is_auth_enabled")
 
-# Clean up standard anchors in case they were messed up
-# Wait, let's check if the standard anchors are clean in part1.
-# Since we replaced the injected codes with "", the anchors should be back to original!
-# Let's verify.
-print("Applying upgrades to clean HTML content exactly once...")
-
-# A. CSS
-part1 = part1.replace("</style>", css_code + "\n</style>", 1)
-
-# B. Tab Button
-part1 = part1.replace(
-    '<button class="tab-btn" id="tab-submit" onclick="switchTab(\'submit\')"',
-    tab_reports_btn + '\n        <button class="tab-btn" id="tab-submit" onclick="switchTab(\'submit\')"',
-    1
+# Constants
+from submission_frontend.config.settings import (
+    BUCKET_NAME,
+    PROJECT_ID,
+    EXPENSES_COL,
+    DOCUMENTS_COL,
+    DECISIONS_COL,
+    AUDIT_LOGS_COL,
+    POLICIES_COL,
+    LOCATION,
+    ENGINE_ID,
+    AGENT_RUNTIME_ID
 )
 
-# C. Reports Section
-part1 = part1.replace(
-    "<!-- 1. Pending Approvals Section -->",
-    html_reports_section + "\n        <!-- 1. Pending Approvals Section -->",
-    1
+from submission_frontend.schemas.schemas import ApprovalAction
+
+# Imported Utilities
+from submission_frontend.utilities.helpers import (
+    add_audit_log,
+    enrich_claim_with_employee_info,
+    filter_and_enrich_claims,
+    sanitize_claim_dict
+)
+from submission_frontend.utilities.policy_engine import (
+    run_per_diem_check,
+    run_policy_check_py
+)
+from submission_frontend.utilities.workflow_engine import (
+    find_and_bind_expense,
+    reevaluate_expense_policies,
+    sync_completed_sessions,
+    parse_claim_from_session,
+    check_claim_missing_documents,
+    recalculate_report_totals,
+    add_report_audit_log
 )
 
-# D. Modals
-# Find the LAST </body> in part1 to put modals right before it
-body_idx = part1.rfind("</body>")
-if body_idx != -1:
-    part1 = part1[:body_idx] + html_modals + "\n" + part1[body_idx:]
-else:
-    print("WARNING: </body> not found in part1!")
+import time
+import logging
 
-# E. JS code inside script tag
-part1 = part1.replace(
-    'window.addEventListener("DOMContentLoaded", () => {',
-    js_code + "\n\n        window.addEventListener(\"DOMContentLoaded\", () => {",
-    1
-)
+# Suppress noisy informational logs from google-genai and Vertex AI libraries
+for logger_name in ["google", "google_genai", "google.genai", "google_genai._api_client", "google_genai.api_client"]:
+    logging.getLogger(logger_name).setLevel(logging.WARNING)
 
-# 3. Define the clean, upgraded part2
-part2 = """    # Dynamic String Replacements to inject user status, roles, and UI configuration
-    user_email = "default-user@company.com"
-    user_role = "finance_admin"
-    auth_active = is_auth_enabled()
-    
-    if auth_active:
-        user = request.session.get("user")
-        if not user:
-            return RedirectResponse(url="/login")
-        user_email = user.get("email")
-        user_role = user.get("role")
-        auth_label = "Google Auth Active"
-        badge_border = "var(--primary)"
-        badge_bg = "rgba(99, 102, 241, 0.05)"
-        badge_text = "var(--primary)"
-        logout_html = '<a href="/logout" class="btn-logout" style="color: #fb7185; text-decoration: none; margin-left: 0.5rem; font-weight: 600; font-size: 0.85rem; border-left: 1px solid var(--glass-border); padding-left: 0.8rem; transition: var(--transition);" onmouseover="this.style.color=\\'#f43f5e\\'" onmouseout="this.style.color=\\'#fb7185\\'">Logout</a>'
-    else:
-        # Fallback to bypass user
-        auth_label = "Local Bypassed"
-        badge_border = "rgba(245, 158, 11, 0.3)"
-        badge_bg = "rgba(245, 158, 11, 0.05)"
-        badge_text = "#f59e0b"
-        logout_html = '<span style="color: var(--text-muted); margin-left: 0.5rem; font-size: 0.8rem; border-left: 1px solid var(--glass-border); padding-left: 0.8rem; font-style: italic;">Local Mode</span>'
+# Module-level caching for dashboard performance tuning
+_pending_cache = {}  # key: params_tuple, value: (timestamp, data_dict)
+_pending_cache_ttl = 30.0  # cache TTL in seconds
 
-    user_badge_html = f\"\"\"
-    <div class="user-badge" style="display: flex; align-items: center; gap: 0.8rem; background: {badge_bg}; border: 1px solid {badge_border}; padding: 0.5rem 1.2rem; border-radius: 12px; font-size: 0.9rem; z-index: 10;">
-        <div class="user-avatar" style="width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; color: white;">
-            {user_email[0].upper()}
-        </div>
-        <div class="user-details" style="display: flex; flex-direction: column;">
-            <span style="font-weight: 600; color: white; font-size: 0.85rem;">{user_email}</span>
-            <span style="font-size: 0.72rem; color: {badge_text}; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 1px;">
-                {user_role.replace('_', ' ')} • {auth_label}
-            </span>
-        </div>
-        {logout_html}
-    </div>
-    \"\"\"
+_expenses_cache = {}  # key: params_tuple, value: (timestamp, expenses_list)
+_expenses_cache_ttl = 30.0  # cache TTL in seconds
 
-    rendered_content = html_content.replace(
-        "let cachedClaims = {};",
-        f'const USER_ROLE = "{user_role}";\\n        const USER_EMAIL = "{user_email}";\\n        let cachedClaims = {{}};'
-    ).replace(
-        "</div>\\n    </header>",
-        f"</div>\\n        {user_badge_html}\\n    </header>"
-    ).replace(
-        'window.addEventListener("DOMContentLoaded", () => {',
-        \"\"\"window.addEventListener("DOMContentLoaded", () => {
-            // Apply role-based visibility rules
-            if (USER_ROLE === "employee") {
-                document.getElementById("tab-pending").style.display = "none";
-                document.getElementById("tab-audit").style.display = "none";
-                switchTab('reports');
-            } else if (USER_ROLE === "manager") {
-                document.getElementById("tab-submit").style.display = "none";
-                document.getElementById("tab-audit").style.display = "none";
-                switchTab('pending');
-            } else {
-                switchTab('reports');
-            }\"\"\"
-    ).replace(
-        \"\"\"                        <td style="padding: 1rem 0.75rem; text-align: right;">
-                            <div style="display: flex; gap: 0.5rem; justify-content: flex-end; align-items: center;">
-                                <button class="btn btn-receipt" onclick="showClaimDetails('${exp.claim_id}')" style="padding: 0.35rem 0.7rem; font-size: 0.75rem; border-radius: 8px; width: auto; display: inline-flex; height: auto; background: rgba(99,102,241,0.1); color: #cbd5e1; border-color: rgba(99,102,241,0.25);">
-                                    View Details
-                                </button>
-                                <button class="btn btn-receipt" onclick="loadAuditTrail('${exp.claim_id}', '${escapeHtml(exp.employee_name)}', ${exp.amount})" style="padding: 0.35rem 0.7rem; font-size: 0.75rem; border-radius: 8px; width: auto; display: inline-flex; height: auto;">
-                                    View Trail
-                                </button>
-                            </div>
-                        </td>\"\"\",
-        \"\"\"                        <td style="padding: 1rem 0.75rem; text-align: right;">
-                            <div style="display: flex; gap: 0.5rem; justify-content: flex-end; align-items: center;">
-                                <button class="btn btn-receipt" onclick="showClaimDetails('${exp.claim_id}')" style="padding: 0.35rem 0.7rem; font-size: 0.75rem; border-radius: 8px; width: auto; display: inline-flex; height: auto; background: rgba(99,102,241,0.1); color: #cbd5e1; border-color: rgba(99,102,241,0.25);">
-                                    View Details
-                                </button>
-                                ${USER_ROLE === 'finance_admin' ? `
-                                <button class="btn btn-receipt" onclick="loadAuditTrail('${exp.claim_id}', '${escapeHtml(exp.employee_name)}', ${exp.amount})" style="padding: 0.35rem 0.7rem; font-size: 0.75rem; border-radius: 8px; width: auto; display: inline-flex; height: auto;">
-                                    View Trail
-                                </button>
-                                ` : ''}
-                            </div>
-                        </td>\"\"\"
-    )
-    return HTMLResponse(content=rendered_content)
-
-if __name__ == "__main__":
-    import uvicorn
-    # Use port 8080 as requested in typical dev servers or standard run directions
-    logger.info("Starting FastAPI Uvicorn service...")
-    uvicorn.run("main:app", host="0.0.0.0", port=8080, reload=True)
+router = APIRouter()
 """
 
-final_content = part1 + part2
+# Let's save the code
+os.makedirs(os.path.dirname(api_routes_path), exist_ok=True)
+with open(api_routes_path, "w", encoding="utf-8") as f:
+    f.write(header + "\n" + api_code)
 
-with open("submission_frontend/main.py", "w", encoding="utf-8") as f:
-    f.write(final_content)
-
-print("SUCCESS: main.py has been completely repaired, cleaned, and upgraded cleanly exactly once!")
+print(f"Successfully extracted {len(api_lines)} lines to {api_routes_path}")

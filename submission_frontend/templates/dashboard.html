@@ -1,0 +1,959 @@
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambience ExpenseFlow Approval Dashboard</title>
+    <!-- Outfit Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body>
+    <div class="glow-spot-1"></div>
+    <div class="glow-spot-2"></div>
+
+    <header>
+        <div class="header-logo">
+            <div class="logo-icon">AEF</div>
+            <div class="header-title">
+                <h1>Ambience ExpenseFlow</h1>
+                <p>Enterprise Travel & Expense Management</p>
+            </div>
+        </div>
+        <div class="stats-container">
+            <div class="stat-badge" id="hidden-badge" style="display: none; border-color: rgba(244, 63, 94, 0.3); background: rgba(244, 63, 94, 0.05);">
+                <span style="color: #fb7185;">Old CLI sessions hidden</span>
+                <span class="count" style="background: var(--danger); box-shadow: 0 0 10px rgba(244, 63, 94, 0.5);" id="hidden-count">0</span>
+            </div>
+            <div class="stat-badge">
+                <span style="color: #cbd5e1;">Current dashboard sessions</span>
+                <span class="count" id="pending-count">0</span>
+            </div>
+            <button class="refresh-btn" onclick="fetchPendingApprovals(true)">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                </svg>
+                Sync Engine
+            </button>
+        </div>
+    </header>
+
+    <!-- Beautiful glassmorphic tab bar -->
+    <div class="tab-bar" style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.8rem; position: relative; z-index: 10;">
+        <button class="tab-btn" id="tab-reports" onclick="switchTab('reports')" style="background: none; border: none; color: var(--text-muted); font-family: inherit; font-size: 1.05rem; font-weight: 600; padding: 0.5rem 1rem; cursor: pointer; position: relative; transition: var(--transition);">
+            My Reports
+        </button>
+        
+        <button class="tab-btn" id="tab-submit" onclick="switchTab('submit')" style="background: none; border: none; color: var(--text-muted); font-family: inherit; font-size: 1.05rem; font-weight: 600; padding: 0.5rem 1rem; cursor: pointer; position: relative; transition: var(--transition);">
+            Submit Expense
+        </button>
+        <button class="tab-btn active" id="tab-pending" onclick="switchTab('pending')" style="background: none; border: none; color: white; font-family: inherit; font-size: 1.05rem; font-weight: 600; padding: 0.5rem 1rem; cursor: pointer; position: relative; transition: var(--transition);">
+            Pending Approvals
+        </button>
+        <button class="tab-btn" id="tab-history" onclick="switchTab('history')" style="background: none; border: none; color: var(--text-muted); font-family: inherit; font-size: 1.05rem; font-weight: 600; padding: 0.5rem 1rem; cursor: pointer; position: relative; transition: var(--transition);">
+            Expense History
+        </button>
+        <button class="tab-btn" id="tab-audit" onclick="switchTab('audit-trail')" style="background: none; border: none; color: var(--text-muted); font-family: inherit; font-size: 1.05rem; font-weight: 600; padding: 0.5rem 1rem; cursor: pointer; position: relative; transition: var(--transition);">
+            Audit Timeline
+        </button>
+        <button class="tab-btn" id="tab-cards" onclick="switchTab('cards')" style="background: none; border: none; color: var(--text-muted); font-family: inherit; font-size: 1.05rem; font-weight: 600; padding: 0.5rem 1rem; cursor: pointer; position: relative; transition: var(--transition); display: none;">
+            Credit Cards
+        </button>
+    </div>
+
+    <main>
+        
+        <!-- 0. Expense Reports Section -->
+        <div id="section-reports" class="tab-section" style="display: none;">
+            <!-- Main reports dashboard container -->
+            <div id="reports-dashboard-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <div>
+                        <h1 id="reports-page-title" style="font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Expense Reports</h1>
+                        <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.2rem;">Draft, review, and manage multi-item expense report containers.</p>
+                    </div>
+                </div>
+
+                <!-- Manager Summary Widgets Panel (shown only for manager & finance_admin) -->
+                <div id="manager-widgets-panel" style="display: none;" class="manager-widgets-grid">
+                    <!-- Widget cards will be populated dynamically by JavaScript -->
+                </div>
+
+                <!-- Manager Date Filter Bar (shown only for manager & finance_admin) -->
+                <div id="manager-date-filters" style="display: none; margin-bottom: 1.5rem; background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 16px; padding: 1.25rem; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+                    <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-right: 0.5rem;">Date Filter</span>
+                        <button class="filter-tab-btn active" onclick="setManagerDateFilter('all')" id="filter-btn-all">All Time</button>
+                        <button class="filter-tab-btn" onclick="setManagerDateFilter('weekly')" id="filter-btn-weekly">Weekly</button>
+                        <button class="filter-tab-btn" onclick="setManagerDateFilter('monthly')" id="filter-btn-monthly">Monthly</button>
+                        <button class="filter-tab-btn" onclick="setManagerDateFilter('quarterly')" id="filter-btn-quarterly">Quarterly</button>
+                        <button class="filter-tab-btn" onclick="setManagerDateFilter('custom')" id="filter-btn-custom">Custom Range</button>
+                    </div>
+                    
+                    <div id="manager-custom-date-inputs" style="display: none; align-items: center; gap: 0.5rem;">
+                        <input type="date" id="manager-custom-start" onchange="onManagerCustomDateChange()" style="background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.4rem 0.6rem; color: white; font-family: inherit; font-size: 0.85rem;">
+                        <span style="color: var(--text-muted); font-size: 0.85rem;">to</span>
+                        <input type="date" id="manager-custom-end" onchange="onManagerCustomDateChange()" style="background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.4rem 0.6rem; color: white; font-family: inherit; font-size: 0.85rem;">
+                    </div>
+                </div>
+
+                <!-- Admin & Manager Filter Bar (hidden for employees) -->
+                <div id="reports-filter-bar" style="background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 16px; padding: 1.25rem; margin-bottom: 1.5rem; display: none; gap: 1rem; flex-wrap: wrap; align-items: center;">
+                    <div style="flex: 1; min-width: 150px;">
+                        <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.4rem;">Employee</label>
+                        <input type="text" id="filter-employee" placeholder="Search email or name..." oninput="onReportFilterChange()" style="width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.5rem; color: white; font-family: inherit;">
+                    </div>
+                    <div style="flex: 1; min-width: 150px;">
+                        <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.4rem;">Manager</label>
+                        <input type="text" id="filter-manager" placeholder="Filter manager..." oninput="onReportFilterChange()" style="width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.5rem; color: white; font-family: inherit;">
+                    </div>
+                    <div style="flex: 1; min-width: 150px;">
+                        <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.4rem;">Department</label>
+                        <select id="filter-department" onchange="onReportFilterChange()" style="width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.5rem; color: white; font-family: inherit;">
+                            <option value="">All Departments</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Sales">Sales</option>
+                            <option value="Marketing">Sales & Marketing</option>
+                            <option value="Operations">Operations</option>
+                            <option value="Finance">Finance</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1; min-width: 150px;">
+                        <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.4rem;">Status</label>
+                        <select id="filter-status" onchange="onReportFilterChange()" style="width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.5rem; color: white; font-family: inherit;">
+                            <option value="">All Statuses</option>
+                            <option value="draft">Draft</option>
+                            <option value="pending_manager_review">Pending Manager Review</option>
+                            <option value="returned_to_employee">Returned to Employee</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-receipt" onclick="clearReportFilters()" style="margin-top: 1.2rem; padding: 0.5rem 1rem; font-size: 0.8rem; font-weight: 600;">Clear</button>
+                </div>
+
+                <!-- Reports Grid Container -->
+                <div class="reports-grid" id="reports-grid">
+                    <!-- Cards will be populated dynamically -->
+                </div>
+
+                <!-- Create Report Secondary Panel -->
+                <div id="create-report-container" style="background: linear-gradient(135deg, rgba(255,255,255,0.01) 0%, rgba(255,255,255,0.03) 100%); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 2rem; margin-top: 2.5rem; display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); transition: transform 0.2s ease, border-color 0.2s ease;">
+                    <div style="flex: 1; min-width: 280px;">
+                        <h3 style="font-size: 1.25rem; font-weight: 700; color: white; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="font-size: 1.5rem;">📁</span> Create a New Expense Report
+                        </h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">
+                            Group multiple business claims, travel per diems, and transport receipts into a single unified container for faster approval processing.
+                        </p>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" id="btn-create-report" onclick="openNewReportDrawer()" style="padding: 0.85rem 2rem; font-weight: 700; font-size: 0.95rem; border-radius: 12px; display: inline-flex; align-items: center; gap: 0.75rem; box-shadow: 0 0 16px rgba(99, 102, 241, 0.25); transition: all 0.2s;">
+                            <span>+</span> Create New Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Builder Detailed View (Hidden by default, shown when builder active) -->
+            <div id="report-builder-container" style="display: none;">
+                <!-- Header with Back button -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <button class="btn btn-receipt" onclick="closeReportBuilder()" style="padding: 0.5rem 1rem; font-size: 0.85rem; border-radius: 8px; display: inline-flex; align-items: center; gap: 0.5rem;">
+                            <span>&larr;</span> Back to list
+                        </button>
+                        <div>
+                            <h2 id="builder-report-title" style="font-size: 1.6rem; font-weight: 800; color: white;">April Site Visits</h2>
+                            <p id="builder-report-meta" style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.1rem;"></p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 0.75rem;" id="builder-actions-container">
+                        <!-- Actions injected here dynamically based on role/status (e.g. Save Draft, Submit, Return, Approve, Reject) -->
+                    </div>
+                </div>
+
+                <!-- Splitting Builder into left summary/claims and right documents/audit -->
+                <div style="display: grid; grid-template-columns: 1.8fr 1fr; gap: 2rem; align-items: start;">
+                    <!-- Left: Report Metadata & Claims Table -->
+                    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                        <!-- Report stats banner -->
+                        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 16px; padding: 1.25rem; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; text-align: center;">
+                            <div style="border-right: 1px solid rgba(255,255,255,0.05);">
+                                <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Total Claimed</span>
+                                <div id="stat-total-claimed" style="font-size: 1.3rem; font-weight: 700; color: white; margin-top: 0.2rem;">$0.00</div>
+                            </div>
+                            <div style="border-right: 1px solid rgba(255,255,255,0.05);">
+                                <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Reimbursable</span>
+                                <div id="stat-total-reimbursable" style="font-size: 1.3rem; font-weight: 700; color: var(--success); margin-top: 0.2rem;">$0.00</div>
+                            </div>
+                            <div style="border-right: 1px solid rgba(255,255,255,0.05);">
+                                <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Exceptions</span>
+                                <div id="stat-policy-exceptions" style="font-size: 1.3rem; font-weight: 700; color: #fb7185; margin-top: 0.2rem;">0</div>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Missing Receipts</span>
+                                <div id="stat-missing-documents" style="font-size: 1.3rem; font-weight: 700; color: #f59e0b; margin-top: 0.2rem;">0</div>
+                            </div>
+                        </div>
+
+                        <!-- Return reason banner (if returned) -->
+                        <div id="builder-return-reason-banner" style="display: none; background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.3); border-radius: 12px; padding: 1rem; color: #fda4af;">
+                            <strong>Returned by Reviewer:</strong> <span id="builder-return-reason-text"></span>
+                        </div>
+
+                        <!-- Line Items Header -->
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="font-size: 1.2rem; font-weight: 700; color: white;">Expense Line Items</h3>
+                            <button class="btn btn-primary" id="btn-add-line-item" onclick="openClaimFormModal()" style="padding: 0.5rem 1rem; font-size: 0.85rem; border-radius: 8px;">
+                                + Add Expense Claim
+                            </button>
+                        </div>
+
+                        <!-- Claims Table -->
+                        <div style="background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 16px; overflow: hidden;">
+                            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
+                                <thead>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.08); color: var(--text-muted); background: rgba(0,0,0,0.2);">
+                                        <th style="padding: 0.8rem 1rem;">Category</th>
+                                        <th style="padding: 0.8rem 1rem;">Date</th>
+                                        <th style="padding: 0.8rem 1rem;">Amount</th>
+                                        <th style="padding: 0.8rem 1rem;">Compliance</th>
+                                        <th style="padding: 0.8rem 1rem;">Receipt Status</th>
+                                        <th style="padding: 0.8rem 1rem; text-align: right;" class="builder-actions-column">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="builder-claims-tbody">
+                                    <!-- Claims populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Right: GCS Receipts Hub & Audit Log -->
+                    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                        <!-- Bulk Receipt Upload zone (only visible for drafts) -->
+                        <div id="builder-upload-container" style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 1.5rem;">
+                            <h3 style="font-size: 1.1rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">Receipt Dossier</h3>
+                            <p style="font-size: 0.8rem; color: var(--text-muted);">Bulk upload receipts/PDFs. You can assign them to specific claims below.</p>
+                            
+                            <div class="dropzone" id="bulk-receipt-dropzone" onclick="triggerBulkFileInput()">
+                                <span style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem;">📁</span>
+                                <span style="font-weight: 500; font-size: 0.85rem;">Drag & drop files or click to upload</span>
+                                <span style="display: block; font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">PDF, PNG, JPG (Max 5MB)</span>
+                                <input type="file" id="bulk-receipt-file-input" multiple style="display: none;" onchange="handleBulkReceiptsSelect(this.files)">
+                            </div>
+                        </div>
+
+                        <!-- Unassigned/Supporting documents list -->
+                        <div id="builder-documents-container" style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 1.5rem;">
+                            <h3 style="font-size: 1.1rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">Report Documents</h3>
+                            <div id="builder-documents-list" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+                                <!-- Document items populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Audit Log / Timeline for this report -->
+                        <div style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 1.5rem;">
+                            <h3 style="font-size: 1.1rem; font-weight: 700; color: white; margin-bottom: 0.75rem;">Report Lifecycle Timeline</h3>
+                            <div id="builder-audit-list" style="display: flex; flex-direction: column; gap: 1rem; border-left: 2px solid rgba(255,255,255,0.05); padding-left: 1rem; margin-left: 0.5rem; max-height: 300px; overflow-y: auto;">
+                                <!-- Audit entries populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 1. Pending Approvals Section -->
+        <div id="section-pending" class="tab-section">
+            <div class="source-filter-container" style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem; align-items: center; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); padding: 0.75rem 1.25rem; border-radius: 16px;">
+                <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted); margin-right: 0.5rem;">Source Filter:</span>
+                <button class="filter-btn active" id="src-btn-all" onclick="setPendingSourceFilter('all')">All Sources</button>
+                <button class="filter-btn" id="src-btn-employee_portal" onclick="setPendingSourceFilter('employee_portal')">Employee Portal</button>
+                <button class="filter-btn" id="src-btn-report_workflow" onclick="setPendingSourceFilter('report_workflow')">Report Workflow</button>
+                <button class="filter-btn" id="src-btn-legacy_cli" onclick="setPendingSourceFilter('legacy_cli')">Legacy CLI</button>
+            </div>
+            <div class="dashboard-grid" id="dashboard-grid">
+                <!-- Loading state on startup -->
+                <div class="empty-state" style="grid-column: 1/-1;">
+                    <div class="spinner"></div>
+                    <h3>Querying Agent Registry...</h3>
+                    <p>Connecting to Vertex AI reasoning engine and downloading active session metrics...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Expense History Section -->
+        <div id="section-history" class="tab-section" style="display: none;">
+            <div style="background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 2rem; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2 style="font-size: 1.4rem; font-weight: 700;">Expense History Source of Truth</h2>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <button class="refresh-btn" onclick="fetchExpenseHistory()" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Refresh History</button>
+                        <button class="refresh-btn" id="btn-export-expenses-csv" onclick="exportExpensesData('csv')" style="padding: 0.5rem 1rem; font-size: 0.85rem; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3); color: #10b981; display: none; width: auto; height: auto;">Export CSV</button>
+                        <button class="refresh-btn" id="btn-export-expenses-excel" onclick="exportExpensesData('excel')" style="padding: 0.5rem 1rem; font-size: 0.85rem; background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3); color: #3b82f6; display: none; width: auto; height: auto;">Export Excel</button>
+                    </div>
+                </div>
+
+                <!-- SQL-style Query Builder Panel -->
+                <div id="query-builder-panel" style="display: none; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 4px 30px rgba(0,0,0,0.2); backdrop-filter: blur(8px);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 0.75rem;">
+                        <div>
+                            <h3 style="font-size: 1.1rem; font-weight: 700; color: white; display: flex; align-items: center; gap: 0.5rem; margin: 0;">
+                                <span>🛠️</span> Visual Custom Query Builder
+                            </h3>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 2px 0 0 0;">Build real-time multi-conditional queries against the expense database.</p>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn" onclick="clearQueryBuilder()" style="background: rgba(244, 63, 94, 0.1); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.2); font-size: 0.8rem; padding: 0.4rem 0.8rem; border-radius: 8px; cursor: pointer; width: auto; height: auto;">
+                                Reset
+                            </button>
+                            <button class="btn btn-receipt" onclick="addQueryCondition()" style="background: rgba(99, 102, 241, 0.15); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.3); font-size: 0.8rem; padding: 0.4rem 0.8rem; border-radius: 8px; cursor: pointer; width: auto; height: auto; display: flex; align-items: center; gap: 0.3rem;">
+                                <span>+</span> Add Condition
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Conditions Rows Container -->
+                    <div id="query-conditions-container" style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem;">
+                        <!-- Dynamically added conditions rows go here -->
+                    </div>
+                    
+                    <!-- Presets and Run button -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 1rem;">
+                        <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                            <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Presets:</span>
+                            <button class="filter-tab-btn" onclick="applyPresetQuery('all')" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;">All Records</button>
+                            <button class="filter-tab-btn" onclick="applyPresetQuery('pending_last_30')" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;">Pending (30d)</button>
+                            <button class="filter-tab-btn" onclick="applyPresetQuery('approved_last_60')" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;">Approved (60d)</button>
+                            <button class="filter-tab-btn" onclick="applyPresetQuery('rejected')" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;">All Rejected</button>
+                            <button class="filter-tab-btn" onclick="applyPresetQuery('high_value_pending')" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;">Pending > $500</button>
+                        </div>
+                        
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div id="query-builder-matching-count" style="font-size: 0.85rem; color: var(--text-muted);">
+                                Matching: <span style="color: white; font-weight: 600;">0</span> records
+                            </div>
+                            <button class="refresh-btn" onclick="applyQueryBuilder()" style="padding: 0.5rem 1.5rem; font-size: 0.9rem; font-weight: 700; background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(99,102,241,0.35);">
+                                Run Query
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.08); color: var(--text-muted);">
+                                <th style="padding: 1rem 0.75rem;">Category</th>
+                                <th style="padding: 1rem 0.75rem;">Date</th>
+                                <th style="padding: 1rem 0.75rem;">Employee</th>
+                                <th style="padding: 1rem 0.75rem;">Department</th>
+                                <th style="padding: 1rem 0.75rem;">Assigned Manager</th>
+                                <th style="padding: 1rem 0.75rem;">Submitted By</th>
+                                <th style="padding: 1rem 0.75rem;">Amount</th>
+                                <th style="padding: 1rem 0.75rem;">Status</th>
+                                <th style="padding: 1rem 0.75rem;">Reviewer</th>
+                                <th style="padding: 1rem 0.75rem; text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                            <tr>
+                                <td colspan="10" style="padding: 3rem; text-align: center; color: var(--text-muted);">
+                                    <div class="spinner" style="margin: 0 auto 1rem auto; width: 24px; height: 24px;"></div>
+                                    Loading history...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Audit Timeline Section -->
+        <div id="section-audit-trail" class="tab-section" style="display: none;">
+            <div style="background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 2.5rem; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); max-width: 800px; margin: 0 auto;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 1.5rem;">
+                    <div>
+                        <h2 style="font-size: 1.4rem; font-weight: 700;">Global Audit Trail</h2>
+                        <p style="font-size: 0.9rem; color: var(--text-muted);">Select any claim from Expense History to view its complete step-by-step lifecycle log.</p>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <button class="refresh-btn" id="btn-export-audit-csv" onclick="exportAuditData('csv')" style="padding: 0.5rem 1rem; font-size: 0.85rem; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3); color: #10b981; display: none; width: auto; height: auto;">Export CSV</button>
+                        <button class="refresh-btn" id="btn-export-audit-excel" onclick="exportAuditData('excel')" style="padding: 0.5rem 1rem; font-size: 0.85rem; background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3); color: #3b82f6; display: none; width: auto; height: auto;">Export Excel</button>
+                    </div>
+                </div>
+                <div id="audit-trail-container">
+                    <div style="text-align: center; padding: 4rem 2rem; color: var(--text-muted);">
+                        <div style="font-size: 2.5rem; margin-bottom: 1rem;">🔍</div>
+                        <h3>No Claim Selected</h3>
+                        <p>Go to the "Expense History" tab and click "View Trail" to see its immutable lifecycle events.</p>
+                    </div>
+                </div>
+        </div>
+
+        <!-- 5. Business Credit Card Integration Section -->
+        <div id="section-cards" class="tab-section" style="display: none;">
+            <div style="background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 2rem; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); margin-bottom: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 1.25rem;">
+                    <div>
+                        <h2 style="font-size: 1.4rem; font-weight: 700;">Business Credit Card Integration</h2>
+                        <p style="font-size: 0.9rem; color: var(--text-muted);">Simulate corporate credit card links &amp; real-time bank feeds safely for demo environments.</p>
+                    </div>
+                    <div>
+                        <button class="refresh-btn" onclick="fetchCardTransactions()" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Refresh Transactions</button>
+                    </div>
+                </div>
+
+                <!-- Connect Business Card sub-card/panel -->
+                <div id="connect-card-panel" style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: white; display: flex; align-items: center; gap: 0.5rem; margin-top: 0; margin-bottom: 0.5rem;">
+                        <span>💳</span> Connect Mock Business Card
+                    </h3>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+                        Securely emulate connecting feeds from Visa, Mastercard, Amex, Ramp, Brex, Stripe, or Plaid. This generates mock synced transactions.
+                    </p>
+                    
+                    <form id="connect-card-form" onsubmit="connectBusinessCard(event)" style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; margin: 0;">
+                        <div style="flex: 1; min-width: 180px; display: flex; flex-direction: column; gap: 0.4rem;">
+                            <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Provider</label>
+                            <select id="connect-card-provider" required style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.5rem; color: white; font-family: inherit; font-size: 0.85rem; outline: none; cursor: pointer; height: 38px;">
+                                <option value="Visa">Visa</option>
+                                <option value="Mastercard">Mastercard</option>
+                                <option value="Amex">Amex</option>
+                                <option value="Ramp">Ramp</option>
+                                <option value="Brex">Brex</option>
+                                <option value="Stripe Issuing">Stripe Issuing</option>
+                                <option value="Plaid-style bank feed">Plaid-style bank feed</option>
+                            </select>
+                        </div>
+                        <div style="flex: 1.5; min-width: 200px; display: flex; flex-direction: column; gap: 0.4rem;">
+                            <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Cardholder Name</label>
+                            <input type="text" id="connect-card-holder-name" placeholder="e.g. Jane Admin" required style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.5rem; color: white; font-family: inherit; font-size: 0.85rem; outline: none; height: 38px; box-sizing: border-box;">
+                        </div>
+                        <div style="flex: 1.5; min-width: 200px; display: flex; flex-direction: column; gap: 0.4rem;">
+                            <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Cardholder Email</label>
+                            <input type="email" id="connect-card-holder-email" placeholder="e.g. finance-admin@company.com" required style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.5rem; color: white; font-family: inherit; font-size: 0.85rem; outline: none; height: 38px; box-sizing: border-box;">
+                        </div>
+                        <div style="flex: 0.8; min-width: 100px; display: flex; flex-direction: column; gap: 0.4rem;">
+                            <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Last 4 Digits</label>
+                            <input type="text" id="connect-card-last4" placeholder="4242" required maxlength="4" pattern="\d{4}" style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.5rem; color: white; font-family: inherit; font-size: 0.85rem; outline: none; height: 38px; box-sizing: border-box;">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="padding: 0.55rem 1.25rem; font-size: 0.85rem; border-radius: 8px; font-weight: 600; cursor: pointer; height: 38px; display: flex; align-items: center; justify-content: center; margin-bottom: 0;">
+                            Connect &amp; Sync
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Transaction Table Filters -->
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+                    <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-right: 0.5rem;">Filter status:</span>
+                        <button class="filter-tab-btn active" onclick="setCardTxFilter('all')" id="card-filter-all">All</button>
+                        <button class="filter-tab-btn" onclick="setCardTxFilter('unreconciled')" id="card-filter-unreconciled">Unreconciled</button>
+                        <button class="filter-tab-btn" onclick="setCardTxFilter('matched')" id="card-filter-matched">Matched</button>
+                        <button class="filter-tab-btn" onclick="setCardTxFilter('reconciled')" id="card-filter-reconciled">Reconciled</button>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <input type="text" id="card-search-input" oninput="applyCardTxFilters()" placeholder="Search merchant or cardholder..." style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.4rem 0.8rem; color: white; font-family: inherit; font-size: 0.85rem; outline: none; width: 220px; height: 34px; box-sizing: border-box;">
+                    </div>
+                </div>
+
+                <!-- Transaction Table -->
+                <div class="table-container" style="margin-top: 0.5rem;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06); color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 700;">
+                                <th style="padding: 1rem 0.75rem;">ID / Provider</th>
+                                <th style="padding: 1rem 0.75rem;">Cardholder</th>
+                                <th style="padding: 1rem 0.75rem;">Date</th>
+                                <th style="padding: 1rem 0.75rem;">Merchant</th>
+                                <th style="padding: 1rem 0.75rem;">Amount</th>
+                                <th style="padding: 1rem 0.75rem;">Receipt &amp; Claims</th>
+                                <th style="padding: 1rem 0.75rem;">Notes</th>
+                                <th style="padding: 1rem 0.75rem; text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="card-transactions-table-body">
+                            <!-- Populated via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Submit Expense Section -->
+        <div id="section-submit" class="tab-section" style="display: none;">
+            <div class="portal-layout">
+                <!-- Left Column: Submission Form -->
+                <form id="claim-submit-form" onsubmit="submitClaimForm(event)" style="display: flex; flex-direction: column; margin: 0;">
+                    <!-- Section 1: Employee & Report Information -->
+                    <div class="form-section-card">
+                        <div class="form-section-title">
+                            <span class="section-icon">👤</span>
+                            Employee &amp; Report Information
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="form-company-id">Company ID</label>
+                                <input type="text" id="form-company-id" value="demo_company" readonly required>
+                            </div>
+                            <div class="form-group">
+                                <label for="form-employee-email">Employee Email</label>
+                                <input type="email" id="form-employee-email" required oninput="triggerLivePreview()">
+                            </div>
+                            <div class="form-group" id="demo-claimant-container" style="display: none;">
+                                <label for="form-demo-select">Or Demo Claimant</label>
+                                <select id="form-demo-select" onchange="useDemoClaimant(this.value)">
+                                    <option value="">-- Select Demo Employee --</option>
+                                    <option value="fresh.manager.test@company.com">Fresh Manager Test</option>
+                                    <option value="receipt.test@company.com">Receipt Test</option>
+                                    <option value="auth.hotel.docs.test@company.com">Auth Hotel Docs Test</option>
+                                    <option value="auth.flight.docs.test@company.com">Auth Flight Docs Test</option>
+                                    <option value="auth.rejection.test@company.com">Auth Rejection Test</option>
+                                    <option value="employee.portal.meals@company.com">Meals within per diem</option>
+                                    <option value="employee.portal.meals.over@company.com">Meals over per diem</option>
+                                    <option value="employee.portal.mileage@company.com">Personal Mileage</option>
+                                    <option value="employee.portal.rental@company.com">Rental Car</option>
+                                    <option value="employee.portal.flight@company.com">Flight Claim</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="form-employee-name">Employee Name</label>
+                                <input type="text" id="form-employee-name" placeholder="John Doe" required oninput="triggerLivePreview()">
+                            </div>
+                            <div class="form-group">
+                                <label for="form-department">Department</label>
+                                <input type="text" id="form-department" placeholder="Engineering" required oninput="triggerLivePreview()">
+                            </div>
+                            <div class="form-group">
+                                <label for="form-manager-email">Manager Email</label>
+                                <input type="email" id="form-manager-email" placeholder="manager@company.com" required oninput="triggerLivePreview()">
+                            </div>
+                            <div class="form-group">
+                                <label for="form-report-title">Report Title</label>
+                                <input type="text" id="form-report-title" placeholder="e.g. June Q3 Business Travel" required oninput="triggerLivePreview()">
+                            </div>
+                            <div class="form-group">
+                                <label for="form-report-start-date">Report Start Date</label>
+                                <input type="date" id="form-report-start-date" required onchange="triggerLivePreview()">
+                            </div>
+                            <div class="form-group">
+                                <label for="form-report-end-date">Report End Date</label>
+                                <input type="date" id="form-report-end-date" required onchange="triggerLivePreview()">
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="form-business-purpose">Trip / Business Purpose</label>
+                                <input type="text" id="form-business-purpose" placeholder="e.g. Client meetings and system integration" required oninput="triggerLivePreview()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Expense Line Items -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin: 1.5rem 0 1rem 0;">
+                        <h3 style="font-size: 1.3rem; font-weight: 700; color: white; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                            <span>📋</span> Expense Line Items
+                        </h3>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div id="overall-running-total" style="font-size: 1.05rem; font-weight: 700; color: #34d399; background: rgba(52,211,153,0.1); padding: 0.4rem 1rem; border-radius: 8px; border: 1px solid rgba(52,211,153,0.25);">
+                                Report Total: $0.00
+                            </div>
+                            <button type="button" class="btn btn-receipt" onclick="addLineItem()" style="padding: 0.5rem 1rem; font-size: 0.85rem; border-radius: 8px; font-weight: 600; width: auto; height: auto; border-color: rgba(52,211,153,0.4); color: #34d399;">
+                                ➕ Add Line Item
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="line-items-container">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+
+                    <button type="submit" class="btn btn-approve" style="width: 100%; padding: 1rem; font-size: 1.1rem; border-radius: 12px; margin-top: 1.5rem; font-weight: 700; height: auto;">
+                        Submit Expense Report
+                    </button>
+                </form>
+
+                <!-- Right Column: Real-time Live Policy Preview -->
+                <div class="preview-sidebar">
+                    <h3 style="font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.75rem; margin-bottom: 0.5rem; color: white;">
+                        <span>🛡️</span> Real-Time Compliance Preview
+                    </h3>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
+                        Our compliance engine is analyzing your claim input in real-time. Review warning and overage indications below.
+                    </p>
+
+                    <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 0.5rem;">
+                        <div class="preview-metric">
+                            <span class="preview-metric-label">Policy Status</span>
+                            <span class="preview-metric-value" id="preview-policy-status">N/A</span>
+                        </div>
+                        <div class="preview-metric">
+                            <span class="preview-metric-label">Overage Status</span>
+                            <span class="preview-metric-value" id="preview-overage-status">Within Policy</span>
+                        </div>
+                        <div class="preview-metric">
+                            <span class="preview-metric-label">Est. Reimbursable</span>
+                            <span class="preview-metric-value highlight success" id="preview-reimbursable">$0.00</span>
+                        </div>
+                        <div class="preview-metric">
+                            <span class="preview-metric-label">Est. Non-Reimbursable</span>
+                            <span class="preview-metric-value highlight danger" id="preview-non-reimbursable">$0.00</span>
+                        </div>
+                        <div class="preview-metric">
+                            <span class="preview-metric-label">Manager Review Required</span>
+                            <span class="preview-metric-value" id="preview-manager-required">No</span>
+                        </div>
+                    </div>
+
+                    <!-- Warnings list -->
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;" id="preview-warnings-container">
+                        <div class="warning-banner info">
+                            <span>ℹ️</span><span>Enter category and details to see live policy evaluation.</span>
+                        </div>
+                    </div>
+
+                    <!-- Required / Uploaded Docs Checklist -->
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
+                        <h4 style="font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; font-weight: 700; margin-bottom: 0.5rem;">
+                            Document Checklist
+                        </h4>
+                        <div id="preview-docs-checklist" style="display: flex; flex-direction: column; gap: 0.4rem;">
+                            <div style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">No category selected.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Side Slide Modal for Compliance Review -->
+    <div class="slide-overlay" id="slide-overlay"></div>
+    <div class="slide-modal" id="slide-modal">
+        <div class="modal-header">
+            <div class="modal-title">
+                <h2>Compliance Audit</h2>
+                <p id="modal-session-id">Session Reference: </p>
+            </div>
+            <button class="close-btn" onclick="toggleModal(false)">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="status-box" id="modal-status-box">
+                <div class="status-icon" id="modal-status-icon">✓</div>
+                <div class="status-text">
+                    <h4 id="modal-status-title">Claim Approved</h4>
+                    <p id="modal-status-desc">Successfully authorized and registered on runtime.</p>
+                </div>
+            </div>
+
+            <div class="review-details-card">
+                <h4>Claimant Metrics</h4>
+                <div class="review-grid">
+                    <div class="review-field">
+                        <span>Claimant Name</span>
+                        <strong id="modal-claimant">--</strong>
+                    </div>
+                    <div class="review-field">
+                        <span>Total Claim Value</span>
+                        <strong id="modal-amount" style="color: #34d399;">--</strong>
+                    </div>
+                </div>
+                <div id="modal-receipt-container" style="margin-top: 1rem; display: none;">
+                    <a id="modal-receipt-btn" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-receipt" style="background: rgba(99, 102, 241, 0.1); color: #cbd5e1; border: 1px solid rgba(99, 102, 241, 0.25); text-decoration: none; display: flex; width: 100%; align-items: center; justify-content: center;">
+                        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="display:inline; vertical-align:middle; margin-right:4px;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                        View Receipt
+                    </a>
+                </div>
+            </div>
+
+            <div class="compliance-box">
+                <h4>
+                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="display:inline; vertical-align:middle; margin-right:4px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Compliance Engine Report
+                </h4>
+                <div class="compliance-text" id="modal-comments">
+                    Loading review comment details...
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-done-btn" onclick="toggleModal(false)">Acknowledge & Close</button>
+        </div>
+    </div>
+
+    <!-- Toast Notification alerts -->
+    <div class="toast" id="toast">
+        <div class="toast-icon">✓</div>
+        <div id="toast-text">Approval processed successfully.</div>
+    </div>
+
+    <script>
+        let cachedClaims = {};
+    </script>
+    <script>
+        window.addEventListener("DOMContentLoaded", () => {
+            fetchPendingApprovals();
+            document.getElementById("slide-overlay").addEventListener("click", () => {
+                toggleModal(false);
+            });
+        });
+    </script>
+    <script src="/static/js/dashboard.js"></script>
+
+    <!-- New Report Sliding Drawer -->
+    <div id="drawer-new-report" class="slider-panel">
+        <div class="slider-header">
+            <h2 style="font-size: 1.4rem; font-weight: 800; color: white;">New Expense Report</h2>
+            <button onclick="closeNewReportDrawer()" style="background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer;">&times;</button>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            <div>
+                <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.4rem;">Report Title</label>
+                <input type="text" id="report-title-input" placeholder="e.g. April Site Visits" style="width: 100%; background: rgba(0,0,0,0.25); border: 1px solid var(--glass-border); border-radius: 10px; padding: 0.75rem; color: white; font-family: inherit;">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div>
+                    <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.4rem;">Start Date</label>
+                    <input type="date" id="report-start-date" style="width: 100%; background: rgba(0,0,0,0.25); border: 1px solid var(--glass-border); border-radius: 10px; padding: 0.75rem; color: white; font-family: inherit;">
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.4rem;">End Date</label>
+                    <input type="date" id="report-end-date" style="width: 100%; background: rgba(0,0,0,0.25); border: 1px solid var(--glass-border); border-radius: 10px; padding: 0.75rem; color: white; font-family: inherit;">
+                </div>
+            </div>
+            <div>
+                <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.4rem;">Travel Week (Optional)</label>
+                <input type="text" id="report-travel-week" placeholder="e.g. Week 15" style="width: 100%; background: rgba(0,0,0,0.25); border: 1px solid var(--glass-border); border-radius: 10px; padding: 0.75rem; color: white; font-family: inherit;">
+            </div>
+            
+            <!-- Employee Selector for Finance Admin Testing -->
+            <div id="drawer-employee-selector" style="display: none; background: rgba(99,102,241,0.05); border: 1px solid rgba(99,102,241,0.15); padding: 1rem; border-radius: 12px; margin-top: 0.5rem;">
+                <label style="font-size: 0.75rem; color: #a5b4fc; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 0.4rem;">Demo Employee Emulation</label>
+                <select id="drawer-emulated-employee" style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(99,102,241,0.3); border-radius: 8px; padding: 0.5rem; color: white; font-family: inherit;">
+                    <option value="">Use Logged-in User</option>
+                    <option value="cra001.manager001@demo-company.com">CRA 001 Manager 001 (cra001.manager001@demo-company.com)</option>
+                </select>
+                <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.3rem;">Simulates creating a report for the demo employee.</p>
+            </div>
+
+            <button class="btn btn-primary" onclick="submitCreateReport()" style="margin-top: 1.5rem; padding: 1rem; font-weight: 600; border-radius: 10px;">
+                Create Draft Report
+            </button>
+        </div>
+    </div>
+
+    <!-- Claim Form Overlay Modal -->
+    <div class="slide-overlay" id="claim-modal-overlay"></div>
+    <div id="modal-claim-form" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: rgba(10, 11, 26, 0.98); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 2rem; width: 550px; max-height: 90vh; overflow-y: auto; z-index: 150; opacity: 0; pointer-events: none; transition: var(--transition); box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.75rem;">
+            <h2 id="claim-modal-title" style="font-size: 1.4rem; font-weight: 800; color: white;">Add Expense Claim</h2>
+            <button onclick="closeClaimFormModal()" style="background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer;">&times;</button>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <input type="hidden" id="claim-id-hidden">
+            
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1rem;">
+                <div>
+                    <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.3rem;">Category</label>
+                    <select id="claim-category" onchange="onClaimCategoryChange()" style="width: 100%; background: rgba(0,0,0,0.25); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.6rem; color: white; font-family: inherit;">
+                        <option value="Flight">Flight</option>
+                        <option value="Hotel">Hotel</option>
+                        <option value="Meals">Meals</option>
+                        <option value="Rental Car">Rental Car</option>
+                        <option value="Rental Car Gas">Rental Car Gas</option>
+                        <option value="Parking">Parking</option>
+                        <option value="Tolls">Tolls</option>
+                        <option value="Mileage">Mileage</option>
+                        <option value="Office Supplies">Office Supplies</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.3rem;">Expense Date</label>
+                    <input type="date" id="claim-date" style="width: 100%; background: rgba(0,0,0,0.25); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.6rem; color: white; font-family: inherit;">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 1rem;">
+                <div>
+                    <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.3rem;">Amount</label>
+                    <input type="number" id="claim-amount" step="0.01" placeholder="0.00" style="width: 100%; background: rgba(0,0,0,0.25); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.6rem; color: white; font-family: inherit;">
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.3rem;">Currency</label>
+                    <select id="claim-currency" style="width: 100%; background: rgba(0,0,0,0.25); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.6rem; color: white; font-family: inherit;">
+                        <option value="USD">USD ($)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="GBP">GBP (£)</option>
+                        <option value="CAD">CAD ($)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Dynamic Fields for Hotel (Dates) -->
+            <div id="claim-hotel-fields" style="display: none; grid-template-columns: 1fr 1fr; gap: 1rem; background: rgba(255,255,255,0.02); padding: 0.75rem; border-radius: 8px; border: 1px solid var(--glass-border);">
+                <div>
+                    <label style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.3rem;">Check-in Date</label>
+                    <input type="date" id="claim-hotel-in" style="width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 6px; padding: 0.5rem; color: white; font-size: 0.8rem;">
+                </div>
+                <div>
+                    <label style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.3rem;">Check-out Date</label>
+                    <input type="date" id="claim-hotel-out" style="width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 6px; padding: 0.5rem; color: white; font-size: 0.8rem;">
+                </div>
+            </div>
+
+            <!-- Dynamic Fields for Transportation/Mileage -->
+            <div id="claim-transportation-fields" style="display: none; background: rgba(255,255,255,0.02); padding: 0.75rem; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; flex-direction: column; gap: 0.75rem;">
+                <div>
+                    <label style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.3rem;">Transportation Type</label>
+                    <select id="claim-trans-type" onchange="onClaimTransTypeChange()" style="width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 6px; padding: 0.5rem; color: white; font-size: 0.8rem;">
+                        <option value="">-- Select Type --</option>
+                        <option value="personal_vehicle">Personal Vehicle</option>
+                        <option value="rental_car">Rental Car</option>
+                        <option value="company_vehicle">Company Vehicle</option>
+                        <option value="public_transit">Public Transit</option>
+                    </select>
+                </div>
+                <div id="claim-mileage-row" style="display: none; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div>
+                        <label style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.3rem;">Mileage (Miles)</label>
+                        <input type="number" id="claim-mileage" placeholder="0" style="width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 6px; padding: 0.5rem; color: white; font-size: 0.8rem;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.3rem;">Gas Cost Inside Amount</label>
+                        <input type="number" id="claim-gas-cost" step="0.01" placeholder="0.00" style="width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 6px; padding: 0.5rem; color: white; font-size: 0.8rem;">
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.3rem;">Business Purpose</label>
+                <input type="text" id="claim-purpose" placeholder="e.g. Client presentation site visit" style="width: 100%; background: rgba(0,0,0,0.25); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.6rem; color: white; font-family: inherit;">
+            </div>
+
+            <div>
+                <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.3rem;">Description / Details</label>
+                <textarea id="claim-description" rows="3" placeholder="Specify locations visited or other details..." style="width: 100%; background: rgba(0,0,0,0.25); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.6rem; color: white; font-family: inherit; resize: none;"></textarea>
+            </div>
+
+            <!-- Single document upload for this claim (saves directly to GCS and auto-assigns) -->
+            <div id="claim-receipt-upload-row">
+                <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.3rem;">Direct Receipt Upload</label>
+                <input type="file" id="claim-receipt-file" style="width: 100%; color: var(--text-muted); font-size: 0.8rem;">
+                <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.2rem;">Directly attach a receipt image/PDF to this claim.</p>
+            </div>
+
+            <button class="btn btn-primary" onclick="submitClaimForm()" style="margin-top: 1rem; padding: 0.8rem; font-weight: 600; border-radius: 8px;">
+                Save Claim Line Item
+            </button>
+        </div>
+    </div>
+
+    <!-- Assign Document Overlay Modal -->
+    <div class="slide-overlay" id="assign-modal-overlay"></div>
+    <div id="modal-assign-receipt" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: rgba(10, 11, 26, 0.98); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 2rem; width: 450px; z-index: 150; opacity: 0; pointer-events: none; transition: var(--transition); box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.75rem;">
+            <h2 style="font-size: 1.3rem; font-weight: 800; color: white;">Assign Document</h2>
+            <button onclick="closeAssignModal()" style="background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer;">&times;</button>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            <input type="hidden" id="assign-doc-id">
+            <div>
+                <strong style="color: var(--text-muted); font-size: 0.8rem;">Selected Document:</strong>
+                <p id="assign-doc-filename" style="color: white; font-weight: 600; font-size: 0.95rem; margin-top: 0.2rem;"></p>
+            </div>
+            <div>
+                <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.4rem;">Assign to Line Item</label>
+                <select id="assign-claim-select" style="width: 100%; background: rgba(0,0,0,0.25); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.6rem; color: white; font-family: inherit;">
+                    <!-- Claims list options populated dynamically -->
+                </select>
+            </div>
+            <div>
+                <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.4rem;">Document Classification Type</label>
+                <select id="assign-doc-type" style="width: 100%; background: rgba(0,0,0,0.25); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.6rem; color: white; font-family: inherit;">
+                    <option value="receipt">Standard Receipt</option>
+                    <option value="office_receipt">Office Supplies Receipt</option>
+                    <option value="parking_receipt">Parking Receipt</option>
+                    <option value="hotel_receipt">Hotel Lodging Folio</option>
+                    <option value="flight_ticket_receipt">Flight Ticket Invoice</option>
+                    <option value="manager_approval_letter">Manager Prior Approval Letter</option>
+                    <option value="other">Supporting Document / Other</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" onclick="submitAssignReceipt()" style="margin-top: 1rem; padding: 0.8rem; font-weight: 600; border-radius: 8px;">
+                Confirm Assignment
+            </button>
+        </div>
+    </div>
+
+    <!-- Return Comments Modal -->
+    <div class="slide-overlay" id="return-modal-overlay"></div>
+    <div id="modal-return-comments" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: rgba(10, 11, 26, 0.98); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 2rem; width: 450px; z-index: 150; opacity: 0; pointer-events: none; transition: var(--transition); box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.75rem;">
+            <h2 style="font-size: 1.3rem; font-weight: 800; color: white;">Return Report to Employee</h2>
+            <button onclick="closeReturnModal()" style="background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer;">&times;</button>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            <input type="hidden" id="return-report-id">
+            <div>
+                <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.4rem;">Reason for Returning</label>
+                <textarea id="return-reason-input" rows="4" placeholder="Explain what needs to be fixed (e.g. missing flight receipt or incorrect mileage)..." style="width: 100%; background: rgba(0,0,0,0.25); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.6rem; color: white; font-family: inherit; resize: none;"></textarea>
+            </div>
+            <button class="btn btn-danger" onclick="submitReturnReport()" style="padding: 0.8rem; font-weight: 600; border-radius: 8px; background: var(--danger); border-color: var(--danger);">
+                Return to Employee
+            </button>
+        </div>
+    </div>
+
+    <!-- Card Match Receipt Modal -->
+    <div class="slide-overlay" id="card-receipt-modal-overlay"></div>
+    <div id="modal-card-receipt" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: rgba(10, 11, 26, 0.98); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 2rem; width: 450px; z-index: 150; opacity: 0; pointer-events: none; transition: var(--transition); box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.75rem;">
+            <h2 style="font-size: 1.3rem; font-weight: 800; color: white;">Attach Card Receipt</h2>
+            <button onclick="closeCardReceiptModal()" style="background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer;">&times;</button>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            <input type="hidden" id="card-receipt-tx-id">
+            <div>
+                <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.4rem;">Receipt URL / Link</label>
+                <input type="text" id="card-receipt-url" placeholder="https://example.com/receipts/aws-june.png" style="width: 100%; background: rgba(0,0,0,0.25); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.6rem; color: white; font-family: inherit;">
+            </div>
+            <div>
+                <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.4rem;">Receipt File Name</label>
+                <input type="text" id="card-receipt-name" placeholder="aws_june_2026.png" style="width: 100%; background: rgba(0,0,0,0.25); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.6rem; color: white; font-family: inherit;">
+            </div>
+            <button class="btn btn-primary" onclick="submitCardReceipt()" style="padding: 0.8rem; font-weight: 600; border-radius: 8px;">
+                Save &amp; Match Receipt
+            </button>
+        </div>
+    </div>
+
+    <!-- Card Attach Claim Modal -->
+    <div class="slide-overlay" id="card-claim-modal-overlay"></div>
+    <div id="modal-card-claim" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: rgba(10, 11, 26, 0.98); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 2rem; width: 450px; z-index: 150; opacity: 0; pointer-events: none; transition: var(--transition); box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.75rem;">
+            <h2 style="font-size: 1.3rem; font-weight: 800; color: white;">Attach to Expense Line Item</h2>
+            <button onclick="closeCardClaimModal()" style="background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer;">&times;</button>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            <input type="hidden" id="card-claim-tx-id">
+            <div>
+                <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.4rem;">Select Unattached Expense Line Item</label>
+                <select id="card-claim-select" style="width: 100%; background: rgba(10, 11, 26, 0.98); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.6rem; color: white; font-family: inherit; font-size: 0.85rem; height: 38px;">
+                    <!-- Filled dynamically -->
+                </select>
+            </div>
+            <button class="btn btn-primary" onclick="submitCardClaim()" style="padding: 0.8rem; font-weight: 600; border-radius: 8px;">
+                Link to Line Item
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>

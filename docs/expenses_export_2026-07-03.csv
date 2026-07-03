@@ -1,0 +1,217 @@
+Claim ID,Category,Date,Employee Name,Employee Email,Department,Assigned Manager,Submitted By,Amount,Status,Reviewer,Policy Status,Company ID
+16c1142c-45ba-4053-804c-dd8a631905c5,N/A,2026-07-01T21:50:28.436665Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,submitted,,Within policy,demo_company
+1765c147-5ace-4855-b9f6-462c73686028,N/A,2026-06-23T04:56:04.198434Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+1d11cc6e-0f88-4c87-ad72-10fd54d81104,N/A,2026-06-23T04:56:14.020253Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,pending_review,,Within policy,demo_company
+20414ce1-6fac-4e72-acd2-75e7e47c5719,N/A,2026-07-01T21:50:20.035252Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,submitted,,Within policy,demo_company
+3c5ab5a7-c9a7-4e83-a07b-48bd79c1d8ae,N/A,2026-06-23T04:56:04.258899Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,submitted,,Within policy,demo_company
+620ff70a-d387-4c11-b9ac-f6c6d29b3976,N/A,2026-06-23T04:56:04.320906Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,pending_review,,Within policy,demo_company
+7bbddb9d-e443-4385-ae08-c5d7047a8d9f,N/A,2026-07-01T21:50:20.173464Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+88166c45-67fe-4712-a108-b4faaf612442,N/A,2026-06-23T04:56:04.079626Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,submitted,,Within policy,demo_company
+927b3d1f-8e5c-47e3-b263-d50a844c892a,N/A,2026-07-01T21:50:32.872214Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+a6de7699-06a6-485c-a643-21aad15c733a,N/A,2026-07-01T21:50:28.363499Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,submitted,,Within policy,demo_company
+ac5f867b-0969-4d20-8476-4fc27380af96,N/A,2026-07-01T21:50:19.943982Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+c57808d3-5572-4cb6-9e94-6048e4b1489e,N/A,2026-07-01T21:50:19.839731Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,submitted,,Within policy,demo_company
+c984a0c3-678e-4516-a25d-fa894d1c584f,N/A,2026-06-23T04:56:14.073191Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,submitted,,Within policy,demo_company
+claim_1782079095_75c403,office_supplies,2026-06-21T21:58:19.402029Z,Jane Employee,jane.employee@company.com,N/A,manager@company.com,default-user@company.com,45,auto_approved,agent,Within policy,demo_company
+claim_1782079435_9ac1bb,office_supplies,2026-06-21T22:03:59.557577Z,Jane Employee,jane.employee@company.com,N/A,manager@company.com,default-user@company.com,45,auto_approved,agent,Within policy,demo_company
+claim_1782079768_deacac,office_supplies,2026-06-21T22:09:32.760935Z,Jane Employee,jane.employee@company.com,N/A,manager@company.com,default-user@company.com,45,auto_approved,agent,Within policy,demo_company
+claim_1782082956_1259b0,office_supplies,2026-06-21T23:02:40.295470Z,Jane Employee,jane.employee@company.com,N/A,manager@company.com,default-user@company.com,45,auto_approved,agent,Within policy,demo_company
+claim_1782100374_19b589,office_supplies,2026-06-22T03:52:57.979821Z,Jane Employee,jane.employee@company.com,N/A,manager@company.com,default-user@company.com,45,auto_approved,agent,Within policy,demo_company
+claim_1782138566_2a3efb,office_supplies,2026-06-22T14:29:29.968820Z,Jane Employee,jane.employee@company.com,N/A,manager@company.com,default-user@company.com,45,auto_approved,agent,Within policy,demo_company
+claim_review_1782079100,flight,2026-06-21T21:58:20.276922Z,John Traveler,john.traveler@company.com,N/A,manager@company.com,default-user@company.com,1400,rejected,obamigbade@gmail.com,Requires manager approval letter,demo_company
+claim_review_1782079440,flight,2026-06-21T22:04:00.344630Z,John Traveler,john.traveler@company.com,N/A,manager@company.com,default-user@company.com,1400,rejected,obamigbade@gmail.com,Requires manager approval letter,demo_company
+claim_review_1782079773,flight,2026-06-21T22:09:33.590993Z,John Traveler,john.traveler@company.com,N/A,manager@company.com,default-user@company.com,1400,approved,default-user@company.com,Within policy,demo_company
+claim_review_1782082961,flight,2026-06-21T23:02:41.126915Z,John Traveler,john.traveler@company.com,N/A,manager@company.com,default-user@company.com,1400,approved,default-user@company.com,Within policy,demo_company
+claim_review_1782100378,flight,2026-06-22T03:52:58.847634Z,John Traveler,john.traveler@company.com,N/A,manager@company.com,default-user@company.com,1400,approved,default-user@company.com,Within policy,demo_company
+claim_review_1782138570,flight,2026-06-22T14:29:30.880644Z,John Traveler,john.traveler@company.com,N/A,manager@company.com,default-user@company.com,1400,approved,default-user@company.com,Within policy,demo_company
+ea1f6c4e-901a-4ace-9c69-60ca9672a33c,N/A,2026-07-01T21:50:28.289680Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,submitted,,Within policy,demo_company
+ec360459-3fe8-46d2-beee-d575d0bb68df,N/A,2026-06-23T04:56:13.956439Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+f09936df-a458-4788-831b-f55378cbdd9c,N/A,2026-07-01T21:50:20.108852Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,submitted,,Within policy,demo_company
+f8f2b629-7934-4b77-a4fa-33d0401bcc13,N/A,2026-06-23T04:56:04.143835Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,submitted,,Within policy,demo_company
+fc97571a-a41f-41d5-a9b5-9e42ad9a45f8,N/A,2026-06-23T01:40:47.530353Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+20ec3291-87e5-4eaf-84a3-04ac6fcdcd5c,N/A,2026-06-22T07:58:21.412896Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,obamigbade@gmail.com,Within policy,demo_company
+240bcd31-fe2f-4a30-b6f1-ee74731edadd,N/A,2026-06-23T00:12:59.128225Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,pending_review,,Within policy,demo_company
+25ae0e01-a096-4b51-b6e3-c49e8174a0b7,N/A,2026-06-22T23:04:54.930240Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,pending_review,,Within policy,demo_company
+327c3758-9856-484f-8b9e-a9e005159445,N/A,2026-06-23T01:40:46.681462Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,pending_review,,Within policy,demo_company
+3ddf7e81-6b24-4317-9d52-7d894e2f5b32,N/A,2026-06-23T01:23:57.902710Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,pending_review,,Within policy,demo_company
+3fe6e110-8e5e-4579-b99a-6fffc5a75904,N/A,2026-06-23T00:27:13.523206Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+4f6d8808-cdcf-4850-900a-8adc54e74ed7,N/A,2026-06-23T00:12:59.395227Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+533bcdb0-dcf0-4429-82f6-234345337b7b,N/A,2026-06-22T07:58:21.037077Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+5be3c03f-1703-43b2-96a7-642a5e6608c4,N/A,2026-06-23T00:12:59.357363Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,pending_review,,Within policy,demo_company
+6722486c-e2dd-46c2-9aa5-e0c7aee33dfe,N/A,2026-06-22T23:04:54.850307Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,pending_review,,Within policy,demo_company
+6a29081a-a173-44f4-be4c-401c10ac6683,N/A,2026-06-23T01:40:45.116484Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,pending_review,,Within policy,demo_company
+75d4bc7c-a667-4fee-9ef1-33154e113315,N/A,2026-06-22T23:04:55.049335Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+79e1e8e7-01c6-41d2-87a9-8e8a6b08ea2f,N/A,2026-06-22T07:58:21.134373Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+82104f7e-7e20-4c91-8fe1-7ab577845df9,N/A,2026-06-22T23:04:55.264090Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,pending_review,,Within policy,demo_company
+8c030586-213d-42b2-a755-38ca23f597df,N/A,2026-06-22T07:58:20.991588Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,manager,Within policy,demo_company
+9a87642c-99a5-4129-bb6b-7e5e613c8ed6,N/A,2026-06-22T23:04:55.146932Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,submitted,,Within policy,demo_company
+9b4d3b4e-b968-479a-b1aa-0d1cc4afb8d0,N/A,2026-06-22T23:04:55.097470Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,pending_review,,Within policy,demo_company
+9fdd9b93-6eb3-47c5-a9cb-37129d4bf2d4,N/A,2026-06-23T00:12:59.027733Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,pending_review,,Within policy,demo_company
+a7feb78c-a2be-4f2c-8a92-7ff47710ed60,N/A,2026-06-23T00:27:10.764593Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,submitted,,Within policy,demo_company
+abd67197-ae7e-4389-b9d7-8f2ccb240333,N/A,2026-06-23T01:23:57.812791Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,submitted,,Within policy,demo_company
+b4133210-452e-46d1-a3c4-431bce9ebf07,N/A,2026-06-23T00:12:59.181472Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,submitted,,Within policy,demo_company
+b5db66c1-5afb-4bb9-bef1-280d1a83cea0,N/A,2026-06-23T01:23:57.870264Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+cda931e3-8e63-4d01-9245-4c5d82e07a01,N/A,2026-06-23T00:27:12.136167Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,submitted,,Within policy,demo_company
+d6067054-3f47-4680-8f55-0b9889ef0541,N/A,2026-06-23T00:12:59.288473Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+d88b1592-a668-4984-b549-14422517d76a,N/A,2026-06-22T23:04:54.982561Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,submitted,,Within policy,demo_company
+e2090214-8f50-4c5f-8386-a5ad3625bd05,N/A,2026-06-22T23:04:55.205179Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+e277875e-2fee-4827-92a7-c5ae99cd4e93,N/A,2026-06-22T07:58:21.075138Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,manager,Within policy,demo_company
+ee94bafd-f768-4092-a754-3f689c412b68,N/A,2026-06-23T00:12:59.095854Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+f614d422-097e-4124-9e3b-fb6bc1ee50b5,N/A,2026-06-23T00:12:59.249029Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,submitted,,Within policy,demo_company
+f8a3ef25-094d-4e72-bb28-f7b982c1c4db,N/A,2026-06-23T00:12:59.318082Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,submitted,,Within policy,demo_company
+00a41356-9f51-499e-afcc-96ff6c3c1d4d,N/A,2026-06-22T04:57:36.960641Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,rejected,obamigbade@gmail.com,Within policy,demo_company
+08997a8e-5e51-4adb-a77f-a3d44ca7ad62,N/A,2026-06-22T04:24:41.021517Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+08db9559-7bbc-4991-94e8-7efb551e65b6,N/A,2026-06-22T04:13:57.037093Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,rejected,obamigbade@gmail.com,Within policy,demo_company
+0c04ef75-c04b-4380-a67d-e5b286fba347,N/A,2026-06-22T04:57:37.064398Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+1317dd68-1199-4f6a-bf71-0ce112c56f77,N/A,2026-06-22T04:24:38.886670Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,pending_review,,Within policy,demo_company
+13e54c09-4bfb-4ccc-b4ba-b14379e9d067,N/A,2026-06-22T06:48:09.395684Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,obamigbade@gmail.com,Within policy,demo_company
+13e8edb5-4214-4ead-a644-c3b7b2567118,N/A,2026-06-22T06:14:39.233480Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+18297144-90eb-4331-ad8a-70012fcfd364,N/A,2026-06-22T06:14:39.066390Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,pending_review,,Within policy,demo_company
+1a88c354-3cb9-43f0-b74f-eaaf65e5fab5,N/A,2026-06-22T06:14:39.158134Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,obamigbade@gmail.com,Within policy,demo_company
+3210deff-48e1-43cf-9280-ea3d9320e48a,N/A,2026-06-22T07:58:20.836210Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,obamigbade@gmail.com,Within policy,demo_company
+3b39244f-3fc4-4432-a589-f3366b52cc02,N/A,2026-06-22T06:14:39.306571Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,pending_review,,Within policy,demo_company
+401d09e4-6de8-451d-a3c7-f493b93ecd56,N/A,2026-06-22T04:13:56.917003Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+40e7a6b0-13cb-4fd3-9f3d-82a02c4b83b1,N/A,2026-06-22T07:58:20.945735Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,obamigbade@gmail.com,Within policy,demo_company
+4ff41e64-f209-4b87-9829-75bec44816f3,N/A,2026-06-22T06:48:09.276059Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+52f399b3-7817-463e-9dc2-d3d7af2c2a75,N/A,2026-06-22T06:48:09.037606Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,manager,Within policy,demo_company
+75689efd-1731-411d-9eb2-ab811163c81d,N/A,2026-06-22T06:14:39.546341Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,obamigbade@gmail.com,Within policy,demo_company
+7b5c2e0a-9f98-4526-9a21-1cb004651bab,N/A,2026-06-22T04:57:37.114223Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,manager,Within policy,demo_company
+86dd948b-ba5a-4d50-978d-7fb8569c8e25,N/A,2026-06-22T04:13:56.990348Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,obamigbade@gmail.com,Within policy,demo_company
+98b39ed5-75b9-452c-8803-1efe7edfdaf2,N/A,2026-06-22T06:14:39.464167Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,manager,Within policy,demo_company
+9d3918b7-a061-459c-8077-24f7b4769489,N/A,2026-06-22T04:13:56.856428Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+ad9414c5-1b4f-478f-bf7c-6ea5c8b4cf62,N/A,2026-06-22T06:48:09.212884Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,manager,Within policy,demo_company
+ae51ec34-bba8-47cc-86e6-f77771420c5d,N/A,2026-06-22T06:48:09.430269Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+b1acaf03-3b7c-4c99-8182-79ecbadbef65,N/A,2026-06-22T06:48:09.134198Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,manager,Within policy,demo_company
+c4c39040-a888-4e1f-bcf9-097bf5c69dfa,N/A,2026-06-22T04:57:37.013795Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,manager,Within policy,demo_company
+d44fea2d-c5bf-4d93-9a87-d85388f00f4b,N/A,2026-06-22T07:58:20.733247Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,manager,Within policy,demo_company
+e18e0f39-434a-4355-86ad-61a49147d67b,N/A,2026-06-22T06:14:39.513038Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+e2f2b0e9-2d6c-4d26-9714-3fd4670b05b4,N/A,2026-06-22T04:13:57.075484Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,manager,Within policy,demo_company
+f9ff4781-b7c3-4157-a98f-74dea29c284e,N/A,2026-06-22T04:24:40.167140Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,manager,Within policy,demo_company
+fa11d4f4-44b3-4fa2-94ca-e3a1a05f90fd,N/A,2026-06-22T06:48:09.341414Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,manager,Within policy,demo_company
+fc63bdc6-3984-412a-9f58-92583f093e74,N/A,2026-06-22T04:57:37.157820Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,manager,Within policy,demo_company
+0495bd83-add7-4612-9c53-a48e19de26bf,N/A,2026-06-22T02:41:58.250418Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,obamigbade@gmail.com,Within policy,demo_company
+143f5c46-e53f-49fb-8478-a435e22f3ab5,N/A,2026-06-22T02:41:58.116547Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,rejected,obamigbade@gmail.com,Within policy,demo_company
+14fb1785-9588-4960-9084-68d026ffb3d8,N/A,2026-06-22T02:47:39.875583Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+1bb9afc1-c09a-4d4b-8f45-d38d37fb82a0,N/A,2026-06-22T01:15:38.956862Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,rejected,obamigbade@gmail.com,Within policy,demo_company
+230bd0ff-203d-411f-b123-2ce35a8119fb,N/A,2026-06-22T01:15:39.379785Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,pending_review,,Within policy,demo_company
+2d953cf6-f318-494a-afb0-93008cf30f6c,N/A,2026-06-22T03:01:16.187701Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,obamigbade@gmail.com,Within policy,demo_company
+3ba80516-3cbf-448f-aedd-57139658842a,N/A,2026-06-22T01:15:38.970159Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,pending_review,,Within policy,demo_company
+3f12546e-1baa-458c-bb78-63215b68ff12,N/A,2026-06-22T02:41:45.414154Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+404d9937-2038-4240-9e30-82cdc40938f5,N/A,2026-06-22T01:15:39.782850Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,pending_review,,Within policy,demo_company
+44fb323c-c52e-4449-a532-e215df976278,N/A,2026-06-22T02:55:32.315393Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,obamigbade@gmail.com,Within policy,demo_company
+4690a59c-b304-41e4-a209-bcec4966a5ff,N/A,2026-06-22T02:41:45.107972Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+472b6083-f9c3-4d48-8f07-d3e60a2b8989,N/A,2026-06-22T02:41:45.289494Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+4a25528c-8b2d-452e-8bbe-48018c69a17e,N/A,2026-06-21T22:56:50.097726Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+79b0b89e-997e-445e-b1f4-d61dbe29a9ef,N/A,2026-06-22T02:41:44.981821Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,manager,Within policy,demo_company
+8379e55d-de6e-4076-8f08-adb122920680,N/A,2026-06-22T02:47:37.876329Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,obamigbade@gmail.com,Within policy,demo_company
+85f5765b-3310-45e7-992c-aafb729f506e,N/A,2026-06-22T03:01:15.345137Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,manager,Within policy,demo_company
+9ef0d76e-7033-4065-b502-4628cf5b8a31,N/A,2026-06-22T04:13:56.787377Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,manager,Within policy,demo_company
+a4b2846c-f272-4dbd-9718-94726ee09e54,N/A,2026-06-22T01:15:39.701699Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,manager,Within policy,demo_company
+aed0aa78-0441-4d54-bfab-c84097c7bc89,N/A,2026-06-22T03:01:17.548295Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+affbcb8d-3f2c-4fc4-a28e-24d9b46af118,N/A,2026-06-21T22:56:47.215028Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,pending_review,,Within policy,demo_company
+b6ed4d41-ac1e-4a0b-8014-40628f184ee2,N/A,2026-06-22T02:41:45.188066Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,manager,Within policy,demo_company
+c80caad5-f9bb-405a-85a3-36ff5e0746f8,N/A,2026-06-22T01:15:39.322961Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,manager,Within policy,demo_company
+d6adccfb-0f2c-4bfd-bb68-4dc79903c998,N/A,2026-06-22T02:55:32.997879Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,manager,Within policy,demo_company
+d9839660-e7e6-4f70-bea4-fa600fdf56c6,N/A,2026-06-22T02:41:44.779519Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,manager,Within policy,demo_company
+df1603fd-6eae-4ee1-8c3f-caeebe79c551,N/A,2026-06-21T22:56:48.109645Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,manager,Within policy,demo_company
+e55a3f03-ef28-4d03-8bb1-b3d4aa2c8678,N/A,2026-06-22T02:55:34.336354Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+ef66b4ef-68f2-4f49-b4a2-e7a2afc8e3c4,N/A,2026-06-22T02:47:36.939870Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,manager,Within policy,demo_company
+f8ad6196-1f8d-4619-bf96-00ae97d6aa34,N/A,2026-06-22T01:15:39.234344Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+fc0d78cd-bd6f-41c8-8376-3b0ec520cdb8,N/A,2026-06-22T01:15:39.145162Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+fcb4d840-2832-4e38-8472-3395ea0a6783,N/A,2026-06-22T02:41:45.370673Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,manager,Within policy,demo_company
+18028a83-68ec-4004-9fd0-1f3fd2d52b61,N/A,2026-06-21T21:18:51.804296Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,rejected,obamigbade@gmail.com,Within policy,demo_company
+1f93a235-a997-4a3e-b599-5918b30ecfcf,N/A,2026-06-21T19:40:36.827757Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,obamigbade@gmail.com,Within policy,demo_company
+26d8696b-57b4-4965-8525-961f89184a25,N/A,2026-06-21T21:31:26.511322Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,pending_review,,Within policy,demo_company
+29585f2d-5b49-459f-a2cd-18231ff48a27,N/A,2026-06-21T21:18:51.917422Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,pending_review,,Within policy,demo_company
+3ec0a062-2f60-4716-be41-a37a93e586c2,N/A,2026-06-21T21:18:51.513580Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,pending_review,,Within policy,demo_company
+4ac4e3f6-0b4f-4638-88f2-62ba47e0d1bf,N/A,2026-06-21T22:56:14.523656Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+4cb928d2-5202-4cf0-8cbb-5428fb364ebc,N/A,2026-06-21T21:18:51.594883Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+4cf2ec9b-adb4-4edc-822d-e51c9f0088b8,N/A,2026-06-21T21:51:20.857615Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,pending_review,,Within policy,demo_company
+4dd322b2-345b-46cb-b144-6bb0f0f5c443,N/A,2026-06-21T21:18:51.702158Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+51b0bdce-de18-4ebb-bd6d-84bdb2955785,N/A,2026-06-21T19:40:37.075432Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,pending_review,,Within policy,demo_company
+699d3712-df9b-4859-b67c-5d337ab0eb57,N/A,2026-06-21T19:40:36.994164Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+6f2c9699-103f-4f3a-a501-790b16df3fa3,N/A,2026-06-21T19:40:36.915854Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,pending_review,,Within policy,demo_company
+71507e70-38a1-4838-b688-46878f9099cc,N/A,2026-06-21T19:40:36.631417Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,pending_review,,Within policy,demo_company
+7431b461-b3c2-4f7b-831e-52b28da8486a,N/A,2026-06-21T18:28:21.167191Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,pending_review,,Within policy,demo_company
+7644a454-1647-4d4e-938f-c0db0d7d0922,N/A,2026-06-21T21:51:21.772246Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+8c2f709e-8ff1-42d0-bd91-08182d995727,N/A,2026-06-21T21:18:51.304573Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,pending_review,,Within policy,demo_company
+9a54d38e-0750-4a0e-aa1f-69b6e90d7793,N/A,2026-06-21T18:57:36.620888Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,rejected,obamigbade@gmail.com,Within policy,demo_company
+a3ad26b3-4220-490e-ae82-e417732d1823,N/A,2026-06-21T21:31:28.700000Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+b76f9bb4-2c98-4636-b1d7-7cdff36c1fb9,N/A,2026-06-21T22:56:14.338112Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,pending_review,,Within policy,demo_company
+b9b0804e-bb19-4fc5-bfee-9fcb3e05c433,N/A,2026-06-21T22:56:14.600580Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,manager,Within policy,demo_company
+bf8f14ab-30d2-46a9-978f-8300d69eeb5f,N/A,2026-06-21T18:57:36.891280Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+c5b2276a-222b-4312-8e2c-c5e457996dd4,N/A,2026-06-21T18:57:37.124975Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,rejected,obamigbade@gmail.com,Within policy,demo_company
+c72fcb12-7d43-40fb-94ac-124618717bf5,N/A,2026-06-21T21:18:51.840402Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,manager,Within policy,demo_company
+c96d906c-72f7-4ffe-a8ae-82a553309b1a,N/A,2026-06-21T18:28:22.471584Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+ca65f645-4afb-4cc4-bf9f-0540e8632082,N/A,2026-06-21T18:28:19.882480Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,manager,Within policy,demo_company
+cc7ef367-5ab1-4f18-afb6-e78e6b640449,N/A,2026-06-21T21:31:27.904896Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,manager,Within policy,demo_company
+d851f675-6374-41b9-a580-682f1a551229,N/A,2026-06-21T18:57:36.789420Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,manager,Within policy,demo_company
+e0fcb1f1-d4f3-4538-93c9-67836bbe2fd2,N/A,2026-06-21T21:18:51.757516Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,manager,Within policy,demo_company
+f5092e44-dadc-4eae-94c2-32380e139643,N/A,2026-06-21T21:51:19.128968Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,manager,Within policy,demo_company
+f5a25599-1481-464e-989e-d7eb6855e113,N/A,2026-06-21T21:18:51.870668Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+0fa37d80-1deb-414a-a17c-9e0e311e74c9,N/A,2026-06-21T14:24:04.936239Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,manager,Within policy,demo_company
+1037d5d5-c01e-4dcb-9acd-f971299e14c1,N/A,2026-06-21T14:46:25.872419Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,obamigbade@gmail.com,Within policy,demo_company
+203b7836-67d9-4a3f-957f-e66d94407039,N/A,2026-06-21T14:24:03.889761Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,manager,Within policy,demo_company
+216bfd90-3282-4e96-b6ba-9271d417413a,N/A,2026-06-21T04:43:32.975957Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,finance_admin,Within policy,demo_company
+25552907-ecab-4c35-a8c5-d2ec5c653377,meals,2026-06-21T17:01:10.784599Z,NY Over Claimant,employee.ny.over@company.com,Engineering,manager@company.com,employee.ny.over@company.com,450,approved,manager,Exceeds company per diem,demo_company
+287f7ab4-1e27-4527-8fc3-935b5844aa88,N/A,2026-06-21T14:27:31.838881Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+2cf31160-f940-487e-a8f1-7ea642e2b86a,N/A,2026-06-21T18:14:38.414511Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,pending_review,,Within policy,demo_company
+2d9a5fb7-6061-47e1-a6fd-ae4b517ebaa3,meals,2026-06-21T17:01:10.947980Z,MN Within Claimant,employee.mn.within@company.com,HR,manager@company.com,employee.mn.within@company.com,190,approved,manager,Within policy,demo_company
+2f4c1fb1-9b5d-47e4-8697-a096e0e06441,meals,2026-06-21T17:01:10.657621Z,Unknown Claimant,,N/A,manager@company.com,cli-user@company.com,190,approved,manager,Within policy,demo_company
+50858262-c522-4bdb-9612-a8511c1e4a65,meals,2026-06-21T17:01:10.359428Z,Unknown Claimant,,N/A,manager@company.com,cli-user@company.com,450,approved,manager,Within policy,demo_company
+5798f050-7735-4012-bab4-52a75615636e,N/A,2026-06-21T04:43:33.976875Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+5f952b92-f5db-4ae0-a765-498088ecc56c,meals,2026-06-21T17:01:10.833383Z,Unknown Policy Claimant,employee.unknown.policy@company.com,Finance,manager@company.com,employee.unknown.policy@company.com,180,approved,manager,Missing company policy,unknown_company
+643519e9-86f3-42e9-8ffd-54e0337f144b,meals,2026-06-21T17:01:10.129906Z,NY Within Claimant,employee.ny.within@company.com,Sales,manager@company.com,employee.ny.within@company.com,300,approved,manager,Within policy,demo_company
+69b32923-d17d-4716-b5be-14ca8e3d404c,meals,2026-06-21T17:01:10.459134Z,SC Over Claimant,employee.sc.over@company.com,Marketing,manager@company.com,employee.sc.over@company.com,220,approved,manager,Exceeds company per diem,demo_company
+758a99b0-d79a-4e40-a764-685f3802cb03,meals,2026-06-21T17:01:10.747533Z,Unknown Claimant,,N/A,manager@company.com,cli-user@company.com,180,approved,manager,Within policy,demo_company
+8c8c5c75-f119-406a-96c8-125a4c433724,N/A,2026-06-21T14:24:04.295174Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+8ee45e8a-7967-4195-b3ea-46bf954f21ca,N/A,2026-06-21T14:24:04.253561Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+94414217-d470-4456-ad7f-234665d468f0,meals,2026-06-21T17:01:10.557631Z,Unknown Claimant,,N/A,manager@company.com,cli-user@company.com,300,approved,manager,Within policy,demo_company
+ab480b88-ca0a-4287-bf6d-5f2f845b5dc7,travel,2026-06-21T15:10:57.138282Z,auth.rejection.test@company.com,,N/A,manager@company.com,cli-user@company.com,425,approved,obamigbade@gmail.com,Within policy,demo_company
+c814395b-46d1-447b-82ac-fdd7b983b8b1,N/A,2026-06-21T14:24:04.187166Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,manager,Within policy,demo_company
+ca3e96e2-4861-41be-9acc-e20645bc8ef5,meals,2026-06-21T17:01:10.879073Z,Unknown Claimant,,N/A,manager@company.com,cli-user@company.com,220,approved,manager,Within policy,demo_company
+cd0e2a89-04cd-43c9-9b0d-f6f1eef12037,lodging,2026-06-21T15:10:59.211535Z,auth.hotel.docs.test@company.com,,N/A,manager@company.com,cli-user@company.com,1600,rejected,obamigbade@gmail.com,Requires manager approval letter,demo_company
+d6672fbc-8607-4987-b4bb-88ac7d3f1f4b,flight,2026-06-21T15:10:58.375481Z,auth.flight.docs.test@company.com,,N/A,manager@company.com,cli-user@company.com,1350,rejected,obamigbade@gmail.com,Needs documentation,demo_company
+d7cd93d2-4db2-41c3-b13a-e9ac28f38561,N/A,2026-06-21T04:03:32.601940Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,finance_admin,Within policy,demo_company
+dd336e37-d7ee-4648-9205-306e3fccea29,N/A,2026-06-21T18:14:39.149277Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,manager,Within policy,demo_company
+e610514a-798f-4658-a24b-cb41dfccb20b,N/A,2026-06-21T14:24:03.552302Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,manager,Within policy,demo_company
+e99cd7c0-fc45-4dc5-bf4d-7ce8e56303fe,N/A,2026-06-21T04:43:33.157167Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,finance_admin,Within policy,demo_company
+f2da7725-a80f-497d-9714-b21502bfe8fe,N/A,2026-06-21T18:14:41.083496Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+f5c7ed6b-2237-4a17-b9fe-5be5ec8c34c4,N/A,2026-06-21T14:24:03.990237Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+ffc3853a-0894-4fd8-ac15-838112ea932f,travel,2026-06-21T15:10:55.664210Z,auth.approval.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,obamigbade@gmail.com,Within policy,demo_company
+020d5fde-3359-420b-9d35-84d140eafa0f,N/A,2026-06-21T04:03:32.461128Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+1c92c80c-10f8-439f-8a2b-c70695abaa4c,N/A,2026-06-21T04:03:31.741868Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+21f462b0-1872-48ed-9954-a3edda0cc5ba,flight,2026-06-20T22:23:22.285556Z,flight.overlimit.complete@company.com,,N/A,manager@company.com,cli-user@company.com,1300,rejected,obamigbade@gmail.com,Within policy,demo_company
+3ab4af52-738c-4491-9c75-dc872f604725,,2026-06-20T22:23:22.216219Z,test.amount.1300@company.com,,N/A,manager@company.com,cli-user@company.com,1300,pending_review,,Within policy,demo_company
+593c6b0b-a2dc-45b9-8218-215bf2d4ab1b,flight,2026-06-20T22:23:21.981099Z,flight.missing.receipt@company.com,,N/A,manager@company.com,cli-user@company.com,900,blocked_missing_docs,,Needs documentation,demo_company
+613065c1-aead-496d-b00f-51ac3c298dd5,printing_supplies,2026-06-20T22:23:21.250658Z,office.paper.missing@company.com,,N/A,manager@company.com,cli-user@company.com,120,blocked_missing_docs,,Needs documentation,demo_company
+63188d4e-15fa-4538-9314-02898a183eff,flight,2026-06-20T22:23:22.213509Z,flight.overlimit.missing@company.com,,N/A,manager@company.com,cli-user@company.com,1300,rejected,obamigbade@gmail.com,Requires manager approval letter,demo_company
+6f1baad0-daa5-4fbd-b0c7-bf3389bf2114,lodging,2026-06-20T22:23:22.524794Z,hotel.overlimit.missing@company.com,,N/A,manager@company.com,cli-user@company.com,1400,pending_review,,Within policy,demo_company
+7d70995b-e7fb-4051-ad25-5079ffbfac68,N/A,2026-06-21T04:03:31.407521Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,finance_admin,Within policy,demo_company
+8ec0d265-f38b-4f14-9dc1-68155095c72f,N/A,2026-06-21T04:03:32.519020Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,finance_admin,Within policy,demo_company
+99d25b97-4b7c-4812-bfdc-e026f79990b6,,2026-06-20T22:23:22.312413Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,pending_review,,Within policy,demo_company
+a68b3290-a865-4d67-8a93-011224010c6a,N/A,2026-06-21T04:03:31.888402Z,fresh.manager.test@company.com,,N/A,manager@company.com,cli-user@company.com,275,approved,finance_admin,Within policy,demo_company
+c4667b4b-18b0-499f-af2c-36bc4aab117e,N/A,2026-06-21T04:03:31.626675Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,finance_admin,Within policy,demo_company
+c7414083-4bf2-4f66-aafa-df36510fa76f,,2026-06-20T22:23:22.477497Z,test.amount.300@company.com,,N/A,manager@company.com,cli-user@company.com,300,rejected,obamigbade@gmail.com,Within policy,demo_company
+d77cd62f-67b9-4af3-8461-c18fa1370173,,2026-06-20T22:23:22.511045Z,test.amount.700@company.com,,N/A,manager@company.com,cli-user@company.com,700,rejected,obamigbade@gmail.com,Within policy,demo_company
+e0bb20bf-7913-484e-94e6-7a15e45ef251,N/A,2026-06-21T04:03:31.824981Z,Bob (meals),,N/A,manager@company.com,cli-user@company.com,45,auto_approved,agent,Within policy,demo_company
+e2630fd0-00a1-4353-a598-9214b0893488,N/A,2026-06-21T04:03:32.555524Z,receipt.test@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,finance_admin,Within policy,demo_company
+f7baf95b-e715-4f0d-8c19-917e39d8a513,lodging,2026-06-20T22:23:22.507965Z,hotel.approved.docs@company.com,,N/A,manager@company.com,cli-user@company.com,1600,rejected,obamigbade@gmail.com,Within policy,demo_company
+test_a_1781994294,printer_ink,2026-06-20T22:24:56.972219Z,auto.approved.test_a_1781994294@company.com,,N/A,manager@company.com,cli-user@company.com,45.5,auto_approved,agent,Within policy,demo_company
+test_a_1781994673,printer_ink,2026-06-20T22:31:15.435491Z,auto.approved.test_a_1781994673@company.com,,N/A,manager@company.com,cli-user@company.com,45.5,auto_approved,agent,Within policy,demo_company
+test_a_1781996373,printer_ink,2026-06-20T22:59:35.743333Z,auto.approved.test_a_1781996373@company.com,,N/A,manager@company.com,cli-user@company.com,45.5,auto_approved,agent,Within policy,demo_company
+test_b_1781994305,hotel,2026-06-20T22:25:07.871880Z,compliant.test_b_1781994305@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,manager,Within policy,demo_company
+test_b_1781994684,hotel,2026-06-20T22:31:26.001273Z,compliant.test_b_1781994684@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,manager,Within policy,demo_company
+test_b_1781996387,hotel,2026-06-20T22:59:49.850594Z,compliant.test_b_1781996387@company.com,,N/A,manager@company.com,cli-user@company.com,700,approved,manager,Within policy,demo_company
+test_c_1781994322,flight,2026-06-20T22:25:24.383960Z,flight.blocked.test_c_1781994322@company.com,,N/A,manager@company.com,cli-user@company.com,1500,approved,manager,Within policy,demo_company
+test_c_1781994701,flight,2026-06-20T22:31:43.060132Z,flight.blocked.test_c_1781994701@company.com,,N/A,manager@company.com,cli-user@company.com,1500,approved,manager,Within policy,demo_company
+test_c_1781996405,flight,2026-06-20T23:00:07.794063Z,flight.blocked.test_c_1781996405@company.com,,N/A,manager@company.com,cli-user@company.com,1500,approved,manager,Within policy,demo_company
+test_d_1781994346,parking_citation,2026-06-20T22:25:48.533947Z,citation.reject.test_d_1781994346@company.com,,N/A,manager@company.com,cli-user@company.com,75,rejected,manager,Potentially non-reimbursable,demo_company
+test_d_1781994727,parking_citation,2026-06-20T22:32:08.941633Z,citation.reject.test_d_1781994727@company.com,,N/A,manager@company.com,cli-user@company.com,75,rejected,manager,Potentially non-reimbursable,demo_company
+test_d_1781996429,parking_citation,2026-06-20T23:00:31.346482Z,citation.reject.test_d_1781996429@company.com,,N/A,manager@company.com,cli-user@company.com,75,rejected,manager,Potentially non-reimbursable,demo_company
+2bc1a1f1-85eb-41ef-a9d3-a07b78373a46,flight,2026-06-20T22:23:18.913783Z,flight.overlimit.missing@company.com,,N/A,manager@company.com,cli-user@company.com,1500,rejected,obamigbade@gmail.com,Within policy,demo_company
+3412c3f4-6862-4fcd-8e9b-dc5e803da794,parking_citation,2026-06-20T22:23:18.942014Z,parking.ticket.test@company.com,,N/A,manager@company.com,cli-user@company.com,75,rejected,obamigbade@gmail.com,Potentially non-reimbursable,demo_company
+74d74dd5-2932-41c3-9cac-c5255c09ca76,lodging,2026-06-20T22:23:18.914548Z,hotel.overlimit.missing.v2@company.com,,N/A,manager@company.com,cli-user@company.com,1600,pending_review,,Within policy,demo_company
+852f976f-c073-4bfa-b431-c8839620da8d,office_supplies,2026-06-20T22:23:18.912775Z,office.paper.missing@company.com,,N/A,manager@company.com,cli-user@company.com,120,rejected,obamigbade@gmail.com,Needs documentation,demo_company
+bdc4591b-57c0-4120-9e02-7e76d3e5f1b9,printing_supplies,2026-06-20T22:23:18.936783Z,office.paper.missing@company.com,,N/A,manager@company.com,cli-user@company.com,120,rejected,obamigbade@gmail.com,Needs documentation,demo_company
+ee234824-093a-4ba8-920d-d1eb78b71b1b,flight,2026-06-20T22:23:18.905348Z,flight.missing.receipt@company.com,,N/A,manager@company.com,cli-user@company.com,800,rejected,obamigbade@gmail.com,Within policy,demo_company

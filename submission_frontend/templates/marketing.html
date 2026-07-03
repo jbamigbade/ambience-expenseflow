@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambience ExpenseFlow — Enterprise Travel & Expense Management</title>
+    <meta name="description" content="Ambience ExpenseFlow is a premium, enterprise-grade travel and expense management platform. Automate compliance, accelerate approvals, and secure organizational spend.">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="/static/css/marketing.css">
+    <style>
+        /* Additional minor styles to handle section spacing and flow */
+        .features-section, .workflow-section, .compliance-section, .approvals-section, .audit-section, .admin-section, .security-section, .screenshots-section, .pricing-section, .contact-section {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .section-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 5rem auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .hero-logo-img {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.25rem;
+            font-weight: 800;
+        }
+        /* Style for sub-features or details */
+        .split-card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin-top: 4rem;
+        }
+        .split-card-grid.reverse {
+            direction: rtl;
+        }
+        .split-card-grid.reverse .split-content {
+            direction: ltr;
+        }
+        .split-content h3 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1.25rem;
+            line-height: 1.3;
+        }
+        .split-content p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+        .split-visual {
+            position: relative;
+        }
+        .feature-tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+        .feature-tag-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            padding: 0.4rem 1rem;
+            border-radius: 100px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        /* Screenshot gallery placeholder */
+        .screenshot-gallery {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 2.5rem;
+        }
+        .screenshot-main {
+            min-height: 380px;
+        }
+        .screenshot-side-grid {
+            display: grid;
+            grid-template-rows: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        .screenshot-thumbnail {
+            min-height: 180px;
+        }
+        .wireframe-title {
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .wireframe-element {
+            height: 12px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            margin-bottom: 0.5rem;
+        }
+        .wireframe-element.short { width: 40%; }
+        .wireframe-element.medium { width: 70%; }
+        .wireframe-element.long { width: 90%; }
+        .wireframe-element.accent-bar {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            height: 6px;
+            width: 25%;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER / NAVIGATION -->
+    <header id="header">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <div class="logo-icon">AE</div>
+                <div class="logo-text">
+                    <span>Ambience</span>
+                    <span class="logo-sub">ExpenseFlow</span>
+                </div>
+            </a>
+            <nav>
+                <a href="#overview">Overview</a>
+                <a href="#features">Features</a>
+                <a href="#workflow">Workflow</a>
+                <a href="#compliance">AI Compliance</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#contact" class="btn btn-outline" style="padding: 0.5rem 1.25rem;">Request Demo</a>
+                <a href="/login" class="btn btn-primary" style="padding: 0.5rem 1.5rem;">Launch App</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero" id="home">
+        <div class="container hero-grid">
+            <div class="hero-content">
+                <div class="section-tag">Enterprise SaaS</div>
+                <h1>Enterprise Travel &amp; Expense Management</h1>
+                <p>Streamline corporate spend, enforce complex travel policies, and accelerate manager approvals. Driven by a compliant AI compliance-checking engine with bulletproof audit trails.</p>
+                <div class="hero-ctas">
+                    <a href="#contact" class="btn btn-primary">Request Custom Demo</a>
+                    <a href="/login" class="btn btn-secondary">
+                        <span>Launch Workspace</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stat-item">
+                        <span class="hero-stat-num">99.8%</span>
+                        <span class="hero-stat-lbl">Compliance Rate</span>
+                    </div>
+                    <div class="hero-stat-item">
+                        <span class="hero-stat-num">&lt; 24h</span>
+                        <span class="hero-stat-lbl">Approval Cycles</span>
+                    </div>
+                    <div class="hero-stat-item">
+                        <span class="hero-stat-num">45%</span>
+                        <span class="hero-stat-lbl">Admin Cost Saved</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="mockup-container">
+                    <div class="mockup-header">
+                        <div class="mockup-dot mockup-dot-1"></div>
+                        <div class="mockup-dot mockup-dot-2"></div>
+                        <div class="mockup-dot mockup-dot-3"></div>
+                        <div class="mockup-address">https://app.ambienceflow.com/dashboard</div>
+                    </div>
+                    <div class="mockup-content">
+                        <div class="mock-app-ui">
+                            <div class="mock-app-nav">
+                                <span style="font-weight: 800; color: white;">AE Dashboard</span>
+                                <span style="background: rgba(16, 185, 129, 0.15); color: var(--success); font-size: 0.65rem; padding: 0.15rem 0.6rem; border-radius: 100px; font-weight: 700;">Live Workspace</span>
+                            </div>
+                            <div class="mock-app-grid">
+                                <div class="mock-app-card" style="grid-column: span 2;">
+                                    <div style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.25rem;">Active Travel Claims</div>
+                                    <div style="font-size: 1.25rem; font-weight: 800; color: white;">$24,850.40</div>
+                                    <div class="mock-app-chart">
+                                        <div class="mock-chart-bar" style="height: 40px;"></div>
+                                        <div class="mock-chart-bar" style="height: 75px;"></div>
+                                        <div class="mock-chart-bar" style="height: 55px;"></div>
+                                        <div class="mock-chart-bar" style="height: 90px;"></div>
+                                        <div class="mock-chart-bar" style="height: 60px;"></div>
+                                        <div class="mock-chart-bar" style="height: 80px;"></div>
+                                    </div>
+                                </div>
+                                <div class="mock-app-card">
+                                    <div style="font-size: 0.7rem; color: var(--text-muted);">Verified Approvals</div>
+                                    <div style="font-size: 1.1rem; font-weight: 800; color: var(--success); margin: 0.25rem 0;">100% Correct</div>
+                                    <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden;">
+                                        <div style="width: 100%; height: 100%; background: var(--success);"></div>
+                                    </div>
+                                </div>
+                                <div class="mock-app-card">
+                                    <div style="font-size: 0.7rem; color: var(--text-muted);">Audit Trail Check</div>
+                                    <div style="font-size: 1.1rem; font-weight: 800; color: var(--primary); margin: 0.25rem 0;">Secured logs</div>
+                                    <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden;">
+                                        <div style="width: 75%; height: 100%; background: var(--primary);"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUCT OVERVIEW -->
+    <section class="overview-section" id="overview">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">Product Overview</div>
+                <h2 class="section-title">The Spend Architecture of the Future</h2>
+                <p class="section-desc">An all-in-one platform built for global teams. We combine user-friendly reporting layouts with deep administrative control boards to safeguard every transaction.</p>
+            </div>
+            <div class="overview-grid">
+                <div class="overview-card glass-card">
+                    <div class="overview-icon-container">✈️</div>
+                    <h3>Employee Reporting</h3>
+                    <p>Frictionless multi-currency submission flow. Dynamic mileage calculators and multi-document digital receipt uploaders keep your employees productive on the road.</p>
+                </div>
+                <div class="overview-card glass-card">
+                    <div class="overview-icon-container">🛡️</div>
+                    <h3>AI Compliance Safeguard</h3>
+                    <p>Instant structural risk analysis. Our automated compliance engine cross-checks every line item against per-diem limits, duplicate profiles, and tax policies.</p>
+                </div>
+                <div class="overview-card glass-card">
+                    <div class="overview-icon-container">💼</div>
+                    <h3>Executive Decisions</h3>
+                    <p>Comprehensive approvals queue for department managers. Approve, reject, or flag claims with full inline access to document evidence and policy warnings.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- KEY FEATURES -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">Key Features</div>
+                <h2 class="section-title">Engineered to Handle Global Volume</h2>
+                <p class="section-desc">No more manual Excel spreadsheets or broken approval threads. Deploy robust feature systems designed to orchestrate complex billing rules effortlessly.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card glass-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Intelligent Receipt Parsing</h3>
+                    <p>Extract merchants, raw transaction totals, VAT taxes, and currency codes from uploaded invoices instantly using deep-structured metadata reading.</p>
+                </div>
+                <div class="feature-card glass-card">
+                    <div class="feature-icon">🗺️</div>
+                    <h3>Interactive Per-Diem Rates</h3>
+                    <p>Pre-populate travel zones with exact federal per-diem allowances for thousands of destinations, keeping lodging and food limits fully controlled.</p>
+                </div>
+                <div class="feature-card glass-card">
+                    <div class="feature-icon">📦</div>
+                    <h3>Bulk Document Upload</h3>
+                    <p>Support for simultaneous batch uploads. Automatically pair digital receipts to specific draft expense claim files to minimize administrative effort.</p>
+                </div>
+                <div class="feature-card glass-card">
+                    <div class="feature-icon">💬</div>
+                    <h3>Collaborative Remarks</h3>
+                    <p>Maintain localized, persistent comment logs inside every claim thread, enabling employees and reviewers to settle policy clarifications instantly.</p>
+                </div>
+                <div class="feature-card glass-card">
+                    <div class="feature-icon">🏷️</div>
+                    <h3>Intelligent Spend Tagging</h3>
+                    <p>Group individual line items by corporate departments, projects, travel events, or custom general ledger codes for granular cost-center attribution.</p>
+                </div>
+                <div class="feature-card glass-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Real-Time Analytics</h3>
+                    <p>Instantly visualize organization spend velocities, outstanding drafts, pending reviews, and seasonal travel cost trends in high-fidelity grids.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXPENSE WORKFLOW -->
+    <section class="workflow-section" id="workflow">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">Expense Workflow</div>
+                <h2 class="section-title">A Seamless Travel-to-Reimbursement Loop</h2>
+                <p class="section-desc">Observe the clear path your corporate financial records trace through the unified Ambience ExpenseFlow engine.</p>
+            </div>
+            <div class="workflow-row">
+                <div class="workflow-steps">
+                    <div class="workflow-step active" onclick="switchWorkflowStep(1)">
+                        <div class="workflow-step-num">01</div>
+                        <div class="workflow-step-text">
+                            <h4>Draft &amp; Collect</h4>
+                            <p>Employees create digital drafts, attach physical receipts, input precise travel details, and save items securely as draft logs.</p>
+                        </div>
+                    </div>
+                    <div class="workflow-step" onclick="switchWorkflowStep(2)">
+                        <div class="workflow-step-num">02</div>
+                        <div class="workflow-step-text">
+                            <h4>AI Policy Assessment</h4>
+                            <p>Our automated engine analyzes claim items, validating lodging costs against strict regional rules and matching receipts to dates.</p>
+                        </div>
+                    </div>
+                    <div class="workflow-step" onclick="switchWorkflowStep(3)">
+                        <div class="workflow-step-num">03</div>
+                        <div class="workflow-step-text">
+                            <h4>Manager Audit &amp; Sign-off</h4>
+                            <p>Managers receive clean dashboards highlighting critical spend profiles, allowing immediate approvals or conditional follow-ups.</p>
+                        </div>
+                    </div>
+                    <div class="workflow-step" onclick="switchWorkflowStep(4)">
+                        <div class="workflow-step-num">04</div>
+                        <div class="workflow-step-text">
+                            <h4>Consolidated Accounting</h4>
+                            <p>Finance administrators export certified audits and batch process reimbursements to bank integrations in standard formats.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="workflow-visual">
+                    <div id="workflow-visual-content" style="z-index: 1; position: relative;">
+                        <h4 id="wf-title" style="color: white; font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem;">Draft &amp; Collect</h4>
+                        <p id="wf-desc" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.7;">Employees log into the platform, create digital expense reports, calculate mileage with Google Maps integration, upload documents, and submit whenever they are ready.</p>
+                        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 12px; padding: 1.5rem;">
+                            <div class="wireframe-title">📝 Expense Draft #842</div>
+                            <div class="wireframe-element long"></div>
+                            <div class="wireframe-element medium"></div>
+                            <div class="wireframe-element short" style="background: var(--primary);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI COMPLIANCE -->
+    <section class="compliance-section" id="compliance">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">AI-Powered Compliance</div>
+                <h2 class="section-title">Zero-Touch Policy Guard</h2>
+                <p class="section-desc">Enforce standard spending guidelines automatically. Prevent billing errors and identify fraudulent activities before they enter executive review queues.</p>
+            </div>
+            <div class="ai-compliance-grid">
+                <div>
+                    <h3 style="font-size: 2rem; font-weight: 800; color: white; margin-bottom: 1.25rem;">Automated Travel Policy Auditing</h3>
+                    <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1.5rem;">Every line item is instantly validated against your custom financial policies. If a lodging charge exceeds the maximum local per-diem caps or duplicate receipts are uploaded, the compliance engine automatically tags the items with risk warnings.</p>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 1rem; color: #cbd5e1; font-weight: 600; font-size: 0.95rem;">
+                        <li style="display: flex; align-items: center; gap: 0.75rem;">
+                            <span style="color: var(--success);">✔</span> Automated Regional Per-Diem Cap Verification
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 0.75rem;">
+                            <span style="color: var(--success);">✔</span> Real-Time Duplicate Receipt Identifiers
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 0.75rem;">
+                            <span style="color: var(--success);">✔</span> Instant High-Risk Spend Flagging
+                        </li>
+                    </ul>
+                </div>
+                <div class="compliance-mock-console">
+                    <div class="console-title-bar">
+                        <span>POLICY ENGINE CONSOLE</span>
+                        <span style="color: var(--success); font-weight: bold;">● READY</span>
+                    </div>
+                    <div class="console-body">
+                        <div class="console-log-line">
+                            <span class="console-stamp">[08:24:12]</span>
+                            <span class="console-msg">Parsing incoming claim item (ID: CL-209)...</span>
+                        </div>
+                        <div class="console-log-line">
+                            <span class="console-stamp">[08:24:13]</span>
+                            <span class="console-msg">Verifying receipt OCR match... Total: <strong style="color: white;">$240.00 USD</strong>.</span>
+                        </div>
+                        <div class="console-log-line">
+                            <span class="console-stamp">[08:24:14]</span>
+                            <span class="console-msg">Checking per-diem thresholds for Location: <strong style="color: white;">San Francisco, CA</strong>.</span>
+                        </div>
+                        <div class="console-log-line">
+                            <span class="console-stamp">[08:24:15]</span>
+                            <span class="console-msg console-success">✔ Lodging limit ($250.00/night) — compliant.</span>
+                        </div>
+                        <div class="console-log-line">
+                            <span class="console-stamp">[08:24:15]</span>
+                            <span class="console-msg" style="color: var(--warning);">⚠ Weekend travel warning — verified with travel itinerary.</span>
+                        </div>
+                        <div class="console-log-line">
+                            <span class="console-stamp">[08:24:16]</span>
+                            <span class="console-msg console-success">✔ AI Compliance check complete. Status: APPROVED_TO_QUEUE.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MANAGER APPROVALS -->
+    <section class="approvals-section" id="approvals">
+        <div class="container split-card-grid">
+            <div class="split-visual">
+                <div class="mockup-container">
+                    <div class="mockup-header">
+                        <div class="mockup-dot mockup-dot-1"></div>
+                        <div class="mockup-dot mockup-dot-2"></div>
+                        <div class="mockup-dot mockup-dot-3"></div>
+                        <span style="font-size: 0.65rem; color: var(--text-muted); margin-left: 2rem;">Approvals Board</span>
+                    </div>
+                    <div class="mockup-content" style="font-family: inherit;">
+                        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 12px; padding: 1.5rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                                <span style="font-weight: 800; color: white;">Review Queue</span>
+                                <span style="font-size: 0.75rem; color: var(--warning); font-weight: 700;">3 Pending Review</span>
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.01); border: 1px solid rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-weight: bold; color: white; font-size: 0.85rem;">Client Dinner — Alice R.</div>
+                                    <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.2rem;">Submitted 2h ago • $185.00</div>
+                                </div>
+                                <div style="display: flex; gap: 0.4rem;">
+                                    <span style="background: rgba(16,185,129,0.1); border: 1px solid var(--success); color: var(--success); font-size: 0.65rem; font-weight: 700; padding: 0.25rem 0.5rem; border-radius: 6px; cursor: pointer;">Approve</span>
+                                    <span style="background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white; font-size: 0.65rem; font-weight: 700; padding: 0.25rem 0.5rem; border-radius: 6px; cursor: pointer;">Details</span>
+                                </div>
+                            </div>
+                            <div class="wireframe-element long" style="opacity: 0.3;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="split-content">
+                <div class="section-tag">Manager Approvals</div>
+                <h3>Accelerate Your Decision Cycles</h3>
+                <p>Equip your managers with robust workspace panels. Instead of drilling down into confusing nested spreadsheets, reviewers receive elegant approval lists showing exact receipt images, real-time audit details, and direct AI policy status reports in a single, high-fidelity glance.</p>
+                <div class="hero-ctas" style="margin-bottom: 0;">
+                    <a href="/login" class="btn btn-primary">Try Manager Workflow</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AUDIT TRAIL -->
+    <section class="audit-section" id="audit">
+        <div class="container split-card-grid reverse">
+            <div class="split-visual">
+                <div class="mockup-container">
+                    <div class="mockup-header">
+                        <div class="mockup-dot mockup-dot-1"></div>
+                        <div class="mockup-dot mockup-dot-2"></div>
+                        <div class="mockup-dot mockup-dot-3"></div>
+                        <span style="font-size: 0.65rem; color: var(--text-muted); margin-left: 2rem;">Audit Logs Ledger</span>
+                    </div>
+                    <div class="mockup-content" style="font-family: inherit;">
+                        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 12px; padding: 1.5rem;">
+                            <div style="font-weight: 800; color: white; font-size: 0.9rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <span>🔒</span> Immutable History Ledger
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.75rem;">
+                                <div style="display: flex; gap: 0.5rem; border-left: 2px solid var(--primary); padding-left: 0.75rem; margin-bottom: 0.25rem;">
+                                    <div>
+                                        <div style="color: white; font-weight: bold;">Claim Submitted by employee@company.com</div>
+                                        <div style="color: var(--text-muted); font-size: 0.65rem;">July 1, 2026 — 22:45 UTC</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 0.5rem; border-left: 2px solid var(--success); padding-left: 0.75rem; margin-bottom: 0.25rem;">
+                                    <div>
+                                        <div style="color: white; font-weight: bold;">AI Compliance Checked — Approved (Risk: Low)</div>
+                                        <div style="color: var(--text-muted); font-size: 0.65rem;">July 1, 2026 — 22:45 UTC</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 0.5rem; border-left: 2px solid var(--accent); padding-left: 0.75rem;">
+                                    <div>
+                                        <div style="color: white; font-weight: bold;">Manager Approved by manager@company.com</div>
+                                        <div style="color: var(--text-muted); font-size: 0.65rem;">July 1, 2026 — 23:10 UTC</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="split-content">
+                <div class="section-tag">Audit Trail</div>
+                <h3>Bulletproof Audit Integrity</h3>
+                <p>Every expense event produces an immutable activity record, preserving the entire life history of the transaction. Track exactly who created, modified, verified, and authorized a spend claim, producing comprehensive reports ready for tax audits and internal compliance controls.</p>
+                <ul class="feature-tag-list">
+                    <li class="feature-tag-item">Cryptographic Event IDs</li>
+                    <li class="feature-tag-item">Immutable History Tracking</li>
+                    <li class="feature-tag-item">Sarbanes-Oxley (SOX) Compliant</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- BILLING / FINANCE ADMIN -->
+    <section class="admin-section" id="admin">
+        <div class="container split-card-grid">
+            <div class="split-visual">
+                <div class="mockup-container">
+                    <div class="mockup-header">
+                        <div class="mockup-dot mockup-dot-1"></div>
+                        <div class="mockup-dot mockup-dot-2"></div>
+                        <div class="mockup-dot mockup-dot-3"></div>
+                        <span style="font-size: 0.65rem; color: var(--text-muted); margin-left: 2rem;">Global Billing Settings</span>
+                    </div>
+                    <div class="mockup-content" style="font-family: inherit;">
+                        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 12px; padding: 1.5rem;">
+                            <div style="font-weight: 800; color: white; font-size: 0.9rem; margin-bottom: 1.25rem;">Global Policy Caps</div>
+                            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+                                    <span style="font-size: 0.8rem; color: #cbd5e1;">Max Lodging Rate (Nightly)</span>
+                                    <span style="font-family: monospace; color: var(--primary); font-weight: bold; font-size: 0.8rem;">$250.00 USD</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+                                    <span style="font-size: 0.8rem; color: #cbd5e1;">Max Meal Allowance (Daily)</span>
+                                    <span style="font-family: monospace; color: var(--primary); font-weight: bold; font-size: 0.8rem;">$75.00 USD</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="font-size: 0.8rem; color: #cbd5e1;">Auto-Approve Low Risk &lt;</span>
+                                    <span style="font-family: monospace; color: var(--primary); font-weight: bold; font-size: 0.8rem;">$50.00 USD</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="split-content">
+                <div class="section-tag">Billing &amp; Finance Admin</div>
+                <h3>Unified Spend Command Center</h3>
+                <p>Finance admins wield complete authority. Establish spending parameters, edit per-diem maximum caps dynamically, control corporate reimbursement cycles, and download fully-formatted CSV audit batches structured for immediate GL accounting uploads.</p>
+                <div class="hero-ctas" style="margin-bottom: 0;">
+                    <a href="/login" class="btn btn-outline">Explore Admin Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECURITY & RBAC -->
+    <section class="security-section" id="security">
+        <div class="container split-card-grid reverse">
+            <div class="split-visual">
+                <div class="mockup-container">
+                    <div class="mockup-header">
+                        <div class="mockup-dot mockup-dot-1"></div>
+                        <div class="mockup-dot mockup-dot-2"></div>
+                        <div class="mockup-dot mockup-dot-3"></div>
+                        <span style="font-size: 0.65rem; color: var(--text-muted); margin-left: 2rem;">IAM Control Panel</span>
+                    </div>
+                    <div class="mockup-content" style="font-family: inherit;">
+                        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 12px; padding: 1.5rem;">
+                            <div style="font-weight: 800; color: white; font-size: 0.9rem; margin-bottom: 1rem;">Role Permissions</div>
+                            <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.75rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99,102,241,0.2); padding: 0.5rem; border-radius: 8px;">
+                                    <span style="font-weight: bold; color: white;">employee</span>
+                                    <span style="color: var(--text-muted); font-size: 0.65rem;">Submit &amp; View Own Claims</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(139, 92, 246, 0.05); border: 1px solid rgba(139,92,246,0.2); padding: 0.5rem; border-radius: 8px;">
+                                    <span style="font-weight: bold; color: white;">manager</span>
+                                    <span style="color: var(--text-muted); font-size: 0.65rem;">Approve &amp; Audit Team Claims</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16,185,129,0.2); padding: 0.5rem; border-radius: 8px;">
+                                    <span style="font-weight: bold; color: white;">finance_admin</span>
+                                    <span style="color: var(--text-muted); font-size: 0.65rem;">Global Access &amp; Master Auditing</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="split-content">
+                <div class="section-tag">Security &amp; RBAC</div>
+                <h3>Enterprise Security &amp; Identity</h3>
+                <p>Deploy secure workspace controls. Fully backed by standard Google OpenID Connect (OIDC) identity federations, state-of-the-art tokenized sessions, and secure Role-Based Access Controls (RBAC) separating employees, managers, and admins cleanly.</p>
+                <ul class="feature-tag-list">
+                    <li class="feature-tag-item">Google SSO Federated Identity</li>
+                    <li class="feature-tag-item">Secure HTTPS TLS v1.3</li>
+                    <li class="feature-tag-item">Granular RBAC Enforcements</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- SCREENSHOTS / DEMO PLACEHOLDER SECTION -->
+    <section class="screenshots-section" id="screenshots">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">Workspace Preview</div>
+                <h2 class="section-title">The Premium Dashboard Interface</h2>
+                <p class="section-desc">Get an exclusive first look at our dark, glassmorphic layout optimized for focus and speed.</p>
+            </div>
+            <div class="screenshot-gallery">
+                <div class="glass-card screenshot-main" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div class="wireframe-title">📂 Manager Operations Hub</div>
+                        <div class="wireframe-element accent-bar"></div>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem;">Experience a unified management workflow. Sort, filter, and inspect pending reports from your team instantly, complete with embedded policy indicators.</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 12px; padding: 1.5rem; height: 180px;">
+                        <div class="wireframe-element long"></div>
+                        <div class="wireframe-element medium"></div>
+                        <div class="wireframe-element short"></div>
+                        <div class="wireframe-element long" style="opacity: 0.5;"></div>
+                    </div>
+                </div>
+                <div class="screenshot-side-grid">
+                    <div class="glass-card screenshot-thumbnail" style="display: flex; flex-direction: column; justify-content: space-between; padding: 1.5rem;">
+                        <div class="wireframe-title">💵 Fast Claims Filing</div>
+                        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.75rem;">
+                            <div class="wireframe-element medium" style="margin-bottom: 0;"></div>
+                        </div>
+                    </div>
+                    <div class="glass-card screenshot-thumbnail" style="display: flex; flex-direction: column; justify-content: space-between; padding: 1.5rem;">
+                        <div class="wireframe-title">📈 Analytics Command</div>
+                        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.75rem;">
+                            <div class="wireframe-element short" style="margin-bottom: 0; background: var(--accent);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRICING PLACEHOLDER -->
+    <section class="pricing-section" id="pricing">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">Simple Pricing</div>
+                <h2 class="section-title">Transparent Plans for Every Team</h2>
+                <p class="section-desc">Choose a platform tier tailored to your organizational scale. All plans feature our premium dark glassmorphic design and standard APIs.</p>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card glass-card">
+                    <div class="pricing-header">
+                        <div class="pricing-name">Starter Workspace</div>
+                        <div class="pricing-desc">Perfect for small teams seeking optimized travel logs and receipt collections.</div>
+                        <div class="pricing-price">
+                            <span class="price-currency">$</span>
+                            <span class="price-val">12</span>
+                            <span class="price-period">/ user / mo</span>
+                        </div>
+                    </div>
+                    <ul class="pricing-features-list">
+                        <li class="pricing-feature-item">✔ <strong>Up to 25</strong> active employees</li>
+                        <li class="pricing-feature-item">✔ Interactive mileage calculations</li>
+                        <li class="pricing-feature-item">✔ Standard OCR receipt scanning</li>
+                        <li class="pricing-feature-item">✔ Local manual approvals board</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-secondary" style="width: 100%;">Start Free Trial</a>
+                </div>
+                <div class="pricing-card glass-card popular">
+                    <span class="pricing-badge">Popular Choice</span>
+                    <div class="pricing-header">
+                        <div class="pricing-name">Enterprise Growth</div>
+                        <div class="pricing-desc">Engineered for medium to large enterprises seeking automated compliance.</div>
+                        <div class="pricing-price">
+                            <span class="price-currency">$</span>
+                            <span class="price-val">24</span>
+                            <span class="price-period">/ user / mo</span>
+                        </div>
+                    </div>
+                    <ul class="pricing-features-list">
+                        <li class="pricing-feature-item">✔ <strong>Unlimited</strong> employee records</li>
+                        <li class="pricing-feature-item">✔ Automated AI Policy Engine</li>
+                        <li class="pricing-feature-item">✔ Google OIDC SSO Identity</li>
+                        <li class="pricing-feature-item">✔ Complete immutable Audit Trails</li>
+                        <li class="pricing-feature-item">✔ Global per-diem tables preloaded</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-primary" style="width: 100%;">Deploy growth tier</a>
+                </div>
+                <div class="pricing-card glass-card">
+                    <div class="pricing-header">
+                        <div class="pricing-name">Infinite Scale</div>
+                        <div class="pricing-desc">Custom implementations with dedicated databases and bespoke security policies.</div>
+                        <div class="pricing-price">
+                            <span class="price-currency">Custom</span>
+                        </div>
+                    </div>
+                    <ul class="pricing-features-list">
+                        <li class="pricing-feature-item">✔ Multi-tenant isolated databases</li>
+                        <li class="pricing-feature-item">✔ Custom custom-coded AI checks</li>
+                        <li class="pricing-feature-item">✔ Dedicated support &amp; custom SLAs</li>
+                        <li class="pricing-feature-item">✔ Global multi-currency ERP ties</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-secondary" style="width: 100%;">Contact Enterprise Sales</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT / DEMO REQUEST SECTION -->
+    <section class="contact-section" id="contact">
+        <div class="container contact-grid">
+            <div class="contact-info">
+                <div class="section-tag">Get in Touch</div>
+                <h2 class="section-title" style="font-size: 2.5rem; text-align: left; margin-bottom: 1.5rem;">Request an Enterprise Consultation</h2>
+                <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; margin-bottom: 3.5rem;">Schedule a dedicated session with our solutions engineering team. Learn how to tailor Ambience ExpenseFlow to your organization's custom spending policies and system integrations.</p>
+                <div class="contact-info-list">
+                    <div class="contact-info-item">
+                        <div class="contact-info-icon">📍</div>
+                        <div class="contact-info-text">
+                            <h4>Corporate Headquarters</h4>
+                            <p>One Infinite Loop, San Francisco, CA 94111</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-item">
+                        <div class="contact-info-icon">✉️</div>
+                        <div class="contact-info-text">
+                            <h4>Direct Email Queries</h4>
+                            <p>enterprise-sales@ambienceflow.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="glass-card" style="padding: 3rem;">
+                <form class="contact-form" id="demoForm" onsubmit="handleDemoSubmit(event)">
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <input type="text" id="fullName" class="form-control" placeholder="John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="workEmail">Work Email</label>
+                            <input type="email" id="workEmail" class="form-control" placeholder="john.doe@company.com" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="companyName">Company Name</label>
+                        <input type="text" id="companyName" class="form-control" placeholder="Acme Corporation" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Custom Spend Requirements</label>
+                        <textarea id="message" class="form-control" placeholder="Tell us about your team size and key policy requirements..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="margin-top: 1rem; width: 100%; height: 50px;">Submit Demo Request</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-logo-col">
+                    <a href="#" class="logo">
+                        <div class="logo-icon">AE</div>
+                        <div class="logo-text">
+                            <span>Ambience</span>
+                            <span class="logo-sub">ExpenseFlow</span>
+                        </div>
+                    </a>
+                    <p>Enterprise Travel &amp; Spend Management. Streamlining organizational workflows since 2026.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Product Hub</h4>
+                    <ul class="footer-links">
+                        <li><a href="#overview">Product Overview</a></li>
+                        <li><a href="#features">Key Features</a></li>
+                        <li><a href="#workflow">Interactive Flow</a></li>
+                        <li><a href="#pricing">Simple Pricing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Enterprise Solution</h4>
+                    <ul class="footer-links">
+                        <li><a href="#compliance">AI Compliance Engine</a></li>
+                        <li><a href="#approvals">Manager Queue</a></li>
+                        <li><a href="#audit">Immutable Audit Trail</a></li>
+                        <li><a href="#security">Google SSO Security</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Corporate Office</h4>
+                    <ul class="footer-links">
+                        <li><a href="#contact">Contact Consultation</a></li>
+                        <li><a href="mailto:enterprise-sales@ambienceflow.com">Direct Sales Email</a></li>
+                        <li><a href="/login" style="color: var(--primary); font-weight: 700;">Launch App →</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div>© 2026 Ambience ExpenseFlow. All rights reserved around global enterprise travel management.</div>
+                <div class="footer-legal-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast" id="successToast">
+        <div class="toast-icon">✔</div>
+        <div>
+            <strong style="color: white; display: block; margin-bottom: 2px;">Request Successfully Received!</strong>
+            <span style="color: var(--text-muted); font-size: 0.8rem;">Our solutions engineering team will reach out to you within 2 business hours.</span>
+        </div>
+    </div>
+
+    <!-- CLIENT INTERACTIVE BEHAVIORS -->
+    <script>
+        // Header scrolled class
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Interactive workflow step switching data
+        const workflowData = {
+            1: {
+                title: "Draft & Collect",
+                desc: "Employees log into the platform, create digital expense reports, calculate mileage with Google Maps integration, upload documents, and submit whenever they are ready.",
+                wireframe: `<h4 style="color: white; font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem;">Draft & Collect</h4>
+                            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.7;">Employees log into the platform, create digital expense reports, calculate mileage with Google Maps integration, upload documents, and submit whenever they are ready.</p>
+                            <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 12px; padding: 1.5rem;">
+                                <div class="wireframe-title">📝 Expense Draft #842</div>
+                                <div class="wireframe-element long"></div>
+                                <div class="wireframe-element medium"></div>
+                                <div class="wireframe-element short" style="background: var(--primary);"></div>
+                            </div>`
+            },
+            2: {
+                title: "AI Policy Assessment",
+                desc: "The automated policy system parses line items instantly, crosschecking lodging limits against destination grids, flag exceptions, and logs verified outcomes.",
+                wireframe: `<h4 style="color: white; font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem;">AI Policy Assessment</h4>
+                            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.7;">The automated policy system parses line items instantly, crosschecking lodging limits against destination grids, flag exceptions, and logs verified outcomes.</p>
+                            <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 12px; padding: 1.5rem;">
+                                <div class="wireframe-title" style="color: var(--success);">✔ Policy Rules Compliance: 100%</div>
+                                <div class="wireframe-element accent-bar"></div>
+                                <div class="wireframe-element long"></div>
+                                <div class="wireframe-element short"></div>
+                            </div>`
+            },
+            3: {
+                title: "Manager Audit & Sign-off",
+                desc: "Reviewers inspect claims inside clean, prioritized workflows. Single-tap approvals automatically sign off compliance verified items, escalating anomalies.",
+                wireframe: `<h4 style="color: white; font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem;">Manager Audit & Sign-off</h4>
+                            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.7;">Reviewers inspect claims inside clean, prioritized workflows. Single-tap approvals automatically sign off compliance verified items, escalating anomalies.</p>
+                            <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 12px; padding: 1.5rem;">
+                                <div class="wireframe-title">💼 Active Approval Queue</div>
+                                <div class="wireframe-element long"></div>
+                                <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                                    <div class="btn btn-primary" style="padding: 0.3rem 0.8rem; font-size: 0.7rem; border-radius: 6px;">Approve Claim</div>
+                                    <div class="btn btn-secondary" style="padding: 0.3rem 0.8rem; font-size: 0.7rem; border-radius: 6px;">Reject / Remark</div>
+                                </div>
+                            </div>`
+            },
+            4: {
+                title: "Consolidated Accounting",
+                desc: "Reimbursements are cleared with complete electronic audit summaries, direct banking integrations, and general ledger exports ready for upload.",
+                wireframe: `<h4 style="color: white; font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem;">Consolidated Accounting</h4>
+                            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.7;">Reimbursements are cleared with complete electronic audit summaries, direct banking integrations, and general ledger exports ready for upload.</p>
+                            <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 12px; padding: 1.5rem;">
+                                <div class="wireframe-title">💾 Export Data Packages</div>
+                                <div class="wireframe-element medium"></div>
+                                <div class="wireframe-element short" style="background: var(--accent);"></div>
+                                <div style="font-size: 0.7rem; color: var(--success); font-weight: bold; margin-top: 0.5rem;">Download Ledger_Export.csv (24.8KB)</div>
+                            </div>`
+            }
+        };
+
+        function switchWorkflowStep(stepNum) {
+            // Remove active class from all steps
+            const steps = document.querySelectorAll('.workflow-step');
+            steps.forEach((step, idx) => {
+                if (idx + 1 === stepNum) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+
+            // Update content with transition fade
+            const container = document.getElementById('workflow-visual-content');
+            container.style.opacity = '0';
+            setTimeout(() => {
+                container.innerHTML = workflowData[stepNum].wireframe;
+                container.style.opacity = '1';
+            }, 250);
+        }
+
+        // Handle custom Form Submit and toast notification
+        function handleDemoSubmit(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('fullName').value;
+            const email = document.getElementById('workEmail').value;
+            const company = document.getElementById('companyName').value;
+            const msg = document.getElementById('message').value;
+
+            if (name && email && company && msg) {
+                // Clear form inputs
+                document.getElementById('fullName').value = '';
+                document.getElementById('workEmail').value = '';
+                document.getElementById('companyName').value = '';
+                document.getElementById('message').value = '';
+
+                // Show toast with custom transitions
+                const toast = document.getElementById('successToast');
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html>

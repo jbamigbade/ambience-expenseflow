@@ -40,6 +40,18 @@
         </div>
     </header>
 
+    <!-- Local Test Workflow Banner -->
+    <div id="local-workflow-banner" style="display: flex; align-items: center; justify-content: center; gap: 0.8rem; background: linear-gradient(90deg, rgba(99, 102, 241, 0.12) 0%, rgba(139, 92, 246, 0.12) 50%, rgba(236, 72, 153, 0.12) 100%); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 0.85rem 1.5rem; margin-bottom: 2rem; position: relative; z-index: 10; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
+        <span style="font-size: 1.1rem; line-height: 1;">🧪</span>
+        <span style="font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.85rem; background: linear-gradient(to right, #a5b4fc, #c084fc, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Testing Workflow:</span>
+        <span style="font-weight: 600; color: #94a3b8; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; justify-content: center; font-size: 0.85rem;">
+            <span style="color: #e2e8f0; font-weight: 700;">Employee Submit</span> <span style="color: #c084fc; font-weight: 900; margin: 0 0.1rem;">→</span>
+            <span style="color: #e2e8f0; font-weight: 700;">Manager Approve</span> <span style="color: #c084fc; font-weight: 900; margin: 0 0.1rem;">→</span>
+            <span style="color: #e2e8f0; font-weight: 700;">Finance Review</span> <span style="color: #c084fc; font-weight: 900; margin: 0 0.1rem;">→</span>
+            <span style="color: #e2e8f0; font-weight: 700;">Auditor Verify</span>
+        </span>
+    </div>
+
     <!-- Beautiful glassmorphic tab bar -->
     <div class="tab-bar" style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.8rem; position: relative; z-index: 10;">
         <button class="tab-btn" id="tab-reports" onclick="switchTab('reports')" style="background: none; border: none; color: var(--text-muted); font-family: inherit; font-size: 1.05rem; font-weight: 600; padding: 0.5rem 1rem; cursor: pointer; position: relative; transition: var(--transition);">
@@ -135,6 +147,10 @@
                 </div>
 
                 <!-- Reports Grid Container -->
+                <div id="reports-loading-status" style="display: none; gap: 0.75rem; margin-bottom: 1.5rem; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); padding: 1rem 1.5rem; border-radius: 12px; font-size: 0.9rem; color: var(--text-muted);">
+                    <div class="spinner" style="width: 18px; height: 18px; border-width: 2px;"></div>
+                    <span class="loading-text">Loading reports...</span>
+                </div>
                 <div class="reports-grid" id="reports-grid">
                     <!-- Cards will be populated dynamically -->
                 </div>
@@ -251,7 +267,16 @@
                         <div id="builder-documents-container" style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 1.5rem;">
                             <h3 style="font-size: 1.1rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">Report Documents</h3>
                             <div id="builder-documents-list" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
-                                <!-- Document items populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Agent Review Card -->
+                        <div id="builder-agent-review-container" style="display: none; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 1.5rem;">
+                            <h3 style="font-size: 1.1rem; font-weight: 700; color: white; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                                🤖 Agentic Audit Review
+                            </h3>
+                            <div id="builder-agent-review-content" style="font-size: 0.85rem; color: white; display: flex; flex-direction: column; gap: 0.75rem;">
+                                <!-- Populated dynamically -->
                             </div>
                         </div>
 
@@ -276,12 +301,53 @@
                 <button class="filter-btn" id="src-btn-report_workflow" onclick="setPendingSourceFilter('report_workflow')">Report Workflow</button>
                 <button class="filter-btn" id="src-btn-legacy_cli" onclick="setPendingSourceFilter('legacy_cli')">Legacy CLI</button>
             </div>
+            <div id="pending-loading-status" style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); padding: 1rem 1.5rem; border-radius: 12px; font-size: 0.9rem; color: var(--text-muted);">
+                <div class="spinner" style="width: 18px; height: 18px; border-width: 2px;"></div>
+                <span class="loading-text">Loading reports...</span>
+            </div>
             <div class="dashboard-grid" id="dashboard-grid">
-                <!-- Loading state on startup -->
-                <div class="empty-state" style="grid-column: 1/-1;">
-                    <div class="spinner"></div>
-                    <h3>Querying Agent Registry...</h3>
-                    <p>Connecting to Vertex AI reasoning engine and downloading active session metrics...</p>
+                <!-- Loading state on startup using clean skeletons -->
+                <div class="skeleton-card">
+                    <div>
+                        <div class="skeleton-bar title"></div>
+                        <div class="skeleton-bar subtitle"></div>
+                    </div>
+                    <div>
+                        <div class="skeleton-bar content"></div>
+                        <div class="skeleton-bar content" style="width: 50%;"></div>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <div class="skeleton-bar" style="width: 30%; height: 24px; border-radius: 6px;"></div>
+                        <div class="skeleton-bar" style="width: 30%; height: 24px; border-radius: 6px;"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div>
+                        <div class="skeleton-bar title"></div>
+                        <div class="skeleton-bar subtitle"></div>
+                    </div>
+                    <div>
+                        <div class="skeleton-bar content"></div>
+                        <div class="skeleton-bar content" style="width: 50%;"></div>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <div class="skeleton-bar" style="width: 30%; height: 24px; border-radius: 6px;"></div>
+                        <div class="skeleton-bar" style="width: 30%; height: 24px; border-radius: 6px;"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div>
+                        <div class="skeleton-bar title"></div>
+                        <div class="skeleton-bar subtitle"></div>
+                    </div>
+                    <div>
+                        <div class="skeleton-bar content"></div>
+                        <div class="skeleton-bar content" style="width: 50%;"></div>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <div class="skeleton-bar" style="width: 30%; height: 24px; border-radius: 6px;"></div>
+                        <div class="skeleton-bar" style="width: 30%; height: 24px; border-radius: 6px;"></div>
+                    </div>
                 </div>
             </div>
         </div>

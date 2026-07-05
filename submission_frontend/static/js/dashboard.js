@@ -1825,16 +1825,27 @@
 
         async function fetchExpenseHistory(force = false) {
             const tbody = document.getElementById("history-table-body");
+            let isLoaded = false;
+            
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="10" style="padding: 3rem; text-align: center; color: var(--text-muted);">
+                        <div class="spinner" style="margin: 0 auto 1rem auto; width: 24px; height: 24px;"></div>
+                        <span class="history-loading-text">Loading reports...</span>
+                    </td>
+                </tr>
+            `;
+            
+            const timeoutId = setTimeout(() => {
+                if (!isLoaded) {
+                    const textEl = tbody.querySelector(".history-loading-text");
+                    if (textEl) {
+                        textEl.textContent = "Still loading. You can refresh or try again.";
+                    }
+                }
+            }, 5000);
+            
             try {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="10" style="padding: 3rem; text-align: center; color: var(--text-muted);">
-                            <div class="spinner" style="margin: 0 auto 1rem auto; width: 24px; height: 24px;"></div>
-                            Syncing database and loading history...
-                        </td>
-                    </tr>
-                `;
-                
                 let apiPath = USER_ROLE === 'employee' ? '/api/employee/claims' : '/api/expenses';
                 if (force && apiPath === '/api/expenses') {
                     apiPath += "?refresh=true";
@@ -1844,6 +1855,9 @@
                 
                 const expenses = await response.json();
                 allExpenses = expenses;
+
+                isLoaded = true;
+                clearTimeout(timeoutId);
 
                 const qbPanel = document.getElementById("query-builder-panel");
                 if (qbPanel && (USER_ROLE === "manager" || USER_ROLE === "finance_admin")) {
@@ -1878,6 +1892,8 @@
                 }
                 
             } catch (err) {
+                isLoaded = true;
+                clearTimeout(timeoutId);
                 console.error("Failed to load history", err);
                 tbody.innerHTML = `
                     <tr>
@@ -2520,11 +2536,52 @@
         }
         window.setPendingSourceFilter = setPendingSourceFilter;
 
+        function getSkeletonHTML(count) {
+            let html = "";
+            for (let i = 0; i < count; i++) {
+                html += `
+                <div class="skeleton-card">
+                    <div>
+                        <div class="skeleton-bar title"></div>
+                        <div class="skeleton-bar subtitle"></div>
+                    </div>
+                    <div>
+                        <div class="skeleton-bar content"></div>
+                        <div class="skeleton-bar content" style="width: 50%;"></div>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <div class="skeleton-bar" style="width: 30%; height: 24px; border-radius: 6px;"></div>
+                        <div class="skeleton-bar" style="width: 30%; height: 24px; border-radius: 6px;"></div>
+                    </div>
+                </div>`;
+            }
+            return html;
+        }
+
         async function fetchPendingApprovals(force = false) {
             const grid = document.getElementById("dashboard-grid");
             const countBadge = document.getElementById("pending-count");
             const hiddenBadge = document.getElementById("hidden-badge");
             const hiddenCountEl = document.getElementById("hidden-count");
+            
+            const loadingStatus = document.getElementById("pending-loading-status");
+            const loadingText = loadingStatus ? loadingStatus.querySelector(".loading-text") : null;
+            
+            let isLoaded = false;
+            if (loadingText) {
+                loadingText.textContent = "Loading reports...";
+            }
+            if (loadingStatus) {
+                loadingStatus.style.display = "flex";
+            }
+            
+            grid.innerHTML = getSkeletonHTML(3);
+            
+            const timeoutId = setTimeout(() => {
+                if (!isLoaded && loadingText) {
+                    loadingText.textContent = "Still loading. You can refresh or try again.";
+                }
+            }, 5000);
             
             try {
                 let url = `/api/pending?source=${pendingSourceFilter}`;
@@ -2559,6 +2616,12 @@
                 
                 grid.innerHTML = "";
                 cachedClaims = {};
+                
+                isLoaded = true;
+                clearTimeout(timeoutId);
+                if (loadingStatus) {
+                    loadingStatus.style.display = "none";
+                }
                 
                 if (claims.length === 0) {
                     grid.innerHTML = `
@@ -2872,17 +2935,20 @@
                 });
                 
             } catch (err) {
+                isLoaded = true;
+                clearTimeout(timeoutId);
+                if (loadingStatus) {
+                    loadingStatus.style.display = "none";
+                }
                 console.error("Failed to load approvals", err);
                 grid.innerHTML = `
-                    <div class="empty-state" style="border-color: var(--danger-glow);">
+                    <div class="empty-state" style="border-color: var(--danger-glow); backdrop-filter: none; -webkit-backdrop-filter: none;">
                         <div class="empty-icon" style="filter:none;">❌</div>
                         <h3 style="color:#f43f5e;">System Sync Offline</h3>
                         <p>Error connecting to backend services: ${err.message}. Ensure your credentials are active and GCP_PROJECT is set.</p>
                     </div>
                 `;
             }
-        }
-
         async function handleAction(sessionId, approved) {
             const loader = document.getElementById(`loader-${sessionId}`);
             loader.style.display = "flex";
@@ -3052,9 +3118,9 @@ fetchPendingApprovals = async function(force = false) {
             if (reports.length > 0) {
                 const grid = document.getElementById("dashboard-grid");
                 
-                // If there was an empty state of querying agent registry, remove it
+                // If there was an empty state, remove it
                 const emptyState = grid.querySelector(".empty-state");
-                if (emptyState && emptyState.textContent.includes("Querying Agent Registry")) {
+                if (emptyState) {
                     grid.innerHTML = "";
                 }
                 
@@ -3109,21 +3175,37 @@ fetchPendingApprovals = async function(force = false) {
     }
 };
 
-// Fetch reports from backend
 async function fetchMyReports() {
     const grid = document.getElementById("reports-grid");
-    grid.innerHTML = `
-        <div class="empty-state" style="grid-column: 1/-1;">
-            <div class="spinner"></div>
-            <h3>Loading Expense Reports...</h3>
-            <p>Retrieving draft and submitted corporate expense reports from database...</p>
-        </div>
-    `;
+    const loadingStatus = document.getElementById("reports-loading-status");
+    const loadingText = loadingStatus ? loadingStatus.querySelector(".loading-text") : null;
+    
+    let isLoaded = false;
+    if (loadingText) {
+        loadingText.textContent = "Loading reports...";
+    }
+    if (loadingStatus) {
+        loadingStatus.style.display = "flex";
+    }
+    
+    grid.innerHTML = getSkeletonHTML(3);
+
+    const timeoutId = setTimeout(() => {
+        if (!isLoaded && loadingText) {
+            loadingText.textContent = "Still loading. You can refresh or try again.";
+        }
+    }, 5000);
 
     try {
         const response = await fetch("/api/reports");
         if (!response.ok) throw new Error("Failed to fetch reports");
         allReports = await response.json();
+        
+        isLoaded = true;
+        clearTimeout(timeoutId);
+        if (loadingStatus) {
+            loadingStatus.style.display = "none";
+        }
         
         // Show filter bar for managers and admins
         const filterBar = document.getElementById("reports-filter-bar");
@@ -3142,9 +3224,14 @@ async function fetchMyReports() {
 
         applyReportFilters();
     } catch (err) {
+        isLoaded = true;
+        clearTimeout(timeoutId);
+        if (loadingStatus) {
+            loadingStatus.style.display = "none";
+        }
         console.error("Error fetching reports:", err);
         grid.innerHTML = `
-            <div class="empty-state" style="grid-column: 1/-1; border-color: var(--danger-glow);">
+            <div class="empty-state" style="grid-column: 1/-1; border-color: var(--danger-glow); backdrop-filter: none; -webkit-backdrop-filter: none;">
                 <h3>Failed to load reports</h3>
                 <p>${err.message}</p>
             </div>
@@ -3432,6 +3519,63 @@ async function loadReportBuilder(reportId) {
             returnBanner.style.display = "none";
         }
 
+        // AGENT REVIEW SECTION
+        const agentContainer = document.getElementById("builder-agent-review-container");
+        const agentContent = document.getElementById("builder-agent-review-content");
+        if (agentContainer && agentContent) {
+            if (report.agent_recommendation || report.agent_route) {
+                agentContainer.style.display = "block";
+                
+                const intakeResult = report.agent_intake_result || "Passed";
+                const complianceWarnings = report.policy_warnings || [];
+                const routingRecommendation = report.agent_recommendation || "ROUTE_TO_MANAGER";
+                const routeChannel = report.agent_route === "finance_review" ? "Finance Admin Review (Escalated)" : "Standard Manager Review";
+                const eventCount = report.agent_audit_event_count || 0;
+                
+                let warningsHTML = "";
+                if (complianceWarnings.length === 0) {
+                    warningsHTML = `<div style="color: var(--success); font-weight: 500;">✓ No policy compliance violations flagged.</div>`;
+                } else {
+                    warningsHTML = `<ul style="margin: 0.25rem 0 0 1rem; padding: 0; display: flex; flex-direction: column; gap: 0.25rem; color: #fb7185; list-style-type: disc;">`;
+                    complianceWarnings.forEach(w => {
+                        warningsHTML += `<li>${escapeHtml(w)}</li>`;
+                    });
+                    warningsHTML += `</ul>`;
+                }
+                
+                const badgeColor = report.agent_route === "finance_review" ? "rgba(239, 68, 68, 0.1)" : "rgba(16, 185, 129, 0.1)";
+                const badgeBorder = report.agent_route === "finance_review" ? "rgba(239, 68, 68, 0.3)" : "rgba(16, 185, 129, 0.3)";
+                const badgeText = report.agent_route === "finance_review" ? "#f87171" : "#34d399";
+                
+                agentContent.innerHTML = `
+                    <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">Intake Agent:</span>
+                        <strong style="color: #34d399;">✓ ${escapeHtml(intakeResult)}</strong>
+                    </div>
+                    <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+                        <span style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; display: block; margin-bottom: 0.25rem;">Compliance Warnings:</span>
+                        ${warningsHTML}
+                    </div>
+                    <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">Routing Recommendation:</span>
+                        <strong style="color: ${badgeText};">${escapeHtml(routingRecommendation)}</strong>
+                    </div>
+                    <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">Target Channel:</span>
+                        <span style="background: ${badgeColor}; border: 1px solid ${badgeBorder}; color: ${badgeText}; padding: 0.15rem 0.5rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600;">
+                            ${escapeHtml(routeChannel)}
+                        </span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-muted);">
+                        <span>Audit Trail Log Count:</span>
+                        <strong>${eventCount} immutable events logged</strong>
+                    </div>
+                `;
+            } else {
+                agentContainer.style.display = "none";
+            }
+        }
+
         // EDITABILITY & ROLE CHECKS
         const isEditable = report.status === "draft" || report.status === "returned_to_employee";
         const isEmployeeOwner = report.employee_email === USER_EMAIL;
@@ -3615,6 +3759,11 @@ async function loadReportBuilder(reportId) {
                 <button class="btn btn-receipt" onclick="openReturnModal('${reportId}')" style="padding: 0.6rem 1.2rem; font-weight: 600; border-radius: 10px; border-color: rgba(245,158,11,0.4); color: #f59e0b;">Return to Employee</button>
                 <button class="btn btn-receipt" onclick="rejectReportForReview()" style="padding: 0.6rem 1.2rem; font-weight: 600; border-radius: 10px; border-color: rgba(244,63,94,0.4); color: #f87171;">Reject Report</button>
                 <button class="btn btn-primary" onclick="approveReportForReview()" style="padding: 0.6rem 1.5rem; font-weight: 600; border-radius: 10px;">Approve Report</button>
+            `;
+        } else if ((report.status === "approved_by_manager" || report.status === "approved" || report.status === "approved_with_exceptions") && (USER_ROLE === "finance_admin" || USER_ROLE === "admin")) {
+            actionsContainer.innerHTML = `
+                <button class="btn btn-receipt" onclick="closeReportBuilder()" style="padding: 0.6rem 1.2rem; font-weight: 600; border-radius: 10px;">Close Dossier</button>
+                <button class="btn btn-primary" onclick="markReportAsPaid()" style="padding: 0.6rem 1.5rem; font-weight: 600; border-radius: 10px; background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%); border-color: rgba(168,85,247,0.3);">Complete Finance Review & Mark Paid</button>
             `;
         } else {
             actionsContainer.innerHTML = `
@@ -4122,6 +4271,25 @@ async function approveReportForReview() {
     }
 }
 
+async function markReportAsPaid() {
+    if (!confirm("Are you sure you want to mark this manager-approved expense report as Paid/Reimbursed?")) return;
+    try {
+        const response = await fetch(`/api/reports/${activeReportId}/pay`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+        });
+        if (!response.ok) {
+            const errData = await response.json();
+            throw new Error(errData.detail || "Payment transition failed");
+        }
+        showToast("Expense report marked as Paid/Reimbursed!", "success");
+        closeReportBuilder();
+    } catch (err) {
+        console.error(err);
+        showToast("Error: " + err.message, "error");
+    }
+}
+
 async function decideClaimForReview(claimId, decision) {
     const reason = decision === 'rejected' ? (prompt("Please enter a reason for rejecting this claim line item:") || "Rejected") : "Approved by manager.";
     if (decision === 'rejected' && !reason) return;
@@ -4346,6 +4514,28 @@ let allCardTransactions = [];
 let cardTxFilterStatus = 'all';
 
 async function fetchCardTransactions() {
+    const tbody = document.getElementById("card-transactions-table-body");
+    let isLoaded = false;
+    if (tbody) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                    <div class="spinner" style="margin: 0 auto 1rem auto; width: 24px; height: 24px;"></div>
+                    <span class="card-loading-text">Loading reports...</span>
+                </td>
+            </tr>
+        `;
+    }
+
+    const timeoutId = setTimeout(() => {
+        if (!isLoaded && tbody) {
+            const textEl = tbody.querySelector(".card-loading-text");
+            if (textEl) {
+                textEl.textContent = "Still loading. You can refresh or try again.";
+            }
+        }
+    }, 5000);
+
     const connectPanel = document.getElementById("connect-card-panel");
     if (connectPanel) {
         if (typeof USER_ROLE !== "undefined" && USER_ROLE === "finance_admin") {
@@ -4360,10 +4550,23 @@ async function fetchCardTransactions() {
             throw new Error("Failed to fetch credit card transactions");
         }
         allCardTransactions = await response.json();
+        isLoaded = true;
+        clearTimeout(timeoutId);
         applyCardTxFilters();
     } catch (err) {
+        isLoaded = true;
+        clearTimeout(timeoutId);
         console.error("Error fetching card transactions:", err);
         showToast("Error loading credit card transactions: " + err.message, "error");
+        if (tbody) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 3rem; color: #fb7185;">
+                        ❌ Failed to load credit card transactions: ${err.message}
+                    </td>
+                </tr>
+            `;
+        }
     }
 }
 

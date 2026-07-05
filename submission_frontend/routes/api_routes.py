@@ -100,13 +100,41 @@ async def get_pending(
     hide_old_test_sessions: bool = True,
     assigned_to_me: bool = False,
     show_all_fa: bool = False,
-    source: str = "all"
+    source: str = "all",
+    refresh: bool = False
 ):
     """
     Queries VertexAiSessionService, fetches full histories in parallel,
     and returns sessions with unresolved adk_request_input events.
     """
     current_user = get_current_user_and_role(request)
+    email = current_user.get("email")
+    role = current_user.get("role")
+    
+    # Construct cache key
+    cache_key = (
+        email,
+        role,
+        search,
+        department,
+        manager,
+        status,
+        category,
+        company,
+        hide_old_test_sessions,
+        assigned_to_me,
+        show_all_fa,
+        source
+    )
+    
+    if not refresh:
+        now = time.time()
+        if cache_key in _pending_cache:
+            cache_ts, cached_data = _pending_cache[cache_key]
+            if now - cache_ts < _pending_cache_ttl:
+                logger.info(f"Returning cached pending approvals for user {email}")
+                return cached_data
+
     params = {
         "search": search,
         "department": department,
@@ -187,11 +215,12 @@ async def get_pending(
                         uploaded_metadata = {}
                         try:
                             def get_gcs_metadata():
-                                bucket = get_gcs_bucket()
-                                m_blob = bucket.blob(f"uploads/{sess.id}/metadata.json")
-                                if m_blob.exists():
+                                try:
+                                    bucket = get_gcs_bucket()
+                                    m_blob = bucket.blob(f"uploads/{sess.id}/metadata.json")
                                     return json.loads(m_blob.download_as_bytes().decode("utf-8"))
-                                return {}
+                                except Exception:
+                                    return {}
                             uploaded_metadata = await asyncio.to_thread(get_gcs_metadata)
                         except Exception as ge:
                             logger.warning(f"Error fetching GCS metadata for session {sess.id}: {ge}")
@@ -267,7 +296,7 @@ async def get_pending(
                         return claims_parsed
                     return []
                 except Exception as e:
-                    logger.error(f"Error fetching session {summary.id}: {e}")
+                    logger.exception(f"Error fetching session {summary.id}: {e}")
                     return []
         
         # Gather sessions in parallel
@@ -347,10 +376,12 @@ async def get_pending(
             
         filtered_pending = filter_and_enrich_claims(pending_claims, current_user, params, is_pending=True)
         sanitized_pending_claims = [sanitize_claim_dict(c) for c in filtered_pending]
-        return {
+        result_payload = {
             "pending_claims": sanitized_pending_claims,
             "hidden_cli_sessions_count": hidden_cli_sessions_count
         }
+        _pending_cache[cache_key] = (time.time(), result_payload)
+        return result_payload
     except Exception as e:
         logger.error(f"Error fetching pending approvals: {e}")
         raise HTTPException(
@@ -1937,12 +1968,35 @@ async def get_reports(
     start_date: str = None,
     end_date: str = None,
     limit: int = 50,
-    offset: int = 0
+    offset: int = 0,
+    refresh: bool = False
 ):
     current_user = get_current_user_and_role(request)
     email = current_user["email"]
     role = current_user["role"]
     
+    # Construct cache key
+    cache_key = (
+        email,
+        role,
+        status,
+        employee,
+        manager,
+        department,
+        start_date,
+        end_date,
+        limit,
+        offset
+    )
+    
+    if not refresh:
+        now = time.time()
+        if cache_key in _expenses_cache:
+            cache_ts, cached_data = _expenses_cache[cache_key]
+            if now - cache_ts < _expenses_cache_ttl:
+                logger.info(f"Returning cached reports for user {email}")
+                return cached_data
+                
     if not db:
         return []
         
@@ -1954,7 +2008,7 @@ async def get_reports(
             query = query.where("employee_email", "==", email)
         elif role == "manager":
             query = query.where("manager_email", "==", email)
-        elif role == "finance_admin":
+        elif role in ["finance_admin", "auditor", "admin"]:
             pass
         else:
             raise HTTPException(status_code=403, detail="Role not authorized to access reports")
@@ -1981,6 +2035,7 @@ async def get_reports(
                 continue
             filtered.append(r)
             
+        _expenses_cache[cache_key] = (time.time(), filtered)
         return filtered
     except Exception as e:
         logger.error(f"Error in GET /api/reports: {e}")
@@ -2094,10 +2149,16 @@ async def get_report_detail(report_id: str, request: Request):
             
         report = report_doc.to_dict()
         
-        if role == "employee" and report.get("employee_email") != email:
-            raise HTTPException(status_code=403, detail="Access denied to this report")
-        elif role == "manager" and report.get("manager_email") != email and role != "finance_admin":
-            raise HTTPException(status_code=403, detail="Access denied to this report")
+        if role == "employee":
+            if report.get("employee_email") != email:
+                raise HTTPException(status_code=403, detail="Access denied to this report")
+        elif role == "manager":
+            if report.get("manager_email") != email:
+                raise HTTPException(status_code=403, detail="Access denied to this report")
+        elif role in ["finance_admin", "auditor", "admin"]:
+            pass
+        else:
+            raise HTTPException(status_code=403, detail="Role not authorized to access reports")
             
         recalculate_report_totals(report_id)
         report = db.collection("expense_reports").document(report_id).get().to_dict()
@@ -2474,13 +2535,83 @@ async def submit_report(report_id: str, submit_data: dict, request: Request):
             })
             
         recalculate_report_totals(report_id)
+        
+        # Call ExpenseOrchestrator
+        from app.agents.orchestrator import ExpenseOrchestrator
+        orchestrator = ExpenseOrchestrator()
+        
+        # Get up-to-date report and claims data
+        report = report_ref.get().to_dict()
+        claims_ref = db.collection("expense_claims").where("report_id", "==", report_id)
+        claims = [c.to_dict() for c in claims_ref.get()]
+        
+        # Build normalized report
+        normalized_report = {
+            "report_id": report_id,
+            "employee_name": report.get("employee_name") or "Unknown Claimant",
+            "employee_email": report.get("employee_email") or "",
+            "purpose": report.get("report_title") or "Expense Report",
+            "total_amount": float(report.get("total_claimed_amount") or 0.0),
+            "line_items": [
+                {
+                    "amount": float(c.get("amount") or 0.0),
+                    "category": c.get("category") or "Other",
+                    "description": c.get("business_purpose") or c.get("description") or "No description",
+                    "receipt_url": c.get("receipt_url") or ""
+                }
+                for c in claims
+            ]
+        }
+        
+        orch_res = orchestrator.process_report(normalized_report)
+        
+        validation_res = orch_res.get("validation_result", {})
+        if not validation_res.get("success", False):
+            errors = validation_res.get("errors", ["Intake validation failed"])
+            raise HTTPException(status_code=400, detail=f"Validation failed: {', '.join(errors)}")
+            
+        policy_warnings = orch_res.get("policy_result", {}).get("warnings", [])
+        route_to = orch_res.get("routing_result", {}).get("route_to", "manager")
+        agent_route = "finance_review" if route_to == "finance_review" else "manager_review"
+        agent_recommendation = orch_res.get("final_recommendation")
+        audit_events = orch_res.get("audit_events", [])
+        
         report_ref.update({
             "status": "pending_manager_review",
             "submitted_by_email": current_user.get("email"),
             "submitted_by_role": current_user.get("role"),
             "submitted_at": datetime.utcnow().isoformat() + "Z",
-            "updated_at": datetime.utcnow().isoformat() + "Z"
+            "updated_at": datetime.utcnow().isoformat() + "Z",
+            "agent_intake_result": "Passed",
+            "policy_warnings": policy_warnings,
+            "agent_recommendation": agent_recommendation,
+            "agent_route": agent_route,
+            "agent_audit_event_count": len(audit_events)
         })
+        
+        # Write agent audit trail events to Firestore
+        for evt in audit_events:
+            try:
+                doc_ref = db.collection("audit_logs").document(evt.get("event_id"))
+                payload = {
+                    "company_id": report.get("company_id") or "demo_company",
+                    "report_id": report_id,
+                    "claim_id": None,
+                    "event_id": evt.get("event_id"),
+                    "event_type": evt.get("event_type"),
+                    "actor_email": evt.get("actor"),
+                    "actor_role": "agent",
+                    "authenticated": True,
+                    "message": evt.get("message"),
+                    "created_at": evt.get("timestamp"),
+                    "employee_email": report.get("employee_email"),
+                    "manager_email": report.get("manager_email")
+                }
+                if "metadata" in evt:
+                    payload["metadata"] = evt["metadata"]
+                doc_ref.set(payload)
+            except Exception as e:
+                logger.error(f"Failed to write agent audit log to Firestore: {e}")
         
         for c in claims:
             db.collection("expense_claims").document(c["claim_id"]).update({"claim_status": "submitted"})
@@ -2627,6 +2758,40 @@ async def approve_report(report_id: str, request: Request):
         raise
     except Exception as e:
         logger.error(f"Error approving report: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/api/reports/{report_id}/pay")
+async def pay_report(report_id: str, request: Request):
+    current_user = get_current_user_and_role(request)
+    role = current_user["role"]
+    if role not in ["finance_admin", "admin"]:
+        raise HTTPException(status_code=403, detail="Only Finance Admin or Admin can mark reports as paid.")
+        
+    if not db:
+        raise HTTPException(status_code=500, detail="Database not connected")
+        
+    try:
+        ref = db.collection("expense_reports").document(report_id)
+        snap = ref.get()
+        if not snap.exists:
+            raise HTTPException(status_code=404, detail="Report not found")
+            
+        ref.update({
+            "status": "paid",
+            "finance_reviewed_by": current_user.get("email"),
+            "finance_reviewed_at": datetime.utcnow().isoformat() + "Z",
+            "updated_at": datetime.utcnow().isoformat() + "Z"
+        })
+        
+        claims_ref = db.collection("expense_claims").where("report_id", "==", report_id)
+        for c_snap in claims_ref.get():
+            c_snap.reference.update({"claim_status": "paid"})
+            
+        add_report_audit_log(report_id, None, "report_paid", "Expense report review completed and marked as Paid/Reimbursed.", current_user)
+        return {"status": "success"}
+    except Exception as e:
+        logger.error(f"Error marking report as paid: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 

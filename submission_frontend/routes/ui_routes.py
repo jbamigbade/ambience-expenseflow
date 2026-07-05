@@ -100,7 +100,7 @@ async def get_dashboard(request: Request):
                                 <button class="btn btn-receipt" onclick="showClaimDetails('${exp.claim_id}')" style="padding: 0.35rem 0.7rem; font-size: 0.75rem; border-radius: 8px; width: auto; display: inline-flex; height: auto; background: rgba(99,102,241,0.1); color: #cbd5e1; border-color: rgba(99,102,241,0.25);">
                                     View Details
                                 </button>
-                                ${(USER_ROLE === 'finance_admin' || USER_ROLE === 'manager') ? `
+                                ${(USER_ROLE === 'finance_admin' || USER_ROLE === 'manager' || USER_ROLE === 'auditor' || USER_ROLE === 'admin') ? `
                                 <button class="btn btn-receipt" onclick="loadAuditTrail('${exp.claim_id}', '${escapeHtml(exp.employee_name)}', ${exp.amount})" style="padding: 0.35rem 0.7rem; font-size: 0.75rem; border-radius: 8px; width: auto; display: inline-flex; height: auto;">
                                     View Trail
                                 </button>
@@ -108,6 +108,11 @@ async def get_dashboard(request: Request):
                             </div>
                         </td>"""
     )
+    if auth_active:
+        rendered_content = rendered_content.replace(
+            'id="local-workflow-banner" style="display: flex;',
+            'id="local-workflow-banner" style="display: none !important; display: flex;'
+        )
     return HTMLResponse(content=rendered_content)
 
 @router.get("/marketing", response_class=HTMLResponse)

@@ -9,6 +9,51 @@ def seed_demo_employees(target_db):
     try:
         employees = [
             {
+                "employee_name": "Demo Employee",
+                "employee_email": "employee001@company.com",
+                "department": "Engineering",
+                "manager_email": "manager001@company.com",
+                "company_id": "demo_company",
+                "role_level": "employee",
+                "active": True
+            },
+            {
+                "employee_name": "Demo Manager",
+                "employee_email": "manager001@company.com",
+                "department": "Engineering",
+                "manager_email": "default-user@company.com",
+                "company_id": "demo_company",
+                "role_level": "manager",
+                "active": True
+            },
+            {
+                "employee_name": "Default Administrator",
+                "employee_email": "default-user@company.com",
+                "department": "Finance",
+                "manager_email": "admin001@company.com",
+                "company_id": "demo_company",
+                "role_level": "finance_admin",
+                "active": True
+            },
+            {
+                "employee_name": "Demo Auditor",
+                "employee_email": "auditor001@company.com",
+                "department": "Internal Audit",
+                "manager_email": "admin001@company.com",
+                "company_id": "demo_company",
+                "role_level": "auditor",
+                "active": True
+            },
+            {
+                "employee_name": "Demo Admin",
+                "employee_email": "admin001@company.com",
+                "department": "Administration",
+                "manager_email": "",
+                "company_id": "demo_company",
+                "role_level": "admin",
+                "active": True
+            },
+            {
                 "employee_name": "Fresh Manager Test",
                 "employee_email": "fresh.manager.test@company.com",
                 "department": "Operations",

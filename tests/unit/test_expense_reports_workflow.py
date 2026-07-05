@@ -485,3 +485,254 @@ def test_finance_admin_global_access(client, mock_db) -> None:
         all_reports = response.json()
         # Should see both reports
         assert len(all_reports) >= 2
+
+
+def test_local_test_mode_end_to_end_workflow(client, mock_db) -> None:
+    # Seed local demo users in Mock Firestore to ensure proper data relationships
+    mock_db.collection("employees").document("employee001@company.com").set({
+        "employee_email": "employee001@company.com",
+        "employee_name": "Demo Employee",
+        "employee_id": "employee001",
+        "department": "Engineering",
+        "manager_email": "manager001@company.com",
+        "active": True
+    })
+    mock_db.collection("employees").document("manager001@company.com").set({
+        "employee_email": "manager001@company.com",
+        "employee_name": "Demo Manager",
+        "employee_id": "manager001",
+        "department": "Engineering",
+        "manager_email": "default-user@company.com",
+        "active": True
+    })
+    mock_db.collection("employees").document("default-user@company.com").set({
+        "employee_email": "default-user@company.com",
+        "employee_name": "Default Administrator",
+        "employee_id": "default-user",
+        "department": "Finance",
+        "manager_email": "admin001@company.com",
+        "active": True
+    })
+    mock_db.collection("employees").document("auditor001@company.com").set({
+        "employee_email": "auditor001@company.com",
+        "employee_name": "Demo Auditor",
+        "employee_id": "auditor001",
+        "department": "Internal Audit",
+        "manager_email": "admin001@company.com",
+        "active": True
+    })
+
+    # 1. Log in as Employee & create/submit report
+    employee_info = {
+        "email": "employee001@company.com",
+        "role": "employee",
+        "name": "Demo Employee",
+        "authenticated": True
+    }
+    with patch("submission_frontend.main.get_current_user_and_role", return_value=employee_info):
+        create_res = client.post("/api/reports", json={"report_title": "Local Q3 Travel Report"})
+        assert create_res.status_code == 200
+        report_id = create_res.json()["report_id"]
+
+        # Add claim item
+        claim_res = client.post(f"/api/reports/{report_id}/claims", json={
+            "category": "meals",
+            "amount": 42.50,
+            "business_purpose": "Client dinner meeting",
+            "travel_start_date": "2026-07-01",
+            "travel_end_date": "2026-07-03",
+            "city": "Chicago",
+            "state": "IL",
+            "country": "US"
+        })
+        assert claim_res.status_code == 200
+
+        # Submit report
+        submit_res = client.post(f"/api/reports/{report_id}/submit", json={})
+        assert submit_res.status_code == 200
+
+    # 2. Log in as Manager & view/approve report
+    manager_info = {
+        "email": "manager001@company.com",
+        "role": "manager",
+        "name": "Demo Manager",
+        "authenticated": True
+    }
+    with patch("submission_frontend.main.get_current_user_and_role", return_value=manager_info):
+        # Manager queries pending reports
+        query_res = client.get("/api/reports?status=pending_manager_review")
+        assert query_res.status_code == 200
+        pending_list = query_res.json()
+        assert any(r["report_id"] == report_id for r in pending_list)
+
+        # Approve report
+        approve_res = client.post(f"/api/reports/{report_id}/approve", json={})
+        assert approve_res.status_code == 200
+
+    # 3. Log in as Finance Admin & complete review (mark paid)
+    finance_info = {
+        "email": "default-user@company.com",
+        "role": "finance_admin",
+        "name": "Default Administrator",
+        "authenticated": True
+    }
+    with patch("submission_frontend.main.get_current_user_and_role", return_value=finance_info):
+        # Finance admin can query manager approved report
+        finance_query_res = client.get("/api/reports")
+        assert finance_query_res.status_code == 200
+        reports = finance_query_res.json()
+        target_report = next(r for r in reports if r["report_id"] == report_id)
+        assert target_report["status"] in ["approved_by_manager", "approved"]
+
+        # Mark paid
+        pay_res = client.post(f"/api/reports/{report_id}/pay")
+        assert pay_res.status_code == 200
+
+    # 4. Log in as Auditor & view audit trail showing full timeline
+    auditor_info = {
+        "email": "auditor001@company.com",
+        "role": "auditor",
+        "name": "Demo Auditor",
+        "authenticated": True
+    }
+    with patch("submission_frontend.main.get_current_user_and_role", return_value=auditor_info):
+        detail_res = client.get(f"/api/reports/{report_id}")
+        assert detail_res.status_code == 200
+        detail_data = detail_res.json()
+        
+        # Verify status transitions are recorded in audit logs
+        audit_logs = detail_data["audit_logs"]
+        event_types = [log["event_type"] for log in audit_logs]
+        
+        assert "report_created" in event_types
+        assert "report_submitted" in event_types
+        assert "manager_decision" in event_types
+        assert "report_paid" in event_types
+
+
+def test_agent_orchestrator_integration_valid_low_value(client, mock_db) -> None:
+    """Verifies that a valid low-value report is orchestrated to manager review without warnings."""
+    user_info = {
+        "email": "employee@company.com",
+        "role": "employee",
+        "name": "Test Employee",
+        "authenticated": True
+    }
+    with patch("submission_frontend.main.get_current_user_and_role", return_value=user_info):
+        report_id = client.post("/api/reports", json={"report_title": "Low Value Trip"}).json()["report_id"]
+        
+        # Add a low-value claim (e.g., meals, $15)
+        claim_id = client.post(f"/api/reports/{report_id}/claims", json={
+            "category": "meals",
+            "amount": 15.0,
+            "business_purpose": "Dinner"
+        }).json()["claim_id"]
+        
+        # Submit report
+        response_submit = client.post(f"/api/reports/{report_id}/submit", json={})
+        assert response_submit.status_code == 200
+        assert response_submit.json()["status"] == "success"
+        
+        # Retrieve report and verify agent fields
+        response_report = client.get(f"/api/reports/{report_id}")
+        assert response_report.status_code == 200
+        report_data = response_report.json()["report"]
+        
+        assert report_data["agent_intake_result"] == "Passed"
+        assert report_data["policy_warnings"] == []
+        assert report_data["agent_recommendation"] == "ROUTE_TO_MANAGER"
+        assert report_data["agent_route"] == "manager_review"
+        assert report_data["agent_audit_event_count"] > 0
+        
+        # Verify that audit events are written to the audit_logs collection in mock_db
+        audit_logs = mock_db.stores.get("audit_logs", {})
+        # Find logs belonging to this report
+        agent_logs = [log for log in audit_logs.values() if log.get("report_id") == report_id and log.get("actor_role") == "agent"]
+        assert len(agent_logs) > 0
+        assert any(log.get("event_type") == "orchestration_completed" for log in agent_logs)
+
+
+def test_agent_orchestrator_integration_invalid_intake(client, mock_db) -> None:
+    """Verifies that an invalid report (e.g. negative amount on a claim) is rejected by intake agent."""
+    user_info = {
+        "email": "employee@company.com",
+        "role": "employee",
+        "name": "Test Employee",
+        "authenticated": True
+    }
+    with patch("submission_frontend.main.get_current_user_and_role", return_value=user_info):
+        report_id = client.post("/api/reports", json={"report_title": "Bad Report"}).json()["report_id"]
+        
+        # Add an invalid claim with negative amount
+        claim_id = client.post(f"/api/reports/{report_id}/claims", json={
+            "category": "meals",
+            "amount": -50.0,
+            "business_purpose": "Invalid Expense"
+        }).json()["claim_id"]
+        
+        # Submit report -> should be rejected with 400 error by Intake Validation
+        response_submit = client.post(f"/api/reports/{report_id}/submit", json={"override_missing_docs": True})
+        assert response_submit.status_code == 400
+        assert "validation failed" in response_submit.json()["detail"].lower()
+        assert "negative amount" in response_submit.json()["detail"].lower()
+
+
+def test_agent_orchestrator_integration_policy_warnings_and_routing(client, mock_db) -> None:
+    """Verifies that a report with policy warnings or high value gets routed to finance review with warnings attached."""
+    user_info = {
+        "email": "employee@company.com",
+        "role": "employee",
+        "name": "Test Employee",
+        "authenticated": True
+    }
+    with patch("submission_frontend.main.get_current_user_and_role", return_value=user_info):
+        # Case 1: Policy warning due to missing receipt on item >= $25
+        report_id_1 = client.post("/api/reports", json={"report_title": "Warning Report"}).json()["report_id"]
+        
+        # Add a claim >= $25 (policy threshold) but without a receipt
+        client.post(f"/api/reports/{report_id_1}/claims", json={
+            "category": "meals",
+            "amount": 35.0,
+            "business_purpose": "Client Lunch"
+        })
+        
+        # Submit report (override manual check if any)
+        response_submit_1 = client.post(f"/api/reports/{report_id_1}/submit", json={"override_missing_docs": True})
+        assert response_submit_1.status_code == 200
+        
+        # Verify warnings and routing
+        report_1 = client.get(f"/api/reports/{report_id_1}").json()["report"]
+        assert len(report_1["policy_warnings"]) > 0
+        assert any("requires a receipt" in w for w in report_1["policy_warnings"])
+        assert report_1["agent_route"] == "finance_review"
+        assert report_1["agent_recommendation"] == "ROUTE_TO_FINANCE"
+        
+        # Case 2: High value report >= $500
+        report_id_2 = client.post("/api/reports", json={"report_title": "High Value Trip"}).json()["report_id"]
+        
+        # Add a compliant high-value claim (has a receipt assigned to avoid missing doc manual blocks)
+        claim_id = client.post(f"/api/reports/{report_id_2}/claims", json={
+            "category": "flight",
+            "amount": 600.0,
+            "business_purpose": "Annual Flight"
+        }).json()["claim_id"]
+        
+        # Assign mock document/receipt
+        with patch("submission_frontend.main.storage.Client") as mock_storage:
+            files = [("files", ("receipt.pdf", b"pdf", "application/pdf"))]
+            doc_id = client.post(f"/api/reports/{report_id_2}/documents", files=files).json()[0]["document_id"]
+            client.post(f"/api/reports/{report_id_2}/documents/{doc_id}/assign", json={
+                "claim_id": claim_id,
+                "doc_type": "flight_ticket_receipt"
+            })
+            
+            # Submit report
+            response_submit_2 = client.post(f"/api/reports/{report_id_2}/submit", json={})
+            assert response_submit_2.status_code == 200
+            
+            # Retrieve and verify routing
+            report_2 = client.get(f"/api/reports/{report_id_2}").json()["report"]
+            assert report_2["agent_route"] == "finance_review"
+            assert report_2["agent_recommendation"] == "ROUTE_TO_FINANCE"
+
+

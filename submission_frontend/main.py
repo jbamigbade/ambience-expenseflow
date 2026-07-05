@@ -57,6 +57,19 @@ from submission_frontend.utilities.helpers import (
 # Initialize FastAPI Application
 app = FastAPI(title="Manager Expense Approval Dashboard")
 
+@app.middleware("http")
+async def clear_cache_on_mutation(request: Request, call_next):
+    if request.method in ["POST", "PATCH", "DELETE"]:
+        try:
+            from submission_frontend.routes import api_routes
+            api_routes._pending_cache.clear()
+            api_routes._expenses_cache.clear()
+            logger.info("Cleared API caches due to mutation request: %s %s", request.method, request.url.path)
+        except Exception as e:
+            logger.error(f"Error clearing caches in middleware: {e}")
+    response = await call_next(request)
+    return response
+
 # Session Middleware Configuration (1 day session expiry)
 app.add_middleware(SessionMiddleware, secret_key=SESSION_SECRET_KEY, max_age=86400)
 

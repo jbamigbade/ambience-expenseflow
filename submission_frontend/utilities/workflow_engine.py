@@ -277,8 +277,8 @@ async def sync_completed_sessions():
                             exp["session_id"] = sess_id
                             exp["user_id"] = user_id
                             break
-                    except Exception:
-                        pass
+                    except Exception as ex:
+                        logger.exception(f"Error fetching session {s_summary.id}: {ex}")
                         
             if sess_id:
                 try:
@@ -349,9 +349,9 @@ async def sync_completed_sessions():
                             metadata={"final_response": final_response}
                         )
                 except Exception as ex:
-                    logger.error(f"Error syncing session {sess_id}: {ex}")
+                    logger.exception(f"Error syncing session {sess_id}: {ex}")
     except Exception as e:
-        logger.error(f"Error during completed sessions sync: {e}")
+        logger.exception(f"Error during completed sessions sync: {e}")
 
 def parse_claim_from_session(sess) -> dict:
     """

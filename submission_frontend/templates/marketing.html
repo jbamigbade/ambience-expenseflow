@@ -633,68 +633,269 @@
         </div>
     </section>
 
-    <!-- PRICING PLACEHOLDER -->
+    <!-- PRICING UPGRADE -->
     <section class="pricing-section" id="pricing">
         <div class="container">
-            <div class="section-header">
-                <div class="section-tag">Simple Pricing</div>
+            <div class="section-header" style="margin-bottom: 3rem;">
+                <div class="section-tag">Premium Plans</div>
                 <h2 class="section-title">Transparent Plans for Every Team</h2>
-                <p class="section-desc">Choose a platform tier tailored to your organizational scale. All plans feature our premium dark glassmorphic design and standard APIs.</p>
+                <p class="section-desc">Trusted by finance teams to simplify travel and expense management with secure AI-powered workflows, enterprise compliance, and intelligent automation.</p>
+                <div class="header-features-badges">
+                    <div class="header-feature-badge"><span>✔</span> No credit card required</div>
+                    <div class="header-feature-badge"><span>✔</span> Cancel anytime</div>
+                    <div class="header-feature-badge"><span>✔</span> Secure Google Cloud Hosting</div>
+                </div>
             </div>
+
+            <!-- Billing Toggle -->
+            <div class="billing-toggle-container">
+                <button class="billing-toggle-btn active" id="billing-monthly-btn" onclick="setBillingCycle('monthly')">Monthly</button>
+                <button class="billing-toggle-btn" id="billing-annual-btn" onclick="setBillingCycle('annual')">Annual <span class="discount-badge">Save 20%</span></button>
+            </div>
+
+            <!-- Pricing Grid -->
             <div class="pricing-grid">
+                <!-- Essentials Plan -->
                 <div class="pricing-card glass-card">
                     <div class="pricing-header">
-                        <div class="pricing-name">Starter Workspace</div>
+                        <div class="pricing-name">Essentials</div>
                         <div class="pricing-desc">Perfect for small teams seeking optimized travel logs and receipt collections.</div>
                         <div class="pricing-price">
                             <span class="price-currency">$</span>
-                            <span class="price-val">12</span>
-                            <span class="price-period">/ user / mo</span>
+                            <span class="price-val" id="price-essentials" style="transition: opacity 0.2s ease;">19</span>
+                            <span class="price-period" id="period-essentials">/ user / mo</span>
+                        </div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem; line-height: 1.4;">
+                            Billed monthly.<br>Annual billing available.
                         </div>
                     </div>
                     <ul class="pricing-features-list">
-                        <li class="pricing-feature-item">✔ <strong>Up to 25</strong> active employees</li>
+                        <li class="pricing-feature-item">✔ Up to 25 active employees</li>
+                        <li class="pricing-feature-item">✔ Expense report creation</li>
+                        <li class="pricing-feature-item">✔ AI Receipt OCR</li>
+                        <li class="pricing-feature-item">✔ Receipt upload</li>
                         <li class="pricing-feature-item">✔ Interactive mileage calculations</li>
-                        <li class="pricing-feature-item">✔ Standard OCR receipt scanning</li>
-                        <li class="pricing-feature-item">✔ Local manual approvals board</li>
+                        <li class="pricing-feature-item">✔ Manual approval workflow</li>
+                        <li class="pricing-feature-item">✔ CSV export</li>
+                        <li class="pricing-feature-item">✔ Email notifications</li>
+                        <li class="pricing-feature-item">✔ Secure cloud storage</li>
                     </ul>
-                    <a href="#contact" class="btn btn-secondary" style="width: 100%;">Start Free Trial</a>
+                    <a href="#contact" class="btn btn-secondary" style="width: 100%; margin-top: auto;">Start Free Trial</a>
                 </div>
+
+                <!-- Professional Plan (Popular Choice) -->
                 <div class="pricing-card glass-card popular">
-                    <span class="pricing-badge">Popular Choice</span>
+                    <span class="pricing-badge">⭐ MOST POPULAR</span>
                     <div class="pricing-header">
-                        <div class="pricing-name">Enterprise Growth</div>
+                        <div class="pricing-name">Professional</div>
                         <div class="pricing-desc">Engineered for medium to large enterprises seeking automated compliance.</div>
                         <div class="pricing-price">
                             <span class="price-currency">$</span>
-                            <span class="price-val">24</span>
-                            <span class="price-period">/ user / mo</span>
+                            <span class="price-val" id="price-professional" style="transition: opacity 0.2s ease;">39</span>
+                            <span class="price-period" id="period-professional">/ user / mo</span>
+                        </div>
+                        <div style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.6); margin-top: 0.5rem; line-height: 1.4;">
+                            Billed monthly.<br>Annual billing available.
                         </div>
                     </div>
-                    <ul class="pricing-features-list">
-                        <li class="pricing-feature-item">✔ <strong>Unlimited</strong> employee records</li>
-                        <li class="pricing-feature-item">✔ Automated AI Policy Engine</li>
-                        <li class="pricing-feature-item">✔ Google OIDC SSO Identity</li>
-                        <li class="pricing-feature-item">✔ Complete immutable Audit Trails</li>
-                        <li class="pricing-feature-item">✔ Global per-diem tables preloaded</li>
+                    <ul class="pricing-features-list" style="border-top-color: rgba(99, 102, 241, 0.2);">
+                        <li class="pricing-feature-item">✔ Unlimited employees</li>
+                        <li class="pricing-feature-item">✔ AI Policy Engine</li>
+                        <li class="pricing-feature-item">✔ Manager approval workflows</li>
+                        <li class="pricing-feature-item">✔ Finance Dashboard</li>
+                        <li class="pricing-feature-item">✔ Corporate Card reconciliation</li>
+                        <li class="pricing-feature-item">✔ Google OIDC SSO</li>
+                        <li class="pricing-feature-item">✔ Immutable Audit Trail</li>
+                        <li class="pricing-feature-item">✔ Budget analytics</li>
+                        <li class="pricing-feature-item">✔ CSV &amp; Excel exports</li>
+                        <li class="pricing-feature-item">✔ Automated compliance checks</li>
+                        <li class="pricing-feature-item">✔ Department reporting</li>
                     </ul>
-                    <a href="#contact" class="btn btn-primary" style="width: 100%;">Deploy growth tier</a>
+                    <a href="#contact" class="btn btn-primary" style="width: 100%; margin-top: auto; box-shadow: 0 4px 15px var(--primary-glow);">Start Professional Trial</a>
                 </div>
+
+                <!-- Enterprise Plan -->
                 <div class="pricing-card glass-card">
                     <div class="pricing-header">
-                        <div class="pricing-name">Infinite Scale</div>
+                        <div class="pricing-name">Enterprise</div>
                         <div class="pricing-desc">Custom implementations with dedicated databases and bespoke security policies.</div>
-                        <div class="pricing-price">
-                            <span class="price-currency">Custom</span>
+                        <div class="pricing-price" style="margin-top: 1.5rem; display: block;">
+                            <span class="price-val" style="font-size: 2.5rem;">Custom Pricing</span>
+                        </div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem; line-height: 1.4;">
+                            Contact Sales
                         </div>
                     </div>
                     <ul class="pricing-features-list">
+                        <li class="pricing-feature-item">✔ Unlimited users</li>
                         <li class="pricing-feature-item">✔ Multi-tenant isolated databases</li>
-                        <li class="pricing-feature-item">✔ Custom custom-coded AI checks</li>
-                        <li class="pricing-feature-item">✔ Dedicated support &amp; custom SLAs</li>
-                        <li class="pricing-feature-item">✔ Global multi-currency ERP ties</li>
+                        <li class="pricing-feature-item">✔ White-label branding</li>
+                        <li class="pricing-feature-item">✔ Custom AI policy engine</li>
+                        <li class="pricing-feature-item">✔ ERP integrations</li>
+                        <li class="pricing-feature-item">✔ Advanced RBAC</li>
+                        <li class="pricing-feature-item">✔ Dedicated Success Manager</li>
+                        <li class="pricing-feature-item">✔ 24/7 Priority Support</li>
+                        <li class="pricing-feature-item">✔ SLA-backed uptime</li>
+                        <li class="pricing-feature-item">✔ Private Cloud Deployment</li>
+                        <li class="pricing-feature-item">✔ Security Reviews</li>
+                        <li class="pricing-feature-item">✔ Global Multi-Currency Support</li>
                     </ul>
-                    <a href="#contact" class="btn btn-secondary" style="width: 100%;">Contact Enterprise Sales</a>
+                    <a href="#contact" class="btn btn-secondary" style="width: 100%; margin-top: auto;">Contact Enterprise Sales</a>
+                </div>
+            </div>
+
+            <!-- Trust Section (Immediate below Pricing Cards) -->
+            <div class="trust-section">
+                <h3 class="trust-title">Enterprise Security &amp; Compliance</h3>
+                <div class="trust-badges-grid">
+                    <div class="trust-badge">
+                        <span class="trust-badge-icon">🛡</span> Google Cloud Hosted
+                    </div>
+                    <div class="trust-badge">
+                        <span class="trust-badge-icon">🔑</span> AES-256 Encryption
+                    </div>
+                    <div class="trust-badge">
+                        <span class="trust-badge-icon">👥</span> Role-Based Access Control
+                    </div>
+                    <div class="trust-badge">
+                        <span class="trust-badge-icon">📄</span> Audit Trail Ready
+                    </div>
+                    <div class="trust-badge">
+                        <span class="trust-badge-icon">🤖</span> AI-Powered Compliance
+                    </div>
+                    <div class="trust-badge">
+                        <span class="trust-badge-icon">⚡</span> 99.9% Uptime Target
+                    </div>
+                    <div class="trust-badge">
+                        <span class="trust-badge-icon">🌌</span> Vertex AI Powered
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHY CUSTOMERS CHOOSE US -->
+    <section class="choose-us-section" id="why-choose-us">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">Value Proposition</div>
+                <h2 class="section-title">Why Customers Choose Us</h2>
+                <p class="section-desc">Experience the power of a modern spend management infrastructure built with unmatched intelligence and control.</p>
+            </div>
+            <div class="choose-us-grid">
+                <!-- Card 1 -->
+                <div class="choose-us-card glass-card">
+                    <div>
+                        <span class="choose-us-icon">🤖</span>
+                        <h3>Intelligent Automation</h3>
+                        <p>Reduce manual expense processing using AI-powered receipt recognition and automated policy validation.</p>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="choose-us-card glass-card">
+                    <div>
+                        <span class="choose-us-icon">⚖</span>
+                        <h3>Enterprise Compliance</h3>
+                        <p>Maintain complete audit trails, approval workflows, and financial governance.</p>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="choose-us-card glass-card">
+                    <div>
+                        <span class="choose-us-icon">☁</span>
+                        <h3>Cloud Native</h3>
+                        <p>Built on Google Cloud using Cloud Run, Firestore, Cloud Storage, Vertex AI and Pub/Sub.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Accordion FAQ -->
+    <section class="faq-section" id="faq">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">Frequently Asked Questions</div>
+                <h2 class="section-title">Got Questions? We Have Answers.</h2>
+                <p class="section-desc">Learn more about how Ambience ExpenseFlow works, trial periods, security compliance, and enterprise features.</p>
+            </div>
+            <div class="faq-accordion">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Do you offer a free trial?
+                        <span class="faq-icon-toggle">➕</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes! We offer a 14-day free trial on our Essentials and Professional plans. No credit card is required to start, and you can cancel anytime.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Can we export reports?
+                        <span class="faq-icon-toggle">➕</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Absolutely. Reports can be exported as standard CSV formats on all plans, and Professional or Enterprise tiers support advanced Excel (.xlsx) formats as well as direct ERP ledger exports.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Does Ambience ExpenseFlow support corporate cards?
+                        <span class="faq-icon-toggle">➕</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes. Our Professional and Enterprise tiers feature comprehensive Corporate Card Reconciliation, allowing you to sync card transactions and automatically match them to receipt uploads.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Is Google SSO supported?
+                        <span class="faq-icon-toggle">➕</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes. We support Google OIDC Single Sign-On (SSO) out of the box in our Professional and Enterprise tiers to ensure secure and seamless authentication for your entire team.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Is our data encrypted?
+                        <span class="faq-icon-toggle">➕</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Security is our top priority. All data is encrypted in transit and at rest using AES-256 encryption. Our infrastructure is fully hosted on secure, isolated Google Cloud environments.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Can enterprise customers request custom integrations?
+                        <span class="faq-icon-toggle">➕</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes, Enterprise customers can access custom ERP integrations, private cloud deployments, and dedicated engineering support to build bespoke compliance workflows.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Do you support multiple currencies?
+                        <span class="faq-icon-toggle">➕</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes, our Enterprise tier supports global multi-currency transactions, automated foreign exchange rate calculations, and localized compliance rules for multinational operations.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BOTTOM CTA -->
+    <section class="bottom-cta-section" id="get-started">
+        <div class="container">
+            <div class="bottom-cta-card">
+                <h2>Ready to Modernize Expense Management?</h2>
+                <p>Join organizations simplifying travel and expense management with AI-powered automation, enterprise-grade security, and scalable cloud infrastructure.</p>
+                <div class="bottom-cta-btns">
+                    <a href="#contact" class="btn btn-primary" style="padding: 1rem 2rem; font-size: 1.05rem;">Schedule a Demo</a>
+                    <a href="#contact" class="btn btn-secondary" style="padding: 1rem 2rem; font-size: 1.05rem;">Contact Sales</a>
                 </div>
             </div>
         </div>
@@ -920,6 +1121,78 @@
                     toast.classList.remove('show');
                 }, 5000);
             }
+        }
+
+        // Billing cycle pricing updates
+        const pricingData = {
+            monthly: {
+                essentials: "19",
+                professional: "39",
+                period: "/ user / mo"
+            },
+            annual: {
+                essentials: "15",
+                professional: "31",
+                period: "/ user / mo"
+            }
+        };
+
+        function setBillingCycle(cycle) {
+            const monthlyBtn = document.getElementById('billing-monthly-btn');
+            const annualBtn = document.getElementById('billing-annual-btn');
+            const priceEssentials = document.getElementById('price-essentials');
+            const priceProfessional = document.getElementById('price-professional');
+            const periodEssentials = document.getElementById('period-essentials');
+            const periodProfessional = document.getElementById('period-professional');
+
+            if (cycle === 'monthly') {
+                monthlyBtn.classList.add('active');
+                annualBtn.classList.remove('active');
+                
+                priceEssentials.style.opacity = '0';
+                priceProfessional.style.opacity = '0';
+                
+                setTimeout(() => {
+                    priceEssentials.innerText = pricingData.monthly.essentials;
+                    priceProfessional.innerText = pricingData.monthly.professional;
+                    periodEssentials.innerText = pricingData.monthly.period;
+                    periodProfessional.innerText = pricingData.monthly.period;
+                    priceEssentials.style.opacity = '1';
+                    priceProfessional.style.opacity = '1';
+                }, 200);
+            } else {
+                annualBtn.classList.add('active');
+                monthlyBtn.classList.remove('active');
+                
+                priceEssentials.style.opacity = '0';
+                priceProfessional.style.opacity = '0';
+                
+                setTimeout(() => {
+                    priceEssentials.innerText = pricingData.annual.essentials;
+                    priceProfessional.innerText = pricingData.annual.professional;
+                    periodEssentials.innerText = pricingData.annual.period;
+                    periodProfessional.innerText = pricingData.annual.period;
+                    priceEssentials.style.opacity = '1';
+                    priceProfessional.style.opacity = '1';
+                }, 200);
+            }
+        }
+
+        // FAQ accordion toggle logic
+        function toggleFaq(buttonElement) {
+            const faqItem = buttonElement.parentElement;
+            const accordion = faqItem.parentElement;
+            
+            // Close other items
+            const allItems = accordion.querySelectorAll('.faq-item');
+            allItems.forEach(item => {
+                if (item !== faqItem) {
+                    item.classList.remove('active');
+                }
+            });
+
+            // Toggle active class on selected item
+            faqItem.classList.toggle('active');
         }
     </script>
 </body>

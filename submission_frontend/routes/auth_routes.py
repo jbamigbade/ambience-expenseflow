@@ -33,17 +33,46 @@ async def get_login(request: Request):
         """
     else:
         content_html = """
-        <div class="badge-dev">
-            <span style="font-size: 1.1rem; line-height: 1;">⚠️</span>
-            <div>
-                <strong>Local Test Mode Active</strong>
-                <div style="margin-top: 2px; opacity: 0.8; font-size: 0.8rem;">AUTH_ENABLED is set to false. Real Google OAuth is bypassed. You will be authenticated as:</div>
-                <div style="margin-top: 4px; font-family: monospace; font-weight: bold; color: white;">default-user@company.com (finance_admin)</div>
+        <div class="badge-dev" style="display: flex; flex-direction: column; gap: 0.75rem; align-items: stretch; background: rgba(15, 17, 36, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); padding: 1.25rem; border-radius: 16px; margin-bottom: 1.5rem;">
+            <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+                <span style="font-size: 1.25rem; line-height: 1;">⚙️</span>
+                <div style="text-align: left;">
+                    <strong style="color: #f3f4f6; font-size: 0.95rem;">Local Test Mode Active</strong>
+                    <div style="margin-top: 3px; opacity: 0.8; font-size: 0.8rem; color: #9ca3af; line-height: 1.4;">
+                        AUTH_ENABLED is false. Choose a demo role to enter the dashboard:
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: left; margin-top: 0.5rem; width: 100%;">
+                <label for="demo-role-select" style="font-size: 0.75rem; color: #8b5cf6; font-weight: 700; display: block; margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.05em;">Demo Role Profile</label>
+                <div style="position: relative;">
+                    <select id="demo-role-select" onchange="updateDemoRoleDisplay()" style="width: 100%; padding: 0.75rem 2rem 0.75rem 1rem; border-radius: 12px; background: rgba(10, 11, 26, 0.9); border: 1px solid rgba(255, 255, 255, 0.1); color: #f3f4f6; font-family: 'Outfit', sans-serif; font-size: 0.9rem; cursor: pointer; outline: none; transition: all 0.3s; -webkit-appearance: none; -moz-appearance: none; appearance: none;">
+                        <option value="employee">Employee (employee001@company.com)</option>
+                        <option value="manager">Manager (manager001@company.com)</option>
+                        <option value="finance_admin" selected>Finance Admin (default-user@company.com)</option>
+                        <option value="auditor">Auditor (auditor001@company.com)</option>
+                        <option value="admin">Admin (admin001@company.com)</option>
+                    </select>
+                    <div style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); pointer-events: none; color: #9ca3af; font-size: 0.8rem;">▼</div>
+                </div>
             </div>
         </div>
-        <a href="/login-bypass" class="btn-bypass">
+        <a id="bypass-login-btn" href="/login-bypass?role=finance_admin" class="btn-bypass" style="text-align: center;">
             Enter Dashboard
         </a>
+        
+        <script>
+            function updateDemoRoleDisplay() {
+                const select = document.getElementById("demo-role-select");
+                const btn = document.getElementById("bypass-login-btn");
+                if (select && btn) {
+                    btn.href = "/login-bypass?role=" + select.value;
+                }
+            }
+            // Execute on load to ensure sync
+            setTimeout(updateDemoRoleDisplay, 100);
+        </script>
         """
     template_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "templates", "login.html")
     with open(template_path, "r", encoding="utf-8") as f:
@@ -51,18 +80,44 @@ async def get_login(request: Request):
     return HTMLResponse(content=template_content.replace("{content_html}", content_html))
 
 @router.get("/login-bypass")
-async def login_bypass(request: Request):
+async def login_bypass(request: Request, role: str = "finance_admin"):
     """
-    Bypasses authentication and logs in as default finance admin for local testing.
+    Bypasses authentication and logs in as a selected demo role for local testing.
     """
     import submission_frontend.main as main
     if main.is_auth_enabled():
         return RedirectResponse(url="/login")
-    request.session["user"] = {
-        "email": "default-user@company.com",
-        "name": "Default Administrator",
-        "role": "finance_admin"
+        
+    role_map = {
+        "employee": {
+            "email": "employee001@company.com",
+            "name": "Demo Employee",
+            "role": "employee"
+        },
+        "manager": {
+            "email": "manager001@company.com",
+            "name": "Demo Manager",
+            "role": "manager"
+        },
+        "finance_admin": {
+            "email": "default-user@company.com",
+            "name": "Default Administrator",
+            "role": "finance_admin"
+        },
+        "auditor": {
+            "email": "auditor001@company.com",
+            "name": "Demo Auditor",
+            "role": "auditor"
+        },
+        "admin": {
+            "email": "admin001@company.com",
+            "name": "Demo Admin",
+            "role": "admin"
+        }
     }
+    
+    user_data = role_map.get(role, role_map["finance_admin"])
+    request.session["user"] = user_data
     return RedirectResponse(url="/")
 
 @router.get("/login-google")

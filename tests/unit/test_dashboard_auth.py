@@ -94,3 +94,32 @@ def test_branding_regression() -> None:
         assert "<title>Ambience ExpenseFlow Approval Dashboard</title>" in response.text
         assert "Ambience ExpenseFlow" in response.text
         assert "Enterprise Travel & Expense Management" in response.text
+
+def test_login_bypass_roles() -> None:
+    client = TestClient(app)
+    
+    # Define role cases to test
+    cases = [
+        ("employee", "employee001@company.com", "employee"),
+        ("manager", "manager001@company.com", "manager"),
+        ("finance_admin", "default-user@company.com", "finance_admin"),
+        ("auditor", "auditor001@company.com", "auditor"),
+        ("admin", "admin001@company.com", "admin")
+    ]
+    
+    for input_role, expected_email, expected_role in cases:
+        # Bypassing should set session user
+        response = client.get(f"/login-bypass?role={input_role}", follow_redirects=False)
+        assert response.status_code == 307  # Redirect to /
+        
+        # Verify identity and resolved role using the standard /api/me endpoint
+        # TestClient automatically carries cookies/session state
+        response_me = client.get("/api/me")
+        assert response_me.status_code == 200
+        user_info = response_me.json()
+        
+        assert user_info["email"] == expected_email
+        assert user_info["role"] == expected_role
+        assert user_info["authenticated"] is True
+
+

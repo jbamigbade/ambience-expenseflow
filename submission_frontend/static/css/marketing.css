@@ -957,9 +957,338 @@ footer {
     font-size: 0.8rem;
 }
 
+/* Premium Pricing Additions */
+.pricing-section {
+    padding: 8rem 0 6rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Billing Toggle */
+.billing-toggle-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin: -3rem auto 4.5rem auto;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--glass-border);
+    padding: 0.4rem;
+    border-radius: 100px;
+    width: max-content;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.billing-toggle-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.55rem 1.4rem;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.billing-toggle-btn.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 4px 15px var(--primary-glow);
+}
+
+.discount-badge {
+    background: var(--success-glow);
+    color: var(--success);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    padding: 0.15rem 0.5rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-left: 0.4rem;
+}
+
+/* Header features list styling */
+.header-features-badges {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+}
+
+.header-feature-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    padding: 0.4rem 1.1rem;
+    border-radius: 100px;
+    transition: var(--transition);
+}
+
+.header-feature-badge:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.header-feature-badge span {
+    color: var(--success);
+}
+
+/* Most Popular Glow Upgrade */
+.pricing-card.popular {
+    border-color: var(--primary);
+    box-shadow: 0 15px 45px rgba(99, 102, 241, 0.35);
+    background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.1), rgba(15, 17, 36, 0.8));
+    position: relative;
+    transform: scale(1.03);
+}
+
+.pricing-card.popular:hover {
+    box-shadow: 0 20px 55px rgba(99, 102, 241, 0.45);
+    transform: scale(1.05) translateY(-5px);
+}
+
+.pricing-card:hover {
+    border-color: var(--glass-border-glow);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+/* Trust Section */
+.trust-section {
+    padding: 6rem 0 3rem 0;
+    text-align: center;
+    position: relative;
+}
+
+.trust-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.12rem;
+    margin-bottom: 2.25rem;
+    opacity: 0.85;
+}
+
+.trust-badges-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.trust-badge {
+    background: rgba(15, 17, 36, 0.4);
+    border: 1px solid var(--glass-border);
+    border-radius: 100px;
+    padding: 0.55rem 1.2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #cbd5e1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+}
+
+.trust-badge:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(99, 102, 241, 0.15);
+}
+
+.trust-badge-icon {
+    color: var(--primary);
+    font-size: 0.95rem;
+}
+
+/* Why Customers Choose Us Section */
+.choose-us-section {
+    padding: 7rem 0;
+    background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.03), transparent 40%);
+}
+
+.choose-us-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+    margin-top: 3.5rem;
+}
+
+.choose-us-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 2.5rem;
+    transition: var(--transition);
+    height: 100%;
+}
+
+.choose-us-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px var(--accent-glow);
+}
+
+.choose-us-icon {
+    font-size: 2.25rem;
+    margin-bottom: 1.5rem;
+    display: inline-block;
+}
+
+.choose-us-card h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.choose-us-card p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* FAQ Accordion Section */
+.faq-section {
+    padding: 7rem 0;
+}
+
+.faq-accordion {
+    max-width: 850px;
+    margin: 3.5rem auto 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.faq-item {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.faq-item:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.faq-question {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: white;
+    text-align: left;
+    transition: var(--transition);
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.4s ease;
+    padding: 0 2rem;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+.faq-item.active {
+    border-color: var(--primary);
+    box-shadow: 0 10px 25px rgba(99, 102, 241, 0.1);
+}
+
+.faq-item.active .faq-answer {
+    max-height: 200px;
+    padding-bottom: 1.5rem;
+}
+
+.faq-icon-toggle {
+    font-size: 1.15rem;
+    color: var(--primary);
+    transition: transform 0.4s ease;
+}
+
+.faq-item.active .faq-icon-toggle {
+    transform: rotate(45deg);
+}
+
+/* Bottom CTA Section */
+.bottom-cta-section {
+    padding: 8rem 0;
+    background: radial-gradient(circle at bottom center, rgba(139, 92, 246, 0.08), transparent 60%);
+    position: relative;
+    text-align: center;
+}
+
+.bottom-cta-card {
+    max-width: 950px;
+    margin: 0 auto;
+    background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 4.5rem 3rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    position: relative;
+}
+
+.bottom-cta-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-glow), var(--primary-glow), transparent);
+}
+
+.bottom-cta-card h2 {
+    font-size: 2.75rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.bottom-cta-card p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    line-height: 1.7;
+    max-width: 720px;
+    margin: 0 auto 2.5rem auto;
+}
+
+.bottom-cta-btns {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
 /* Mobile Responsiveness styling */
 @media (max-width: 1024px) {
-    .hero-grid, .overview-grid, .features-grid, .workflow-row, .ai-compliance-grid, .pricing-grid, .contact-grid, .footer-grid {
+    .hero-grid, .overview-grid, .features-grid, .workflow-row, .ai-compliance-grid, .pricing-grid, .contact-grid, .footer-grid, .choose-us-grid {
         grid-template-columns: 1fr !important;
         gap: 3rem !important;
     }

@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pytest
 import uuid
-from datetime import datetime
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
+
+import pytest
 from fastapi.testclient import TestClient
 
 # --- In-Memory Mock Firestore Implementation ---
@@ -305,7 +305,7 @@ def test_delete_draft_line_item(client, mock_db) -> None:
         # Delete claim
         response_delete = client.delete(f"/api/reports/{report_id}/claims/{claim_id}")
         assert response_delete.status_code == 200
-        
+
         # Verify claim count is 0
         response_detail = client.get(f"/api/reports/{report_id}")
         assert len(response_detail.json()["claims"]) == 0
@@ -338,7 +338,7 @@ def test_bulk_upload_documents_and_assign(client, mock_db) -> None:
         with patch("submission_frontend.main.storage.Client") as mock_storage:
             mock_bucket = mock_storage.return_value.bucket.return_value
             mock_blob = mock_bucket.blob.return_value
-            
+
             response_upload = client.post(f"/api/reports/{report_id}/documents", files=files)
             assert response_upload.status_code == 200
             uploaded_docs = response_upload.json()
@@ -346,7 +346,7 @@ def test_bulk_upload_documents_and_assign(client, mock_db) -> None:
             assert uploaded_docs[0]["assigned_to_claim"] is False
 
             doc_id = uploaded_docs[0]["document_id"]
-            
+
             # Assign document to claim
             response_assign = client.post(f"/api/reports/{report_id}/documents/{doc_id}/assign", json={
                 "claim_id": claim_id,
@@ -441,7 +441,7 @@ def test_manager_queue_and_actions(client, mock_db) -> None:
         })
         assert response_return.status_code == 200
         assert response_return.json()["status"] == "success"
-        
+
         # Verify status in database
         stored_report = mock_db.collection("expense_reports").document(report_id).get().to_dict()
         assert stored_report["status"] == "returned_to_employee"
@@ -456,7 +456,7 @@ def test_manager_queue_and_actions(client, mock_db) -> None:
         response_approve = client.post(f"/api/reports/{report_id}/approve")
         assert response_approve.status_code == 200
         assert response_approve.json()["status"] == "success"
-        
+
         # Verify status in database
         stored_report = mock_db.collection("expense_reports").document(report_id).get().to_dict()
         assert stored_report["status"] == "approved_by_manager"
@@ -599,11 +599,11 @@ def test_local_test_mode_end_to_end_workflow(client, mock_db) -> None:
         detail_res = client.get(f"/api/reports/{report_id}")
         assert detail_res.status_code == 200
         detail_data = detail_res.json()
-        
+
         # Verify status transitions are recorded in audit logs
         audit_logs = detail_data["audit_logs"]
         event_types = [log["event_type"] for log in audit_logs]
-        
+
         assert "report_created" in event_types
         assert "report_submitted" in event_types
         assert "manager_decision" in event_types
@@ -620,30 +620,30 @@ def test_agent_orchestrator_integration_valid_low_value(client, mock_db) -> None
     }
     with patch("submission_frontend.main.get_current_user_and_role", return_value=user_info):
         report_id = client.post("/api/reports", json={"report_title": "Low Value Trip"}).json()["report_id"]
-        
+
         # Add a low-value claim (e.g., meals, $15)
         claim_id = client.post(f"/api/reports/{report_id}/claims", json={
             "category": "meals",
             "amount": 15.0,
             "business_purpose": "Dinner"
         }).json()["claim_id"]
-        
+
         # Submit report
         response_submit = client.post(f"/api/reports/{report_id}/submit", json={})
         assert response_submit.status_code == 200
         assert response_submit.json()["status"] == "success"
-        
+
         # Retrieve report and verify agent fields
         response_report = client.get(f"/api/reports/{report_id}")
         assert response_report.status_code == 200
         report_data = response_report.json()["report"]
-        
+
         assert report_data["agent_intake_result"] == "Passed"
         assert report_data["policy_warnings"] == []
         assert report_data["agent_recommendation"] == "ROUTE_TO_MANAGER"
         assert report_data["agent_route"] == "manager_review"
         assert report_data["agent_audit_event_count"] > 0
-        
+
         # Verify that audit events are written to the audit_logs collection in mock_db
         audit_logs = mock_db.stores.get("audit_logs", {})
         # Find logs belonging to this report
@@ -662,14 +662,14 @@ def test_agent_orchestrator_integration_invalid_intake(client, mock_db) -> None:
     }
     with patch("submission_frontend.main.get_current_user_and_role", return_value=user_info):
         report_id = client.post("/api/reports", json={"report_title": "Bad Report"}).json()["report_id"]
-        
+
         # Add an invalid claim with negative amount
         claim_id = client.post(f"/api/reports/{report_id}/claims", json={
             "category": "meals",
             "amount": -50.0,
             "business_purpose": "Invalid Expense"
         }).json()["claim_id"]
-        
+
         # Submit report -> should be rejected with 400 error by Intake Validation
         response_submit = client.post(f"/api/reports/{report_id}/submit", json={"override_missing_docs": True})
         assert response_submit.status_code == 400
@@ -688,35 +688,35 @@ def test_agent_orchestrator_integration_policy_warnings_and_routing(client, mock
     with patch("submission_frontend.main.get_current_user_and_role", return_value=user_info):
         # Case 1: Policy warning due to missing receipt on item >= $25
         report_id_1 = client.post("/api/reports", json={"report_title": "Warning Report"}).json()["report_id"]
-        
+
         # Add a claim >= $25 (policy threshold) but without a receipt
         client.post(f"/api/reports/{report_id_1}/claims", json={
             "category": "meals",
             "amount": 35.0,
             "business_purpose": "Client Lunch"
         })
-        
+
         # Submit report (override manual check if any)
         response_submit_1 = client.post(f"/api/reports/{report_id_1}/submit", json={"override_missing_docs": True})
         assert response_submit_1.status_code == 200
-        
+
         # Verify warnings and routing
         report_1 = client.get(f"/api/reports/{report_id_1}").json()["report"]
         assert len(report_1["policy_warnings"]) > 0
         assert any("requires a receipt" in w for w in report_1["policy_warnings"])
         assert report_1["agent_route"] == "finance_review"
         assert report_1["agent_recommendation"] == "ROUTE_TO_FINANCE"
-        
+
         # Case 2: High value report >= $500
         report_id_2 = client.post("/api/reports", json={"report_title": "High Value Trip"}).json()["report_id"]
-        
+
         # Add a compliant high-value claim (has a receipt assigned to avoid missing doc manual blocks)
         claim_id = client.post(f"/api/reports/{report_id_2}/claims", json={
             "category": "flight",
             "amount": 600.0,
             "business_purpose": "Annual Flight"
         }).json()["claim_id"]
-        
+
         # Assign mock document/receipt
         with patch("submission_frontend.main.storage.Client") as mock_storage:
             files = [("files", ("receipt.pdf", b"pdf", "application/pdf"))]
@@ -725,14 +725,92 @@ def test_agent_orchestrator_integration_policy_warnings_and_routing(client, mock
                 "claim_id": claim_id,
                 "doc_type": "flight_ticket_receipt"
             })
-            
+
             # Submit report
             response_submit_2 = client.post(f"/api/reports/{report_id_2}/submit", json={})
             assert response_submit_2.status_code == 200
-            
+
             # Retrieve and verify routing
             report_2 = client.get(f"/api/reports/{report_id_2}").json()["report"]
             assert report_2["agent_route"] == "finance_review"
             assert report_2["agent_recommendation"] == "ROUTE_TO_FINANCE"
+
+
+def test_agent_metrics_endpoint_unauthorized(client) -> None:
+    """Verifies that an unauthorized request to the metrics endpoint raises 401."""
+    with patch("submission_frontend.main.get_current_user_and_role", side_effect=Exception("No session")):
+        response = client.get("/api/agents/metrics")
+        assert response.status_code == 401
+        assert "authentication required" in response.json()["detail"].lower()
+
+
+def test_agent_metrics_endpoint_fallback(client, mock_db) -> None:
+    """Verifies that the metrics endpoint returns realistic fallback values when no data exists."""
+    user_info = {
+        "email": "employee@company.com",
+        "role": "employee",
+        "name": "Test Employee",
+        "authenticated": True
+    }
+    with patch("submission_frontend.main.get_current_user_and_role", return_value=user_info):
+        response = client.get("/api/agents/metrics")
+        assert response.status_code == 200
+        data = response.json()
+
+        # Verify the structure and some fields
+        assert "summary" in data
+        assert "agents" in data
+        assert data["summary"]["total_agent_runs"] == 0
+        assert data["summary"]["policy_warnings_generated"] == 0
+        assert len(data["agents"]) == 5
+        assert data["has_real_data"] is False
+
+
+def test_agent_metrics_endpoint_with_data(client, mock_db) -> None:
+    """Verifies that the metrics endpoint correctly compiles real data from Firestore."""
+    user_info = {
+        "email": "employee@company.com",
+        "role": "employee",
+        "name": "Test Employee",
+        "authenticated": True
+    }
+
+    # Let's insert a mock expense report that ran through orchestrator
+    mock_db.collection("expense_reports").document("rep1").set({
+        "report_id": "rep1",
+        "report_title": "Trip to SF",
+        "agent_recommendation": "ROUTE_TO_FINANCE",
+        "agent_route": "finance_review",
+        "submitted_at": "2026-07-05T12:00:00Z",
+        "policy_warnings": ["Receipt required", "Limit exceeded"]
+    })
+
+    # Add an agent audit log
+    mock_db.collection("audit_logs").document("log1").set({
+        "log_id": "log1",
+        "report_id": "rep1",
+        "actor_role": "agent",
+        "event_type": "orchestration_completed",
+        "created_at": "2026-07-05T12:00:05Z"
+    })
+
+    with patch("submission_frontend.main.get_current_user_and_role", return_value=user_info):
+        response = client.get("/api/agents/metrics")
+        assert response.status_code == 200
+        data = response.json()
+
+        # Verify calculated values
+        assert data["summary"]["total_agent_runs"] == 1
+        assert data["summary"]["policy_warnings_generated"] == 2
+        assert data["summary"]["reports_routed_to_finance"] == 1
+        assert data["summary"]["reports_routed_to_manager"] == 0
+        assert data["summary"]["audit_events_generated"] == 1
+        assert data["has_real_data"] is True
+
+        # Verify agent cards have last_run updated
+        for agent in data["agents"]:
+            assert agent["last_run"] == "2026-07-05T12:00:05Z"
+            assert agent["runs_today"] == 1
+
 
 

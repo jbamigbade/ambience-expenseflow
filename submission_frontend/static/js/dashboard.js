@@ -1359,6 +1359,201 @@
                 document.getElementById("section-pending").style.display = "block";
                 fetchPendingApprovals();
             } else if (tab === 'history') {
+                docs.forEach(d => {
+                    docUrls[d.doc_type] = d.gcs_path ? `/api/document/${claimId}/${d.doc_type}` : null;
+                });
+                
+                const isTravel = ["meals", "lodging", "flight"].includes(exp.category);
+                const isTransport = ["transportation", "rental_car", "rental_car_gas", "parking", "tolls"].includes(exp.category);
+                
+                body.innerHTML = `
+                    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                        <div style="background: ${statusBg}; color: ${statusColor}; border: 1px solid ${statusColor}40; padding: 1rem; border-radius: 12px; display: flex; align-items: center; gap: 0.75rem;">
+                            <span style="font-size: 1.5rem; line-height: 1;">🛡️</span>
+                            <div>
+                                <h4 style="font-size: 0.95rem; font-weight: 700; margin: 0; color: white;">${statusText}</h4>
+                                <p style="font-size: 0.8rem; margin: 0.2rem 0 0 0; color: rgba(255,255,255,0.7);">${escapeHtml(exp.policy_status || "Compliance evaluation completed.")}</p>
+                            </div>
+                        </div>
+
+                        <div class="review-details-card" style="margin-top: 0; padding: 1.5rem; width: auto; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 16px;">
+                            <h4 style="font-size: 0.85rem; margin-bottom: 1rem; color: #a5b4fc; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.4rem; font-weight: 700;">Claim Summary</h4>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; font-size: 0.82rem;">
+                                <div class="review-field"><span>Employee</span><strong>${escapeHtml(exp.employee_name)}</strong></div>
+                                <div class="review-field"><span>Email</span><strong style="font-size: 0.75rem; font-weight: 500; word-break: break-all;">${escapeHtml(exp.employee_email)}</strong></div>
+                                <div class="review-field"><span>Amount</span><strong style="color: #34d399; font-size: 1.05rem;">${formatMoney(exp.amount)} (${escapeHtml(exp.currency || "USD")})</strong></div>
+                                <div class="review-field"><span>Department</span><strong>${escapeHtml(exp.department || "N/A")}</strong></div>
+                                <div class="review-field"><span>Manager</span><strong>${escapeHtml(exp.manager_email || "N/A")}</strong></div>
+                                <div class="review-field"><span>Expense Date</span><strong>${escapeHtml(exp.expense_date || "N/A")}</strong></div>
+                                <div class="review-field" style="grid-column: 1 / -1;"><span>Business Purpose</span><strong>${escapeHtml(exp.business_purpose || "N/A")}</strong></div>
+                                ${exp.description ? `<div class="review-field" style="grid-column: 1 / -1;"><span>Description</span><strong style="font-style: italic; font-weight: 400; color: var(--text-muted);">"${escapeHtml(exp.description)}"</strong></div>` : ''}
+                            </div>
+                        </div>
+
+                        ${isTravel ? `
+                        <div style="background: rgba(99, 102, 241, 0.03); border: 1px solid rgba(99, 102, 241, 0.1); padding: 1.2rem; border-radius: 14px;">
+                            <h4 style="font-size: 0.85rem; text-transform: uppercase; color: #a5b4fc; letter-spacing: 0.05em; margin-bottom: 0.8rem; font-weight: 700;">📅 Travel Metrics</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.8rem;">
+                                <div><strong style="color: var(--text-muted);">Dates:</strong> ${escapeHtml(exp.travel_start_date || "N/A")} to ${escapeHtml(exp.travel_end_date || "N/A")}</div>
+                                <div><strong style="color: var(--text-muted);">Destination:</strong> ${escapeHtml(exp.city || "N/A")}, ${escapeHtml(exp.state || "N/A")}</div>
+                                <div><strong style="color: var(--text-muted);">Claimed Meals:</strong> ${formatMoney(exp.claimed_meals)}</div>
+                                <div><strong style="color: var(--text-muted);">Claimed Lodging:</strong> ${formatMoney(exp.claimed_lodging)}</div>
+                            </div>
+                        </div>
+                        ` : ''}
+
+                        ${isTransport ? `
+                        <div style="background: rgba(139, 92, 246, 0.03); border: 1px solid rgba(139, 92, 246, 0.1); padding: 1.2rem; border-radius: 14px;">
+                            <h4 style="font-size: 0.85rem; text-transform: uppercase; color: #c084fc; letter-spacing: 0.05em; margin-bottom: 0.8rem; font-weight: 700;">🚗 Transportation Metrics</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.8rem;">
+                                <div><strong style="color: var(--text-muted);">Type:</strong> ${escapeHtml(exp.transportation_type || "N/A")}</div>
+                                <div><strong style="color: var(--text-muted);">Route:</strong> ${escapeHtml(exp.start_address || "N/A")} ➔ ${escapeHtml(exp.destination_address || "N/A")}</div>
+                                ${exp.business_miles ? `<div><strong style="color: var(--text-muted);">Miles:</strong> ${exp.business_miles} mi</div>` : ''}
+                                ${exp.rental_cost ? `<div><strong style="color: var(--text-muted);">Rental Cost:</strong> ${formatMoney(exp.rental_cost)}</div>` : ''}
+                                ${exp.gas_cost ? `<div><strong style="color: var(--text-muted);">Gas Cost:</strong> ${formatMoney(exp.gas_cost)}</div>` : ''}
+                                ${exp.parking_cost ? `<div><strong style="color: var(--text-muted);">Parking Cost:</strong> ${formatMoney(exp.parking_cost)}</div>` : ''}
+                            </div>
+                        </div>
+                        ` : ''}
+
+                        <div class="document-verification-box" style="padding: 1.25rem; border-radius: 14px; background: rgba(255, 255, 255, 0.01); border: 1px solid rgba(255, 255, 255, 0.05);">
+                            <h4 style="font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; margin-bottom: 0.8rem; font-weight: 700;">📂 Document Checklist & Action</h4>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                ${(() => {
+                                    const required = exp.required_documents || [];
+                                    const missing = exp.missing_documents || [];
+                                    if (required.length === 0) {
+                                        return `<div style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">No specific documents required.</div>`;
+                                    }
+                                    return required.map(docType => {
+                                        const isMissing = missing.includes(docType);
+                                        const url = docUrls[docType];
+                                        const label = DOC_TYPES[docType] ? DOC_TYPES[docType].label : docType.replace(/_/g, ' ').toUpperCase();
+                                        return `
+                                            <div class="doc-row" style="display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.8rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 10px; gap: 0.5rem;">
+                                                <div style="display: flex; flex-direction: column;">
+                                                    <span style="font-size: 0.85rem; font-weight: 600; color: white;">${label}</span>
+                                                    <span style="font-size: 0.75rem; color: ${url ? '#10b981' : '#fb7185'}; font-weight: 500;">
+                                                        ${url ? '✓ Uploaded' : '✕ Missing'}
+                                                    </span>
+                                                </div>
+                                                <div style="display: flex; gap: 0.4rem; align-items: center;">
+                                                    ${url ? `
+                                                    <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="btn btn-receipt" style="padding: 0.35rem 0.7rem; font-size: 0.75rem; border-radius: 8px; width: auto; flex: none; text-decoration: none;">
+                                                        View
+                                                    </a>
+                                                    ` : ''}
+                                                    <label class="btn-doc-upload" id="upload-btn-${claimId}-${docType}" style="padding: 0.35rem 0.7rem; font-size: 0.75rem; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: var(--text-main); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.2rem; transition: var(--transition); user-select: none;">
+                                                        <input type="file" onchange="uploadModalDoc('${claimId}', '${docType}', this)" accept=".pdf,.png,.jpg,.jpeg" style="display: none;">
+                                                        <span>${url ? 'Replace' : 'Upload'}</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        `;
+                                    }).join('');
+                                })()}
+                            </div>
+                        </div>
+
+                        <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1.25rem;">
+                            <h4 style="font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; margin-bottom: 1rem; font-weight: 700; display: flex; align-items: center; gap: 0.4rem;">
+                                📜 Audit History Timeline
+                            </h4>
+                            <div style="display: flex; flex-direction: column; gap: 0.8rem; padding-left: 0.5rem; border-left: 2px dashed rgba(255,255,255,0.1); margin-left: 0.5rem;">
+                                ${audits.map(audit => {
+                                    const eventDate = audit.timestamp ? new Date(audit.timestamp).toLocaleString() : "N/A";
+                                    return `
+                                        <div style="position: relative; padding-left: 1rem; font-size: 0.8rem;">
+                                            <div style="position: absolute; left: -1.35rem; top: 0.2rem; width: 8px; height: 8px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 6px var(--primary);"></div>
+                                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.15rem;">
+                                                <strong style="color: white;">${escapeHtml(audit.event_type.replace(/_/g, ' ').toUpperCase())}</strong>
+                                                <span style="color: var(--text-muted); font-size: 0.72rem;">${eventDate}</span>
+                                            </div>
+                                            <p style="margin: 0; color: rgba(255,255,255,0.85);">${escapeHtml(audit.event_message)}</p>
+                                            <p style="margin: 0.15rem 0 0 0; color: var(--text-muted); font-size: 0.72rem;">
+                                                Actor: <span style="color: #c7d2fe; font-weight: 500;">${escapeHtml(audit.actor_email || audit.actor || "N/A")}</span> (${escapeHtml(audit.actor_role || "N/A")})
+                                            </p>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } catch (err) {
+                console.error("Failed to fetch claim profile", err);
+                body.innerHTML = `
+                    <div style="text-align: center; padding: 4rem 2rem; color: #fb7185;">
+                        <span style="font-size: 2.5rem;">✕</span>
+                        <h3 style="margin-top: 1rem; color: white;">Error Loading Profile</h3>
+                        <p style="font-size: 0.85rem; margin-top: 0.2rem;">${err.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function uploadModalDoc(claimId, docType, inputElement) {
+            if (!inputElement.files || inputElement.files.length === 0) return;
+            const file = inputElement.files[0];
+            
+            const btn = document.getElementById(`upload-btn-${claimId}-${docType}`);
+            const originalHTML = btn.innerHTML;
+            if (btn) {
+                btn.style.pointerEvents = "none";
+                btn.innerHTML = `<div class="spinner" style="width:12px; height:12px; border-width:1.5px; margin:0; display:inline-block; vertical-align:middle;"></div>`;
+            }
+            
+            const formData = new FormData();
+            formData.append("file", file);
+            
+            try {
+                const response = await fetch(`/api/employee/claims/${claimId}/documents/${docType}`, {
+                    method: "POST",
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(errData.detail || "Upload failed");
+                }
+                
+                showToast(`${file.name} uploaded successfully!`, "success");
+                await showClaimDetails(claimId);
+                
+                if (USER_ROLE === "employee") {
+                    fetchExpenseHistory();
+                } else {
+                    fetchPendingApprovals();
+                    fetchExpenseHistory();
+                }
+            } catch (err) {
+                console.error("Modal document upload failed", err);
+                showToast("Upload failed: " + err.message, "error");
+                if (btn) {
+                    btn.innerHTML = originalHTML;
+                    btn.style.pointerEvents = "all";
+                }
+            }
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll(".tab-section").forEach(sec => sec.style.display = "none");
+            document.querySelectorAll(".tab-btn").forEach(btn => {
+                btn.classList.remove("active");
+                btn.style.color = "var(--text-muted)";
+                btn.style.borderBottom = "none";
+            });
+            
+            const activeBtn = document.getElementById(`tab-${tab === 'audit-trail' ? 'audit' : tab}`);
+            if (activeBtn) {
+                activeBtn.classList.add("active");
+                activeBtn.style.color = "white";
+            }
+
+            if (tab === 'pending') {
+                document.getElementById("section-pending").style.display = "block";
+                fetchPendingApprovals();
+            } else if (tab === 'history') {
                 document.getElementById("section-history").style.display = "block";
                 fetchExpenseHistory();
             } else if (tab === 'audit-trail') {
@@ -1369,6 +1564,9 @@
             } else if (tab === 'cards') {
                 document.getElementById("section-cards").style.display = "block";
                 fetchCardTransactions();
+            } else if (tab === 'agents') {
+                document.getElementById("section-agents").style.display = "block";
+                fetchAgentMetrics();
             }
         }
 
@@ -4932,5 +5130,133 @@ async function editCardNotes(transaction_id, currentNotes) {
     } catch (err) {
         console.error(err);
         showToast("Update failed: " + err.message, "error");
+    }
+}
+
+async function fetchAgentMetrics() {
+    const grid = document.getElementById("ops-agent-cards-grid");
+    if (!grid) return;
+    
+    grid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-muted);">
+            <div class="spinner" style="border: 3px solid rgba(255,255,255,0.1); border-radius: 50%; border-top: 3px solid #a78bfa; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 1rem auto;"></div>
+            <p style="font-weight: 500; font-size: 0.95rem;">Compiling agent operations metrics...</p>
+        </div>
+    `;
+    
+    try {
+        const res = await fetch("/api/agents/metrics");
+        if (!res.ok) throw new Error("Failed to fetch agent metrics");
+        
+        const data = await res.json();
+        
+        // Update top summary cards
+        document.getElementById("ops-total-runs").textContent = data.summary.total_agent_runs;
+        document.getElementById("ops-policy-warnings").textContent = data.summary.policy_warnings_generated;
+        document.getElementById("ops-manager-routed").textContent = data.summary.reports_routed_to_manager;
+        document.getElementById("ops-finance-routed").textContent = data.summary.reports_routed_to_finance;
+        document.getElementById("ops-audit-events").textContent = data.summary.audit_events_generated;
+        
+        // Render agent cards
+        grid.innerHTML = "";
+        data.agents.forEach(agent => {
+            let dotColor = "#10b981"; // green
+            if (agent.status === "Warning") {
+                dotColor = "#f59e0b"; // yellow
+            } else if (agent.status === "Error") {
+                dotColor = "#f43f5e"; // red
+            }
+            
+            let lastRunText = "Never";
+            if (agent.last_run && agent.last_run !== "Never") {
+                try {
+                    const date = new Date(agent.last_run);
+                    if (!isNaN(date.getTime())) {
+                        lastRunText = date.toLocaleString();
+                    } else {
+                        lastRunText = agent.last_run;
+                    }
+                } catch (e) {
+                    lastRunText = agent.last_run;
+                }
+            }
+            
+            const successRate = agent.success_rate_pct.toFixed(1);
+            
+            const card = document.createElement("div");
+            card.style.background = "rgba(255, 255, 255, 0.015)";
+            card.style.border = "1px solid rgba(255, 255, 255, 0.05)";
+            card.style.borderRadius = "20px";
+            card.style.padding = "1.5rem";
+            card.style.display = "flex";
+            card.style.flexDirection = "column";
+            card.style.justifyContent = "space-between";
+            card.style.boxShadow = "0 4px 20px rgba(0,0,0,0.15)";
+            card.style.transition = "transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease";
+            card.className = "ops-agent-card";
+            
+            card.onmouseenter = () => {
+                card.style.transform = "translateY(-4px)";
+                card.style.borderColor = "rgba(167, 139, 250, 0.25)";
+                card.style.boxShadow = "0 8px 30px rgba(167, 139, 250, 0.08)";
+            };
+            card.onmouseleave = () => {
+                card.style.transform = "translateY(0)";
+                card.style.borderColor = "rgba(255, 255, 255, 0.05)";
+                card.style.boxShadow = "0 4px 20px rgba(0,0,0,0.15)";
+            };
+            
+            card.innerHTML = `
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                        <h4 style="font-size: 1.15rem; font-weight: 700; color: white; margin: 0;">${agent.name}</h4>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 0.35rem 0.75rem; border-radius: 20px;">
+                            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: ${dotColor}; box-shadow: 0 0 10px ${dotColor};"></span>
+                            <span style="font-size: 0.75rem; font-weight: 700; color: ${dotColor}; text-transform: uppercase; letter-spacing: 0.05em;">${agent.status}</span>
+                        </div>
+                    </div>
+                    
+                    <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; margin-top: 0; margin-bottom: 1.5rem; min-height: 48px;">${agent.description}</p>
+                </div>
+                
+                <div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; border-top: 1px solid rgba(255,255,255,0.04); padding-top: 1rem;">
+                        <div>
+                            <div style="font-size: 0.7rem; text-transform: uppercase; font-weight: 600; color: var(--text-muted);">Runs Today</div>
+                            <div style="font-size: 1.15rem; font-weight: 700; color: white; margin-top: 0.2rem;">${agent.runs_today}</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.7rem; text-transform: uppercase; font-weight: 600; color: var(--text-muted);">Latency</div>
+                            <div style="font-size: 1.15rem; font-weight: 700; color: #a78bfa; margin-top: 0.2rem;">${agent.avg_processing_time_ms}ms</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 1.25rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                            <span style="font-size: 0.7rem; text-transform: uppercase; font-weight: 600; color: var(--text-muted);">Success Rate</span>
+                            <span style="font-size: 0.8rem; font-weight: 700; color: #38bdf8;">${successRate}%</span>
+                        </div>
+                        <div style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; position: relative;">
+                            <div style="height: 100%; width: ${successRate}%; background: linear-gradient(90deg, #6366f1 0%, #38bdf8 100%); border-radius: 10px; transition: width 1s ease-out;"></div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 0.4rem; border-top: 1px solid rgba(255,255,255,0.04); padding-top: 0.8rem; font-size: 0.75rem; color: var(--text-muted);">
+                        <span>🕒</span>
+                        <span>Last run: <strong style="color: #cbd5e1; font-weight: 500;">${lastRunText}</strong></span>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    } catch (err) {
+        console.error("fetchAgentMetrics failed", err);
+        grid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; background: rgba(244,63,94,0.05); border: 1px solid rgba(244,63,94,0.15); border-radius: 16px; color: #f43f5e;">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚠️</div>
+                <h4 style="font-weight: 700; margin: 0;">Error loading agent operational metrics</h4>
+                <p style="font-size: 0.85rem; margin-top: 0.5rem; color: var(--text-muted);">${err.message}</p>
+            </div>
+        `;
     }
 }

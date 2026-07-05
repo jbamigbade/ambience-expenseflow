@@ -1359,201 +1359,6 @@
                 document.getElementById("section-pending").style.display = "block";
                 fetchPendingApprovals();
             } else if (tab === 'history') {
-                docs.forEach(d => {
-                    docUrls[d.doc_type] = d.gcs_path ? `/api/document/${claimId}/${d.doc_type}` : null;
-                });
-                
-                const isTravel = ["meals", "lodging", "flight"].includes(exp.category);
-                const isTransport = ["transportation", "rental_car", "rental_car_gas", "parking", "tolls"].includes(exp.category);
-                
-                body.innerHTML = `
-                    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-                        <div style="background: ${statusBg}; color: ${statusColor}; border: 1px solid ${statusColor}40; padding: 1rem; border-radius: 12px; display: flex; align-items: center; gap: 0.75rem;">
-                            <span style="font-size: 1.5rem; line-height: 1;">🛡️</span>
-                            <div>
-                                <h4 style="font-size: 0.95rem; font-weight: 700; margin: 0; color: white;">${statusText}</h4>
-                                <p style="font-size: 0.8rem; margin: 0.2rem 0 0 0; color: rgba(255,255,255,0.7);">${escapeHtml(exp.policy_status || "Compliance evaluation completed.")}</p>
-                            </div>
-                        </div>
-
-                        <div class="review-details-card" style="margin-top: 0; padding: 1.5rem; width: auto; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 16px;">
-                            <h4 style="font-size: 0.85rem; margin-bottom: 1rem; color: #a5b4fc; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.4rem; font-weight: 700;">Claim Summary</h4>
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; font-size: 0.82rem;">
-                                <div class="review-field"><span>Employee</span><strong>${escapeHtml(exp.employee_name)}</strong></div>
-                                <div class="review-field"><span>Email</span><strong style="font-size: 0.75rem; font-weight: 500; word-break: break-all;">${escapeHtml(exp.employee_email)}</strong></div>
-                                <div class="review-field"><span>Amount</span><strong style="color: #34d399; font-size: 1.05rem;">${formatMoney(exp.amount)} (${escapeHtml(exp.currency || "USD")})</strong></div>
-                                <div class="review-field"><span>Department</span><strong>${escapeHtml(exp.department || "N/A")}</strong></div>
-                                <div class="review-field"><span>Manager</span><strong>${escapeHtml(exp.manager_email || "N/A")}</strong></div>
-                                <div class="review-field"><span>Expense Date</span><strong>${escapeHtml(exp.expense_date || "N/A")}</strong></div>
-                                <div class="review-field" style="grid-column: 1 / -1;"><span>Business Purpose</span><strong>${escapeHtml(exp.business_purpose || "N/A")}</strong></div>
-                                ${exp.description ? `<div class="review-field" style="grid-column: 1 / -1;"><span>Description</span><strong style="font-style: italic; font-weight: 400; color: var(--text-muted);">"${escapeHtml(exp.description)}"</strong></div>` : ''}
-                            </div>
-                        </div>
-
-                        ${isTravel ? `
-                        <div style="background: rgba(99, 102, 241, 0.03); border: 1px solid rgba(99, 102, 241, 0.1); padding: 1.2rem; border-radius: 14px;">
-                            <h4 style="font-size: 0.85rem; text-transform: uppercase; color: #a5b4fc; letter-spacing: 0.05em; margin-bottom: 0.8rem; font-weight: 700;">📅 Travel Metrics</h4>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.8rem;">
-                                <div><strong style="color: var(--text-muted);">Dates:</strong> ${escapeHtml(exp.travel_start_date || "N/A")} to ${escapeHtml(exp.travel_end_date || "N/A")}</div>
-                                <div><strong style="color: var(--text-muted);">Destination:</strong> ${escapeHtml(exp.city || "N/A")}, ${escapeHtml(exp.state || "N/A")}</div>
-                                <div><strong style="color: var(--text-muted);">Claimed Meals:</strong> ${formatMoney(exp.claimed_meals)}</div>
-                                <div><strong style="color: var(--text-muted);">Claimed Lodging:</strong> ${formatMoney(exp.claimed_lodging)}</div>
-                            </div>
-                        </div>
-                        ` : ''}
-
-                        ${isTransport ? `
-                        <div style="background: rgba(139, 92, 246, 0.03); border: 1px solid rgba(139, 92, 246, 0.1); padding: 1.2rem; border-radius: 14px;">
-                            <h4 style="font-size: 0.85rem; text-transform: uppercase; color: #c084fc; letter-spacing: 0.05em; margin-bottom: 0.8rem; font-weight: 700;">🚗 Transportation Metrics</h4>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.8rem;">
-                                <div><strong style="color: var(--text-muted);">Type:</strong> ${escapeHtml(exp.transportation_type || "N/A")}</div>
-                                <div><strong style="color: var(--text-muted);">Route:</strong> ${escapeHtml(exp.start_address || "N/A")} ➔ ${escapeHtml(exp.destination_address || "N/A")}</div>
-                                ${exp.business_miles ? `<div><strong style="color: var(--text-muted);">Miles:</strong> ${exp.business_miles} mi</div>` : ''}
-                                ${exp.rental_cost ? `<div><strong style="color: var(--text-muted);">Rental Cost:</strong> ${formatMoney(exp.rental_cost)}</div>` : ''}
-                                ${exp.gas_cost ? `<div><strong style="color: var(--text-muted);">Gas Cost:</strong> ${formatMoney(exp.gas_cost)}</div>` : ''}
-                                ${exp.parking_cost ? `<div><strong style="color: var(--text-muted);">Parking Cost:</strong> ${formatMoney(exp.parking_cost)}</div>` : ''}
-                            </div>
-                        </div>
-                        ` : ''}
-
-                        <div class="document-verification-box" style="padding: 1.25rem; border-radius: 14px; background: rgba(255, 255, 255, 0.01); border: 1px solid rgba(255, 255, 255, 0.05);">
-                            <h4 style="font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; margin-bottom: 0.8rem; font-weight: 700;">📂 Document Checklist & Action</h4>
-                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                                ${(() => {
-                                    const required = exp.required_documents || [];
-                                    const missing = exp.missing_documents || [];
-                                    if (required.length === 0) {
-                                        return `<div style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">No specific documents required.</div>`;
-                                    }
-                                    return required.map(docType => {
-                                        const isMissing = missing.includes(docType);
-                                        const url = docUrls[docType];
-                                        const label = DOC_TYPES[docType] ? DOC_TYPES[docType].label : docType.replace(/_/g, ' ').toUpperCase();
-                                        return `
-                                            <div class="doc-row" style="display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.8rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 10px; gap: 0.5rem;">
-                                                <div style="display: flex; flex-direction: column;">
-                                                    <span style="font-size: 0.85rem; font-weight: 600; color: white;">${label}</span>
-                                                    <span style="font-size: 0.75rem; color: ${url ? '#10b981' : '#fb7185'}; font-weight: 500;">
-                                                        ${url ? '✓ Uploaded' : '✕ Missing'}
-                                                    </span>
-                                                </div>
-                                                <div style="display: flex; gap: 0.4rem; align-items: center;">
-                                                    ${url ? `
-                                                    <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="btn btn-receipt" style="padding: 0.35rem 0.7rem; font-size: 0.75rem; border-radius: 8px; width: auto; flex: none; text-decoration: none;">
-                                                        View
-                                                    </a>
-                                                    ` : ''}
-                                                    <label class="btn-doc-upload" id="upload-btn-${claimId}-${docType}" style="padding: 0.35rem 0.7rem; font-size: 0.75rem; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: var(--text-main); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.2rem; transition: var(--transition); user-select: none;">
-                                                        <input type="file" onchange="uploadModalDoc('${claimId}', '${docType}', this)" accept=".pdf,.png,.jpg,.jpeg" style="display: none;">
-                                                        <span>${url ? 'Replace' : 'Upload'}</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        `;
-                                    }).join('');
-                                })()}
-                            </div>
-                        </div>
-
-                        <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1.25rem;">
-                            <h4 style="font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; margin-bottom: 1rem; font-weight: 700; display: flex; align-items: center; gap: 0.4rem;">
-                                📜 Audit History Timeline
-                            </h4>
-                            <div style="display: flex; flex-direction: column; gap: 0.8rem; padding-left: 0.5rem; border-left: 2px dashed rgba(255,255,255,0.1); margin-left: 0.5rem;">
-                                ${audits.map(audit => {
-                                    const eventDate = audit.timestamp ? new Date(audit.timestamp).toLocaleString() : "N/A";
-                                    return `
-                                        <div style="position: relative; padding-left: 1rem; font-size: 0.8rem;">
-                                            <div style="position: absolute; left: -1.35rem; top: 0.2rem; width: 8px; height: 8px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 6px var(--primary);"></div>
-                                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.15rem;">
-                                                <strong style="color: white;">${escapeHtml(audit.event_type.replace(/_/g, ' ').toUpperCase())}</strong>
-                                                <span style="color: var(--text-muted); font-size: 0.72rem;">${eventDate}</span>
-                                            </div>
-                                            <p style="margin: 0; color: rgba(255,255,255,0.85);">${escapeHtml(audit.event_message)}</p>
-                                            <p style="margin: 0.15rem 0 0 0; color: var(--text-muted); font-size: 0.72rem;">
-                                                Actor: <span style="color: #c7d2fe; font-weight: 500;">${escapeHtml(audit.actor_email || audit.actor || "N/A")}</span> (${escapeHtml(audit.actor_role || "N/A")})
-                                            </p>
-                                        </div>
-                                    `;
-                                }).join('')}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } catch (err) {
-                console.error("Failed to fetch claim profile", err);
-                body.innerHTML = `
-                    <div style="text-align: center; padding: 4rem 2rem; color: #fb7185;">
-                        <span style="font-size: 2.5rem;">✕</span>
-                        <h3 style="margin-top: 1rem; color: white;">Error Loading Profile</h3>
-                        <p style="font-size: 0.85rem; margin-top: 0.2rem;">${err.message}</p>
-                    </div>
-                `;
-            }
-        }
-
-        async function uploadModalDoc(claimId, docType, inputElement) {
-            if (!inputElement.files || inputElement.files.length === 0) return;
-            const file = inputElement.files[0];
-            
-            const btn = document.getElementById(`upload-btn-${claimId}-${docType}`);
-            const originalHTML = btn.innerHTML;
-            if (btn) {
-                btn.style.pointerEvents = "none";
-                btn.innerHTML = `<div class="spinner" style="width:12px; height:12px; border-width:1.5px; margin:0; display:inline-block; vertical-align:middle;"></div>`;
-            }
-            
-            const formData = new FormData();
-            formData.append("file", file);
-            
-            try {
-                const response = await fetch(`/api/employee/claims/${claimId}/documents/${docType}`, {
-                    method: "POST",
-                    body: formData
-                });
-                
-                if (!response.ok) {
-                    const errData = await response.json();
-                    throw new Error(errData.detail || "Upload failed");
-                }
-                
-                showToast(`${file.name} uploaded successfully!`, "success");
-                await showClaimDetails(claimId);
-                
-                if (USER_ROLE === "employee") {
-                    fetchExpenseHistory();
-                } else {
-                    fetchPendingApprovals();
-                    fetchExpenseHistory();
-                }
-            } catch (err) {
-                console.error("Modal document upload failed", err);
-                showToast("Upload failed: " + err.message, "error");
-                if (btn) {
-                    btn.innerHTML = originalHTML;
-                    btn.style.pointerEvents = "all";
-                }
-            }
-        }
-
-        function switchTab(tab) {
-            document.querySelectorAll(".tab-section").forEach(sec => sec.style.display = "none");
-            document.querySelectorAll(".tab-btn").forEach(btn => {
-                btn.classList.remove("active");
-                btn.style.color = "var(--text-muted)";
-                btn.style.borderBottom = "none";
-            });
-            
-            const activeBtn = document.getElementById(`tab-${tab === 'audit-trail' ? 'audit' : tab}`);
-            if (activeBtn) {
-                activeBtn.classList.add("active");
-                activeBtn.style.color = "white";
-            }
-
-            if (tab === 'pending') {
-                document.getElementById("section-pending").style.display = "block";
-                fetchPendingApprovals();
-            } else if (tab === 'history') {
                 document.getElementById("section-history").style.display = "block";
                 fetchExpenseHistory();
             } else if (tab === 'audit-trail') {
@@ -2773,7 +2578,9 @@
                 loadingStatus.style.display = "flex";
             }
             
-            grid.innerHTML = getSkeletonHTML(3);
+            if (grid) {
+                grid.innerHTML = getSkeletonHTML(3);
+            }
             
             const timeoutId = setTimeout(() => {
                 if (!isLoaded && loadingText) {
@@ -2800,19 +2607,23 @@
                     fetchExpenseHistory(true);
                 }
                 
-                const claims = data.pending_claims;
-                const hiddenCount = data.hidden_cli_sessions_count;
+                const claims = data.pending_claims || [];
+                const hiddenCount = data.hidden_cli_sessions_count || 0;
                 
-                countBadge.textContent = claims.length;
-                
-                if (hiddenCount > 0) {
-                    hiddenCountEl.textContent = hiddenCount;
-                    hiddenBadge.style.display = "flex";
-                } else {
-                    hiddenBadge.style.display = "none";
+                if (countBadge) {
+                    countBadge.textContent = claims.length;
                 }
                 
-                grid.innerHTML = "";
+                if (hiddenCount > 0) {
+                    if (hiddenCountEl) hiddenCountEl.textContent = hiddenCount;
+                    if (hiddenBadge) hiddenBadge.style.display = "flex";
+                } else {
+                    if (hiddenBadge) hiddenBadge.style.display = "none";
+                }
+                
+                if (grid) {
+                    grid.innerHTML = "";
+                }
                 cachedClaims = {};
                 
                 isLoaded = true;
@@ -2822,13 +2633,15 @@
                 }
                 
                 if (claims.length === 0) {
-                    grid.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-icon">🎉</div>
-                            <h3>All Caught Up!</h3>
-                            <p>No claims are currently pending manager validation. All high-value transactions have been resolved.</p>
-                        </div>
-                    `;
+                    if (grid) {
+                        grid.innerHTML = `
+                            <div class="empty-state">
+                                <div class="empty-icon">🎉</div>
+                                <h3>All Caught Up!</h3>
+                                <p>No claims are currently pending manager validation. All high-value transactions have been resolved.</p>
+                            </div>
+                        `;
+                    }
                     return;
                 }
                 
@@ -3126,7 +2939,9 @@
                                 </button>
                             </div>
                         `;
-                        grid.appendChild(card);
+                        if (grid) {
+                            grid.appendChild(card);
+                        }
                     } catch (cardErr) {
                         console.warn("Failed to render pending claim card for session_id:", claim.session_id, cardErr);
                     }
@@ -3139,13 +2954,15 @@
                     loadingStatus.style.display = "none";
                 }
                 console.error("Failed to load approvals", err);
-                grid.innerHTML = `
-                    <div class="empty-state" style="border-color: var(--danger-glow); backdrop-filter: none; -webkit-backdrop-filter: none;">
-                        <div class="empty-icon" style="filter:none;">❌</div>
-                        <h3 style="color:#f43f5e;">System Sync Offline</h3>
-                        <p>Error connecting to backend services: ${err.message}. Ensure your credentials are active and GCP_PROJECT is set.</p>
-                    </div>
-                `;
+                if (grid) {
+                    grid.innerHTML = `
+                        <div class="empty-state" style="border-color: var(--danger-glow); backdrop-filter: none; -webkit-backdrop-filter: none;">
+                            <div class="empty-icon" style="filter:none;">❌</div>
+                            <h3 style="color:#f43f5e;">System Sync Offline</h3>
+                            <p>Error connecting to backend services: ${err.message}. Ensure your credentials are active and GCP_PROJECT is set.</p>
+                        </div>
+                    `;
+                }
             }
         async function handleAction(sessionId, approved) {
             const loader = document.getElementById(`loader-${sessionId}`);
@@ -3316,56 +3133,58 @@ fetchPendingApprovals = async function(force = false) {
             if (reports.length > 0) {
                 const grid = document.getElementById("dashboard-grid");
                 
-                // If there was an empty state, remove it
-                const emptyState = grid.querySelector(".empty-state");
-                if (emptyState) {
-                    grid.innerHTML = "";
-                }
-                
-                reports.forEach(rep => {
-                    // Check if report card is already rendered
-                    if (document.getElementById(`report-card-pending-${rep.report_id}`)) return;
+                if (grid) {
+                    // If there was an empty state, remove it
+                    const emptyState = grid.querySelector(".empty-state");
+                    if (emptyState) {
+                        grid.innerHTML = "";
+                    }
                     
-                    const card = document.createElement("div");
-                    card.id = `report-card-pending-${rep.report_id}`;
-                    card.className = "claim-card pending";
-                    card.style.position = "relative";
-                    card.style.background = "linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%)";
-                    card.style.border = "1px solid rgba(99, 102, 241, 0.25)";
-                    card.style.borderRadius = "20px";
-                    card.style.padding = "1.5rem";
-                    card.style.display = "flex";
-                    card.style.flexDirection = "column";
-                    card.style.gap = "1rem";
-                    
-                    card.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                            <div>
-                                <span class="badge" style="background: rgba(99, 102, 241, 0.15); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.3); margin-bottom: 0.5rem; display: inline-block;">EXPENSE REPORT REVIEW</span>
-                                <h3 style="font-size: 1.15rem; font-weight: 700; color: white;">${escapeHtml(rep.report_title)}</h3>
-                                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.1rem;">Period: ${rep.report_period_start} to ${rep.report_period_end}</p>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-size: 1.25rem; font-weight: 800; color: white;">${formatMoney(rep.total_claimed_amount)}</div>
-                                <span style="font-size: 0.75rem; color: var(--text-muted);">Reimbursable: ${formatMoney(rep.total_reimbursable_amount)}</span>
-                            </div>
-                        </div>
+                    reports.forEach(rep => {
+                        // Check if report card is already rendered
+                        if (document.getElementById(`report-card-pending-${rep.report_id}`)) return;
                         
-                        <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 0.75rem; font-size: 0.8rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-                            <div><strong style="color: var(--text-muted);">Employee:</strong> <span style="color: white;">${escapeHtml(rep.employee_name)}</span></div>
-                            <div><strong style="color: var(--text-muted);">Department:</strong> <span style="color: white;">${escapeHtml(rep.department)}</span></div>
-                            <div><strong style="color: var(--text-muted);">Exceptions:</strong> <span style="color: #f43f5e; font-weight: 600;">${rep.policy_exception_count}</span></div>
-                            <div><strong style="color: var(--text-muted);">Claims:</strong> <span style="color: white;">${rep.claim_count}</span></div>
-                        </div>
-
-                        <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: auto; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.05);">
-                            <button class="btn btn-receipt" onclick="switchTab('reports'); loadReportBuilder('${rep.report_id}')" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; font-weight: 600; border-radius: 8px; width: auto; height: auto;">
-                                Open Report Dossier
-                            </button>
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                });
+                        const card = document.createElement("div");
+                        card.id = `report-card-pending-${rep.report_id}`;
+                        card.className = "claim-card pending";
+                        card.style.position = "relative";
+                        card.style.background = "linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%)";
+                        card.style.border = "1px solid rgba(99, 102, 241, 0.25)";
+                        card.style.borderRadius = "20px";
+                        card.style.padding = "1.5rem";
+                        card.style.display = "flex";
+                        card.style.flexDirection = "column";
+                        card.style.gap = "1rem";
+                        
+                        card.innerHTML = `
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <div>
+                                    <span class="badge" style="background: rgba(99, 102, 241, 0.15); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.3); margin-bottom: 0.5rem; display: inline-block;">EXPENSE REPORT REVIEW</span>
+                                    <h3 style="font-size: 1.15rem; font-weight: 700; color: white;">${escapeHtml(rep.report_title)}</h3>
+                                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.1rem;">Period: ${rep.report_period_start} to ${rep.report_period_end}</p>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div style="font-size: 1.25rem; font-weight: 800; color: white;">${formatMoney(rep.total_claimed_amount)}</div>
+                                    <span style="font-size: 0.75rem; color: var(--text-muted);">Reimbursable: ${formatMoney(rep.total_reimbursable_amount)}</span>
+                                </div>
+                            </div>
+                            
+                            <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 0.75rem; font-size: 0.8rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                                <div><strong style="color: var(--text-muted);">Employee:</strong> <span style="color: white;">${escapeHtml(rep.employee_name)}</span></div>
+                                <div><strong style="color: var(--text-muted);">Department:</strong> <span style="color: white;">${escapeHtml(rep.department)}</span></div>
+                                <div><strong style="color: var(--text-muted);">Exceptions:</strong> <span style="color: #f43f5e; font-weight: 600;">${rep.policy_exception_count}</span></div>
+                                <div><strong style="color: var(--text-muted);">Claims:</strong> <span style="color: white;">${rep.claim_count}</span></div>
+                            </div>
+    
+                            <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: auto; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.05);">
+                                <button class="btn btn-receipt" onclick="switchTab('reports'); loadReportBuilder('${rep.report_id}')" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; font-weight: 600; border-radius: 8px; width: auto; height: auto;">
+                                    Open Report Dossier
+                                </button>
+                            </div>
+                        `;
+                        grid.appendChild(card);
+                    });
+                }
             }
         } catch (err) {
             console.error("Error appending pending reports review queue:", err);
@@ -5259,4 +5078,5 @@ async function fetchAgentMetrics() {
             </div>
         `;
     }
+}
 }
